@@ -1,42 +1,45 @@
 package ru.otus.dao;
 
 import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import ru.otus.config.Config;
 import ru.otus.domain.Question;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
+@RequiredArgsConstructor
 public class QuestionDaoSimple implements QuestionDao {
-    private final List<Question> questions;
-
-    @SneakyThrows
-    public QuestionDaoSimple(Config config) {
-        Resource resource = new ClassPathResource(config.getResourceUrl());
-        CsvMapper csvMapper = new CsvMapper();
-        CsvSchema csvSchema = CsvSchema.emptySchema().withHeader();
-        ObjectReader objectReader = csvMapper.readerFor(Question.class).with(csvSchema);
-        MappingIterator<Question> questionMappingIterator = objectReader.readValues(resource.getInputStream());
-        questions = new ArrayList<>();
-        questions.addAll(questionMappingIterator.readAll());
-    }
-
-    @Override
-    public Optional<Question> findById(long id) {
-        return questions.stream()
-                .filter(question -> question.getId() == id)
-                .findFirst();
-    }
+    private final Config config;
 
     @Override
     public List<Question> findAll() {
+        Resource resource = new ClassPathResource(config.getResourceUrl());
+        ObjectMapper objectMapper = new CsvMapper();
+        CsvSchema csvSchema = CsvSchema.builder()
+                .setSkipFirstDataRow(true)
+                .addColumn("id")
+                .addColumn("text")
+                .addColumn("answer.text")
+                .addArrayColumn("variants")
+                .build();
+        MappingIterator<Question> questionMappingIterator;
+        List<Question> questions;
+        try {
+            questionMappingIterator = objectMapper
+                    .reader(csvSchema)
+                    .forType(Question.class)
+                    .readValues(resource.getInputStream());
+            questions = questionMappingIterator.readAll();
+        } catch (IOException e) {
+            System.err.println("Ошибка чтения файла: " + e);
+            return List.of();
+        }
         return questions;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @PropertySource("application.properties")
 @Configuration
-public class Config {
+public class AppConfig {
     @Bean
     public ResourceConfig resourceConfig(@Value("${resource.config.url}") String url) {
         return new ResourceConfig(url);

@@ -19,6 +19,7 @@ public class TestingServiceImpl implements TestingService {
 
     @Override
     public void start() {
+        ioService.outputString("Welcome to Testing Students Application!");
         Student student = initAndGetStudent();
         ioService.outputString(student.getFullName() + ", please answer the following questions");
         List<AnswerPage> answerPages = startTestingAndGetAnswers();
@@ -27,7 +28,6 @@ public class TestingServiceImpl implements TestingService {
     }
 
     private Student initAndGetStudent() {
-        ioService.outputString("Welcome to Testing Students Application!");
         String firstname = ioService.readStringWithPrompt("Enter your firstname");
         String lastname = ioService.readStringWithPrompt("Enter your lastname");
         return new Student(firstname, lastname);

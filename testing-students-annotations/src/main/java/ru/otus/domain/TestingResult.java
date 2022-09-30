@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class TestingResult {
     private Student student;
     private int totalQuestions;
-    private int correctAnswers;
-    private String percentCorrectAnswers;
+    private int rightAnswers;
+    private String percentRightAnswers;
 }

@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerPage {
+    private Answer rightAnswer;
     private Answer answer;
-    private Answer answered;
 }

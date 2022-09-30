@@ -14,7 +14,7 @@ public class AnswerAnalyserImpl implements AnswerAnalyser {
     public TestingResult analyze(Student student, List<AnswerPage> answerPages) {
         int totalQuestions = answerPages.size();
         int correctAnswers = answerPages.stream()
-                .filter(answerPage -> answerPage.getAnswer().getText().equalsIgnoreCase(answerPage.getAnswered().getText()))
+                .filter(answerPage -> answerPage.getRightAnswer().getText().equalsIgnoreCase(answerPage.getAnswer().getText()))
                 .toList()
                 .size();
         String percentCorrectAnswers = new DecimalFormat("###.##%").format((double) correctAnswers / (double) totalQuestions);

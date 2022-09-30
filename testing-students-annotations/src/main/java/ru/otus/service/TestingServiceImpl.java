@@ -49,8 +49,8 @@ public class TestingServiceImpl implements TestingService {
         ioService.outputString("\n****************RESULTS****************");
         TestingResult testingResult = answerAnalyser.analyze(student, answerPages);
         String result = "Student: " + student.getFullName() + "\n" + "Total questions: " + testingResult.getTotalQuestions() +
-                "\nCorrect answers: " + testingResult.getCorrectAnswers() + "\nPercent correct answers: " +
-                testingResult.getPercentCorrectAnswers();
+                "\nRight answers: " + testingResult.getRightAnswers() + "\nPercent right answers: " +
+                testingResult.getPercentRightAnswers();
         ioService.outputString(result);
     }
 }

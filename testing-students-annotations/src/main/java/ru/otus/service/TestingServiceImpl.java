@@ -22,7 +22,8 @@ public class TestingServiceImpl implements TestingService {
         Student student = initAndGetStudent();
         ioService.outputString(student.getFullName() + ", please answer the following questions");
         List<AnswerPage> answerPages = startTestingAndGetAnswers();
-        printResult(student, answerPages);
+        TestingResult testingResult = answerAnalyser.analyze(student, answerPages);
+        printTestingResult(testingResult);
     }
 
     private Student initAndGetStudent() {
@@ -44,10 +45,9 @@ public class TestingServiceImpl implements TestingService {
         return answerPages;
     }
 
-    private void printResult(Student student, List<AnswerPage> answerPages) {
+    private void printTestingResult(TestingResult testingResult) {
         ioService.outputString("\n****************RESULTS****************");
-        TestingResult testingResult = answerAnalyser.analyze(student, answerPages);
-        String result = "Student: " + student.getFullName() + "\n" + "Total questions: " + testingResult.getTotalQuestions() +
+        String result = "Student: " + testingResult.getStudent().getFullName() + "\n" + "Total questions: " + testingResult.getTotalQuestions() +
                 "\nRight answers: " + testingResult.getRightAnswers() + "\nPercent right answers: " +
                 testingResult.getPercentRightAnswers();
         ioService.outputString(result);

@@ -12,6 +12,6 @@ public class Student {
     private String lastname;
 
     public String getFullName() {
-        return firstname + " " + lastname;
+        return String.format("%s %s", firstname, lastname);
     }
 }

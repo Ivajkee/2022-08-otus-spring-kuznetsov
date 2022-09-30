@@ -15,7 +15,7 @@ class QuestionServiceTest {
     @Test
     @DisplayName("Find all questions")
     void findAllQuestions() {
-        QuestionDao questionDao = new QuestionDaoSimple(new ResourceConfig("questions.csv"));
+        QuestionDao questionDao = new QuestionDaoSimple(new ResourceConfig("questions-test.csv"));
         QuestionService questionService = new QuestionServiceImpl(questionDao);
         List<Question> questions = questionService.getAllQuestions();
         assertEquals(5, questions.size());

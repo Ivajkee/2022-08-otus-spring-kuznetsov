@@ -12,9 +12,4 @@ public class TestingResult {
     private int totalQuestions;
     private int correctAnswers;
     private String percentCorrectAnswers;
-
-    public String getResult() {
-        return "Student: " + student.getFullName() + "\n" + "Total questions: " + totalQuestions + "\nCorrect answers: "
-                + correctAnswers + "\nPercent correct answers: " + percentCorrectAnswers;
-    }
 }

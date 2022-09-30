@@ -13,7 +13,10 @@ public class AnswerAnalyserImpl implements AnswerAnalyser {
     @Override
     public TestingResult analyze(Student student, List<AnswerPage> answerPages) {
         int totalQuestions = answerPages.size();
-        int correctAnswers = answerPages.stream().filter(AnswerPage::isCorrect).toList().size();
+        int correctAnswers = answerPages.stream()
+                .filter(answerPage -> answerPage.getAnswer().getText().equalsIgnoreCase(answerPage.getAnswered().getText()))
+                .toList()
+                .size();
         String percentCorrectAnswers = new DecimalFormat("###.##%").format((double) correctAnswers / (double) totalQuestions);
         return new TestingResult(student, totalQuestions, correctAnswers, percentCorrectAnswers);
     }

@@ -10,8 +10,4 @@ import lombok.NoArgsConstructor;
 public class AnswerPage {
     private Answer answer;
     private Answer answered;
-
-    public boolean isCorrect() {
-        return answer.getText().equalsIgnoreCase(answered.getText());
-    }
 }

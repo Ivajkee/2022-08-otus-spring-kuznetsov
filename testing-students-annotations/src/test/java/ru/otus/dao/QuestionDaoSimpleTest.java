@@ -1,23 +1,21 @@
-package ru.otus.service;
+package ru.otus.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.config.ResourceConfig;
-import ru.otus.dao.QuestionDao;
-import ru.otus.dao.QuestionDaoSimple;
 import ru.otus.domain.Question;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class QuestionServiceTest {
+class QuestionDaoSimpleTest {
+
     @Test
     @DisplayName("Find all questions")
     void findAllQuestions() {
         QuestionDao questionDao = new QuestionDaoSimple(new ResourceConfig("questions-test.csv"));
-        QuestionService questionService = new QuestionServiceImpl(questionDao);
-        List<Question> questions = questionService.getAllQuestions();
+        List<Question> questions = questionDao.findAll();
         assertEquals(5, questions.size());
     }
 }

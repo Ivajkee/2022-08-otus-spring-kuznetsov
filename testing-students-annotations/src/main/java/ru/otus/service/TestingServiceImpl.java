@@ -37,7 +37,9 @@ public class TestingServiceImpl implements TestingService {
         ioService.outputString("****************START TESTING****************");
         List<AnswerPage> answerPages = new ArrayList<>();
         questionService.getAllQuestions().forEach(question -> {
-            String answer = ioService.readStringWithPrompt(question.print());
+            String questionText = question.getId() + ". " + question.getText() + "\n" + String.join(" | ",
+                    question.getVariants().stream().map(Answer::getText).toList());
+            String answer = ioService.readStringWithPrompt(questionText);
             answerPages.add(new AnswerPage(question.getAnswer(), new Answer(answer)));
             ioService.outputString("Your answer: " + answer);
         });

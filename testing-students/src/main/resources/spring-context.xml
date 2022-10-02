@@ -6,7 +6,7 @@
     <bean id="config" class="ru.otus.config.Config">
         <constructor-arg name="resourceUrl" value="questions.csv"/>
     </bean>
-    <bean id="questionDao" class="ru.otus.dao.QuestionDaoSimple">
+    <bean id="questionDao" class="ru.otus.dao.QuestionDaoCsv">
         <constructor-arg name="config" ref="config"/>
     </bean>
     <bean id="questionService" class="ru.otus.service.QuestionServiceImpl">

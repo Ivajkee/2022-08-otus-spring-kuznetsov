@@ -17,8 +17,4 @@ public class Question {
     private Answer answer;
     @JsonUnwrapped(prefix = "variants")
     private List<Answer> variants;
-
-    public String print() {
-        return id + ". " + text + "\n" + String.join(" | ", variants.stream().map(Answer::getText).toList());
-    }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,10 @@ import ru.otus.domain.Question;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class QuestionDaoSimple implements QuestionDao {
+public class QuestionDaoCsv implements QuestionDao {
     private final ResourceConfig resourceConfig;
 
     @Override
@@ -39,7 +41,7 @@ public class QuestionDaoSimple implements QuestionDao {
                     .readValues(resource.getInputStream());
             questions = questionMappingIterator.readAll();
         } catch (IOException e) {
-            System.err.println("Ошибка чтения файла: " + e);
+            log.error("Cannot read csv file", e);
             return List.of();
         }
         return questions;

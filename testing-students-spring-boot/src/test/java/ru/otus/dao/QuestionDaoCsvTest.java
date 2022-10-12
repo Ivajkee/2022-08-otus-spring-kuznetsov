@@ -7,6 +7,7 @@ import ru.otus.domain.Answer;
 import ru.otus.domain.Question;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,7 +15,7 @@ class QuestionDaoCsvTest {
     @Test
     @DisplayName("Should load expected question list from given resource")
     void shouldLoadExpectedQuestionListFromGivenResource() {
-        QuestionDao questionDao = new QuestionDaoCsv(new ResourceConfig("questions-test.csv"));
+        QuestionDao questionDao = new QuestionDaoCsv(new ResourceConfig(Map.of("default", "questions-test.csv")));
         List<Question> questions = questionDao.findAll();
         Question expectedQuestion1 = new Question(1, "Which country hosted the 2018 FIFA World Cup?",
                 new Answer("Russia"), List.of(new Answer("France"), new Answer("Germany"),

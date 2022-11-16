@@ -13,7 +13,7 @@ import java.util.Locale;
 @Slf4j
 @RequiredArgsConstructor
 @ShellComponent
-public class TestingCommands {
+public class ApplicationCommands {
     private final TestingService testingService;
 
     @ShellMethod(value = "Start testing", key = {"start", "start-testing"})

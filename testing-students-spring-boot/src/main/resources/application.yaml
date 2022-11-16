@@ -1,0 +1,10 @@
+spring:
+  output:
+     ansi:
+      enabled: ALWAYS
+
+resource:
+  config:
+    url-map:
+      default: static/questions/questions.csv
+      ru_RU: static/questions/questions_ru_RU.csv

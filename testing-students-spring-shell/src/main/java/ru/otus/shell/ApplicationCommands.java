@@ -1,7 +1,6 @@
 package ru.otus.shell;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -10,7 +9,6 @@ import ru.otus.service.TestingService;
 
 import java.util.Locale;
 
-@Slf4j
 @RequiredArgsConstructor
 @ShellComponent
 public class ApplicationCommands {

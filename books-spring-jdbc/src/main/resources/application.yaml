@@ -1,0 +1,21 @@
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  datasource:
+    url: jdbc:h2:mem:mytestdb
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+#logging:
+#  level:
+#    org.springframework.jdbc.core: TRACE
+# Почему то если раскомментить, проект не запустится, не сможет найти data.sql
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: data.sql
+#      schema-locations: schema.sql

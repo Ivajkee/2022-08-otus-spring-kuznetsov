@@ -44,9 +44,12 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Optional<Book> findById(long id) {
-        List<Book> books = jdbc.query("select b.id, b.title, b.author_id, a.name as author_name, b.genre_id, g.name as genre_name from books b " +
-                "left join authors a on b.author_id = a.id " +
-                "left join genres g on b.genre_id = g.id where b.id = :id", Map.of("id", id), new BookWithDetailExtractor());
+        String sql = """
+                select b.id, b.title, b.author_id, a.name as author_name, b.genre_id, g.name as genre_name from books b
+                left join authors a on b.author_id = a.id
+                left join genres g on b.genre_id = g.id where b.id = :id
+                """;
+        List<Book> books = jdbc.query(sql, Map.of("id", id), new BookWithDetailExtractor());
         return CollectionUtils.isEmpty(books) ? Optional.empty() : Optional.of(books.get(0));
     }
 

@@ -43,6 +43,17 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
+    public Book update(Book book) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("id", book.getId());
+        values.put("title", book.getTitle());
+        values.put("authorId", book.getAuthor().getId());
+        values.put("genreId", book.getGenre().getId());
+        jdbc.update("update books set title = :title, author_id = :authorId, genre_id = :genreId where id = :id", values);
+        return book;
+    }
+
+    @Override
     public Optional<Book> findById(long id) {
         String sql = """
                 select b.id, b.title, b.author_id, a.name as author_name, b.genre_id, g.name as genre_name from books b

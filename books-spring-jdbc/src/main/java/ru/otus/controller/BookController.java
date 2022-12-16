@@ -21,6 +21,12 @@ public class BookController {
         return bookService.saveBook(bookDto);
     }
 
+    @PutMapping
+    private BookDto update(@RequestBody BookDto bookDto) {
+        log.info("Request update book {}", bookDto);
+        return bookService.updateBook(bookDto);
+    }
+
     @GetMapping("/count")
     private long getCount() {
         log.info("Request get count of books");

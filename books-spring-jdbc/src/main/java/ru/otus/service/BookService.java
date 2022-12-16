@@ -9,6 +9,8 @@ public interface BookService {
 
     BookDto saveBook(BookDto bookDto);
 
+    BookDto updateBook(BookDto bookDto);
+
     BookDto findBookById(long id);
 
     List<BookDto> findAllBooks();

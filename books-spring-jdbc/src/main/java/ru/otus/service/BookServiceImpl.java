@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.AuthorDao;
 import ru.otus.dao.BookDao;
-import ru.otus.dao.GenreDao;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.model.Book;
 import ru.otus.exception.BookNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,8 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
-    private final AuthorDao authorDao;
-    private final GenreDao genreDao;
     private final ConversionService conversionService;
 
     @Override
@@ -35,6 +32,21 @@ public class BookServiceImpl implements BookService {
         Book book = conversionService.convert(bookDto, Book.class);
         Book savedBook = bookDao.save(book);
         return conversionService.convert(savedBook, BookDto.class);
+    }
+
+    @Transactional
+    @Override
+    public BookDto updateBook(BookDto bookDto) {
+        Book book = conversionService.convert(bookDto, Book.class);
+        Book updatedBook = bookDao.findById(Objects.requireNonNull(book).getId())
+                .map(updatableBook -> {
+                    updatableBook.setTitle(book.getTitle());
+                    updatableBook.setAuthor(book.getAuthor());
+                    updatableBook.setGenre(book.getGenre());
+                    return bookDao.update(updatableBook);
+                })
+                .orElseThrow(() -> new BookNotFoundException("Book with id " + book.getId() + " not found!"));
+        return conversionService.convert(updatedBook, BookDto.class);
     }
 
     @Override

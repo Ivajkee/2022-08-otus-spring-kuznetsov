@@ -10,6 +10,8 @@ public interface BookDao {
 
     Book save(Book book);
 
+    Book update(Book book);
+
     Optional<Book> findById(long id);
 
     List<Book> findAll();

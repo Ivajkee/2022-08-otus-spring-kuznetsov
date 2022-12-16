@@ -12,6 +12,8 @@ public interface BookDao {
 
     Book update(Book book);
 
+    boolean existsById(long id);
+
     Optional<Book> findById(long id);
 
     List<Book> findAll();

@@ -39,6 +39,12 @@ public class BookController {
         return bookService.findBookById(id);
     }
 
+    @PutMapping("/{id}")
+    private boolean existsById(@PathVariable long id) {
+        log.info("Request exists book by id {}", id);
+        return bookService.existsBookById(id);
+    }
+
     @GetMapping
     private List<BookDto> findAll() {
         log.info("Request find all books");

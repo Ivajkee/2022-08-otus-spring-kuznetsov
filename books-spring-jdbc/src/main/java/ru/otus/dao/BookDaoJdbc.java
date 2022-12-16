@@ -54,6 +54,11 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
+    public boolean existsById(long id) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("select exists (select 1 from books where id = :id)", Map.of("id", id), Boolean.class));
+    }
+
+    @Override
     public Optional<Book> findById(long id) {
         String sql = """
                 select b.id, b.title, b.author_id, a.name as author_name, b.genre_id, g.name as genre_name from books b

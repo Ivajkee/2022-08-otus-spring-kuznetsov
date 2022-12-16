@@ -11,7 +11,7 @@ import ru.otus.domain.model.Book;
 import ru.otus.exception.BookNotFoundException;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,16 +37,17 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookDto updateBook(BookDto bookDto) {
-        Book book = conversionService.convert(bookDto, Book.class);
-        Book updatedBook = bookDao.findById(Objects.requireNonNull(book).getId())
-                .map(updatableBook -> {
-                    updatableBook.setTitle(book.getTitle());
-                    updatableBook.setAuthor(book.getAuthor());
-                    updatableBook.setGenre(book.getGenre());
-                    return bookDao.update(updatableBook);
-                })
-                .orElseThrow(() -> new BookNotFoundException("Book with id " + book.getId() + " not found!"));
+        Book updatedBook = Optional.of(bookDto)
+                .filter(book -> bookDao.existsById(book.getId()))
+                .map(bd -> conversionService.convert(bd, Book.class))
+                .map(bookDao::update)
+                .orElseThrow(() -> new BookNotFoundException("Book with id " + bookDto.getId() + " not found!"));
         return conversionService.convert(updatedBook, BookDto.class);
+    }
+
+    @Override
+    public boolean existsBookById(long id) {
+        return bookDao.existsById(id);
     }
 
     @Override

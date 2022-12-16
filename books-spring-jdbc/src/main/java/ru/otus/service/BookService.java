@@ -11,6 +11,8 @@ public interface BookService {
 
     BookDto updateBook(BookDto bookDto);
 
+    boolean existsBookById(long id);
+
     BookDto findBookById(long id);
 
     List<BookDto> findAllBooks();

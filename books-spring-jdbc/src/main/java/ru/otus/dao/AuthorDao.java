@@ -10,6 +10,10 @@ public interface AuthorDao {
 
     Author save(Author author);
 
+    Author update(Author author);
+
+    boolean existsById(long id);
+
     Optional<Author> findById(long id);
 
     List<Author> findAll();

@@ -10,6 +10,10 @@ public interface GenreDao {
 
     Genre save(Genre genre);
 
+    Genre update(Genre genre);
+
+    boolean existsById(long id);
+
     Optional<Genre> findById(long id);
 
     List<Genre> findAll();

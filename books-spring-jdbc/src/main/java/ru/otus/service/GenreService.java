@@ -9,6 +9,10 @@ public interface GenreService {
 
     GenreDto saveGenre(GenreDto genreDto);
 
+    GenreDto updateGenre(GenreDto genreDto);
+
+    boolean existsGenreById(long id);
+
     GenreDto findGenreById(long id);
 
     List<GenreDto> findAllGenres();

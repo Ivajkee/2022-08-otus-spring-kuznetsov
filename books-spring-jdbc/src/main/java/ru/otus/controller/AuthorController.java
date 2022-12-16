@@ -21,6 +21,12 @@ public class AuthorController {
         return authorService.saveAuthor(authorDto);
     }
 
+    @PutMapping
+    private AuthorDto update(@RequestBody AuthorDto authorDto) {
+        log.info("Request update author {}", authorDto);
+        return authorService.updateAuthor(authorDto);
+    }
+
     @GetMapping("/count")
     private long getCount() {
         log.info("Request get count of authors");
@@ -31,6 +37,12 @@ public class AuthorController {
     private AuthorDto findById(@PathVariable long id) {
         log.info("Request find author by id {}", id);
         return authorService.findAuthorById(id);
+    }
+
+    @PutMapping("/{id}")
+    private boolean existsById(@PathVariable long id) {
+        log.info("Request exists author by id {}", id);
+        return authorService.existsAuthorById(id);
     }
 
     @GetMapping

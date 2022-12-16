@@ -10,6 +10,7 @@ import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +30,21 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = conversionService.convert(authorDto, Author.class);
         Author savedAuthor = authorDao.save(author);
         return conversionService.convert(savedAuthor, AuthorDto.class);
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorDto authorDto) {
+        Author updatedAuthor = Optional.of(authorDto)
+                .filter(author -> authorDao.existsById(author.getId()))
+                .map(bd -> conversionService.convert(bd, Author.class))
+                .map(authorDao::update)
+                .orElseThrow(() -> new AuthorNotFoundException("Author with id " + authorDto.getId() + " not found!"));
+        return conversionService.convert(updatedAuthor, AuthorDto.class);
+    }
+
+    @Override
+    public boolean existsAuthorById(long id) {
+        return authorDao.existsById(id);
     }
 
     @Override

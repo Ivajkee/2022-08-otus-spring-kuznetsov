@@ -10,6 +10,7 @@ import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +30,21 @@ public class GenreServiceImpl implements GenreService {
         Genre genre = conversionService.convert(genreDto, Genre.class);
         Genre savedGenre = genreDao.save(genre);
         return conversionService.convert(savedGenre, GenreDto.class);
+    }
+
+    @Override
+    public GenreDto updateGenre(GenreDto genreDto) {
+        Genre updatedGenre = Optional.of(genreDto)
+                .filter(genre -> genreDao.existsById(genre.getId()))
+                .map(bd -> conversionService.convert(bd, Genre.class))
+                .map(genreDao::update)
+                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreDto.getId() + " not found!"));
+        return conversionService.convert(updatedGenre, GenreDto.class);
+    }
+
+    @Override
+    public boolean existsGenreById(long id) {
+        return genreDao.existsById(id);
     }
 
     @Override

@@ -21,6 +21,12 @@ public class GenreController {
         return genreService.saveGenre(genreDto);
     }
 
+    @PutMapping
+    private GenreDto update(@RequestBody GenreDto genreDto) {
+        log.info("Request update genre {}", genreDto);
+        return genreService.updateGenre(genreDto);
+    }
+
     @GetMapping("/count")
     private long getCount() {
         log.info("Request get count of genres");
@@ -31,6 +37,12 @@ public class GenreController {
     private GenreDto findById(@PathVariable long id) {
         log.info("Request find genre by id {}", id);
         return genreService.findGenreById(id);
+    }
+
+    @PutMapping("/{id}")
+    private boolean existsById(@PathVariable long id) {
+        log.info("Request exists genre by id {}", id);
+        return genreService.existsGenreById(id);
     }
 
     @GetMapping

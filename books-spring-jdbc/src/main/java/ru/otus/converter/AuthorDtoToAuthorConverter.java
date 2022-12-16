@@ -10,6 +10,7 @@ public class AuthorDtoToAuthorConverter implements Converter<AuthorDto, Author> 
     @Override
     public Author convert(AuthorDto authorDto) {
         Author author = new Author();
+        author.setId(authorDto.getId());
         author.setName(authorDto.getName());
         return author;
     }

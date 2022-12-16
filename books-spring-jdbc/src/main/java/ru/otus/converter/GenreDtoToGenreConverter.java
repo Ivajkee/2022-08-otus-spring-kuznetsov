@@ -10,6 +10,7 @@ public class GenreDtoToGenreConverter implements Converter<GenreDto, Genre> {
     @Override
     public Genre convert(GenreDto genreDto) {
         Genre genre = new Genre();
+        genre.setId(genreDto.getId());
         genre.setName(genreDto.getName());
         return genre;
     }

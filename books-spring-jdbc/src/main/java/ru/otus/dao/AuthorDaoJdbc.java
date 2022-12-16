@@ -39,6 +39,21 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
+    public Author update(Author author) {
+        Map<String, Object> values = Map.of(
+                "id", author.getId(),
+                "name", author.getName()
+        );
+        jdbc.update("update authors set name = :name where id = :id", values);
+        return author;
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("select exists (select 1 from authors where id = :id)", Map.of("id", id), Boolean.class));
+    }
+
+    @Override
     public Optional<Author> findById(long id) {
         String sql = """
                 select a.id, a.name, b.id as book_id, b.title as book_title, b.genre_id, g.id, g.name as genre_name from authors a

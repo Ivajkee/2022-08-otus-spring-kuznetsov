@@ -9,6 +9,10 @@ public interface AuthorService {
 
     AuthorDto saveAuthor(AuthorDto authorDto);
 
+    AuthorDto updateAuthor(AuthorDto authorDto);
+
+    boolean existsAuthorById(long id);
+
     AuthorDto findAuthorById(long id);
 
     List<AuthorDto> findAllAuthors();

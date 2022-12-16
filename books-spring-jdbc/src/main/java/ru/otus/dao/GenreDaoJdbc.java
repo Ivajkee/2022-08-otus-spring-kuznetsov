@@ -39,6 +39,21 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
+    public Genre update(Genre genre) {
+        Map<String, Object> values = Map.of(
+                "id", genre.getId(),
+                "name", genre.getName()
+        );
+        jdbc.update("update genres set name = :name where id = :id", values);
+        return genre;
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("select exists (select 1 from genres where id = :id)", Map.of("id", id), Boolean.class));
+    }
+
+    @Override
     public Optional<Genre> findById(long id) {
         String sql = """
                 select g.id, g.name, b.id as book_id, b.title as book_title, b.author_id, a.id, a.name as author_name from genres g

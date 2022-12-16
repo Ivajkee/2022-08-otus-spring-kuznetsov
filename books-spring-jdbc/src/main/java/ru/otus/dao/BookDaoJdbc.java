@@ -44,11 +44,12 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Book update(Book book) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("id", book.getId());
-        values.put("title", book.getTitle());
-        values.put("authorId", book.getAuthor().getId());
-        values.put("genreId", book.getGenre().getId());
+        Map<String, Object> values = Map.of(
+                "id", book.getId(),
+                "title", book.getTitle(),
+                "authorId", book.getAuthor().getId(),
+                "genreId", book.getGenre().getId()
+        );
         jdbc.update("update books set title = :title, author_id = :authorId, genre_id = :genreId where id = :id", values);
         return book;
     }

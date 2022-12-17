@@ -10,9 +10,6 @@ spring:
   h2:
     console:
       enabled: true
-#logging:
-#  level:
-#    org.springframework.jdbc.core: TRACE
 # Почему то если раскомментить, проект не запустится, не сможет найти data.sql
 #  sql:
 #    init:

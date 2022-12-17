@@ -22,14 +22,18 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public long getCountOfAuthors() {
-        return authorDao.count();
+        long count = authorDao.count();
+        log.debug("Found {} authors", count);
+        return count;
     }
 
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         Author author = conversionService.convert(authorDto, Author.class);
         Author savedAuthor = authorDao.save(author);
-        return conversionService.convert(savedAuthor, AuthorDto.class);
+        AuthorDto savedAuthorDto = conversionService.convert(savedAuthor, AuthorDto.class);
+        log.debug("Saved author: {}", savedAuthorDto);
+        return savedAuthorDto;
     }
 
     @Override
@@ -39,19 +43,25 @@ public class AuthorServiceImpl implements AuthorService {
                 .map(dto -> conversionService.convert(dto, Author.class))
                 .map(authorDao::update)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with id " + authorDto.getId() + " not found!"));
-        return conversionService.convert(updatedAuthor, AuthorDto.class);
+        AuthorDto updatedAuthorDto = conversionService.convert(updatedAuthor, AuthorDto.class);
+        log.debug("Updated author: {}", updatedAuthorDto);
+        return updatedAuthorDto;
     }
 
     @Override
     public boolean existsAuthorById(long id) {
-        return authorDao.existsById(id);
+        boolean authorIsExist = authorDao.existsById(id);
+        log.debug("Author with id {} is exist: {}", id, authorIsExist);
+        return authorIsExist;
     }
 
     @Override
     public AuthorDto findAuthorById(long id) {
         Author author = authorDao.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with id " + id + " not found!"));
-        return conversionService.convert(author, AuthorDto.class);
+        AuthorDto authorDto = conversionService.convert(author, AuthorDto.class);
+        log.debug("Found author: {}", authorDto);
+        return authorDto;
     }
 
     @Override
@@ -60,13 +70,13 @@ public class AuthorServiceImpl implements AuthorService {
         List<AuthorDto> authorsDto = authors.stream()
                 .map(author -> conversionService.convert(author, AuthorDto.class))
                 .collect(Collectors.toList());
-        log.info("Found {} authors", authorsDto.size());
+        log.debug("Found authors: {}", authorsDto);
         return authorsDto;
     }
 
     @Override
     public void deleteAuthorById(long id) {
         authorDao.deleteById(id);
-        log.info("Author with id {} deleted", id);
+        log.debug("Author with id {} deleted", id);
     }
 }

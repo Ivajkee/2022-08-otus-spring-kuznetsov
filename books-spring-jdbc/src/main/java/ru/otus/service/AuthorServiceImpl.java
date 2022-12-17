@@ -35,8 +35,8 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto) {
         Author updatedAuthor = Optional.of(authorDto)
-                .filter(author -> authorDao.existsById(author.getId()))
-                .map(bd -> conversionService.convert(bd, Author.class))
+                .filter(dto -> authorDao.existsById(dto.getId()))
+                .map(dto -> conversionService.convert(dto, Author.class))
                 .map(authorDao::update)
                 .orElseThrow(() -> new AuthorNotFoundException("Author with id " + authorDto.getId() + " not found!"));
         return conversionService.convert(updatedAuthor, AuthorDto.class);

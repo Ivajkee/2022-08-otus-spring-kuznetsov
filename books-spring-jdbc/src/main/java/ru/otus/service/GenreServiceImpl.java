@@ -35,8 +35,8 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto updateGenre(GenreDto genreDto) {
         Genre updatedGenre = Optional.of(genreDto)
-                .filter(genre -> genreDao.existsById(genre.getId()))
-                .map(bd -> conversionService.convert(bd, Genre.class))
+                .filter(dto -> genreDao.existsById(dto.getId()))
+                .map(dto -> conversionService.convert(dto, Genre.class))
                 .map(genreDao::update)
                 .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreDto.getId() + " not found!"));
         return conversionService.convert(updatedGenre, GenreDto.class);

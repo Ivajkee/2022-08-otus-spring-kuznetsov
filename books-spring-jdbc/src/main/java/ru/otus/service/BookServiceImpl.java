@@ -38,8 +38,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto updateBook(BookDto bookDto) {
         Book updatedBook = Optional.of(bookDto)
-                .filter(book -> bookDao.existsById(book.getId()))
-                .map(bd -> conversionService.convert(bd, Book.class))
+                .filter(dto -> bookDao.existsById(dto.getId()))
+                .map(dto -> conversionService.convert(dto, Book.class))
                 .map(bookDao::update)
                 .orElseThrow(() -> new BookNotFoundException("Book with id " + bookDto.getId() + " not found!"));
         return conversionService.convert(updatedBook, BookDto.class);

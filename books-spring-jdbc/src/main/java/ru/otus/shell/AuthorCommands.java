@@ -8,8 +8,6 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.service.AuthorService;
 
-import java.util.stream.Collectors;
-
 @Slf4j
 @RequiredArgsConstructor
 @ShellComponent
@@ -24,10 +22,8 @@ public class AuthorCommands {
     @ShellMethod(value = "Show author.", key = {"a"})
     public void showAuthor(@ShellOption long id) {
         AuthorDto authorDto = authorService.findAuthorById(id);
-        log.info("{}: {}{}", authorDto.getId(), authorDto.getFullName(),
-                authorDto.getBooks().stream()
-                        .map(bookDto -> "\n" + bookDto.getTitle() + " (" + bookDto.getGenre().getName() + ")")
-                        .collect(Collectors.joining()));
+        log.info("{}: {}", authorDto.getId(), authorDto.getFullName());
+        authorDto.getBooks().forEach(bookDto -> log.info("{} ({})", bookDto.getTitle(), bookDto.getGenre().getName()));
     }
 
     @ShellMethod(value = "Add author.", key = {"add-a"})

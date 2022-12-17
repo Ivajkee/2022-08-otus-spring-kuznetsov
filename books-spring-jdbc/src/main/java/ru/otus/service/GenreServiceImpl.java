@@ -22,14 +22,18 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public long getCountOfGenres() {
-        return genreDao.count();
+        long count = genreDao.count();
+        log.debug("Found {} genres", count);
+        return count;
     }
 
     @Override
     public GenreDto saveGenre(GenreDto genreDto) {
         Genre genre = conversionService.convert(genreDto, Genre.class);
         Genre savedGenre = genreDao.save(genre);
-        return conversionService.convert(savedGenre, GenreDto.class);
+        GenreDto savedGenreDto = conversionService.convert(savedGenre, GenreDto.class);
+        log.debug("Saved genre: {}", savedGenreDto);
+        return savedGenreDto;
     }
 
     @Override
@@ -39,19 +43,25 @@ public class GenreServiceImpl implements GenreService {
                 .map(dto -> conversionService.convert(dto, Genre.class))
                 .map(genreDao::update)
                 .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreDto.getId() + " not found!"));
-        return conversionService.convert(updatedGenre, GenreDto.class);
+        GenreDto updatedGenreDto = conversionService.convert(updatedGenre, GenreDto.class);
+        log.debug("Updated genre: {}", updatedGenreDto);
+        return updatedGenreDto;
     }
 
     @Override
     public boolean existsGenreById(long id) {
-        return genreDao.existsById(id);
+        boolean genreIsExist = genreDao.existsById(id);
+        log.debug("Genre with id {} is exist: {}", id, genreIsExist);
+        return genreIsExist;
     }
 
     @Override
     public GenreDto findGenreById(long id) {
         Genre genre = genreDao.findById(id)
                 .orElseThrow(() -> new GenreNotFoundException("Genre with id " + id + " not found!"));
-        return conversionService.convert(genre, GenreDto.class);
+        GenreDto genreDto = conversionService.convert(genre, GenreDto.class);
+        log.debug("Found genre: {}", genreDto);
+        return genreDto;
     }
 
     @Override
@@ -60,13 +70,13 @@ public class GenreServiceImpl implements GenreService {
         List<GenreDto> genresDto = genres.stream()
                 .map(genre -> conversionService.convert(genre, GenreDto.class))
                 .collect(Collectors.toList());
-        log.info("Found {} genres", genresDto.size());
+        log.debug("Found {} genres", genresDto);
         return genresDto;
     }
 
     @Override
     public void deleteGenreById(long id) {
         genreDao.deleteById(id);
-        log.info("Genre with id {} deleted", id);
+        log.debug("Genre with id {} deleted", id);
     }
 }

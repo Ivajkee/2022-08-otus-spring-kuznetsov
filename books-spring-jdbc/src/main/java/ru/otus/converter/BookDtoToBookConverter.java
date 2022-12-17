@@ -13,7 +13,7 @@ public class BookDtoToBookConverter implements Converter<BookDto, Book> {
     public Book convert(BookDto bookDto) {
         Author author = new Author();
         author.setId(bookDto.getAuthor().getId());
-        author.setName(bookDto.getAuthor().getName());
+        author.setFullName(bookDto.getAuthor().getFullName());
         Genre genre = new Genre();
         genre.setId(bookDto.getGenre().getId());
         genre.setName(bookDto.getGenre().getName());

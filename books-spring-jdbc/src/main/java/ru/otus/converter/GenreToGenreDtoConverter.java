@@ -21,7 +21,7 @@ public class GenreToGenreDtoConverter implements Converter<Genre, GenreDto> {
                     .map(book -> {
                         AuthorDto authorDto = new AuthorDto();
                         authorDto.setId(book.getAuthor().getId());
-                        authorDto.setName(book.getAuthor().getName());
+                        authorDto.setFullName(book.getAuthor().getFullName());
                         BookDto bookDto = new BookDto();
                         bookDto.setId(book.getId());
                         bookDto.setTitle(book.getTitle());

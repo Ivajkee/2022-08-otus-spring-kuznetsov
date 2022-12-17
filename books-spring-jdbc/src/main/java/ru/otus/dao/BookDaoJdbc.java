@@ -62,7 +62,7 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public Optional<Book> findById(long id) {
         String sql = """
-                select b.id, b.title, b.author_id, a.name as author_name, b.genre_id, g.name as genre_name from books b
+                select b.id, b.title, b.author_id, a.full_name as author_name, b.genre_id, g.name as genre_name from books b
                 left join authors a on b.author_id = a.id
                 left join genres g on b.genre_id = g.id where b.id = :id
                 """;
@@ -109,7 +109,7 @@ public class BookDaoJdbc implements BookDao {
                 long authorId = rs.getLong("author_id");
                 Author author = new Author();
                 author.setId(authorId);
-                author.setName(rs.getString("author_name"));
+                author.setFullName(rs.getString("author_name"));
                 book.setAuthor(author);
                 long genreId = rs.getLong("genre_id");
                 Genre genre = new Genre();

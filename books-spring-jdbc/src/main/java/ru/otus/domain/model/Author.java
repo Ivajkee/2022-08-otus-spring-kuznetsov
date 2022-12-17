@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Author {
     private long id;
-    private String name;
+    private String fullName ;
     private List<Book> books;
 
     public boolean addBook(Book book) {

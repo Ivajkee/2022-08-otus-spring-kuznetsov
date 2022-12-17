@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class AuthorDto {
     private long id;
-    private String name;
+    private String fullName;
     private List<BookDto> books;
 }

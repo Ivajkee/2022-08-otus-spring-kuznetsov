@@ -56,7 +56,7 @@ public class GenreDaoJdbc implements GenreDao {
     @Override
     public Optional<Genre> findById(long id) {
         String sql = """
-                select g.id, g.name, b.id as book_id, b.title as book_title, b.author_id, a.id, a.name as author_name from genres g
+                select g.id, g.name, b.id as book_id, b.title as book_title, b.author_id, a.id, a.full_name as author_name from genres g
                 left join books b on g.id = b.genre_id
                 left join authors a on b.author_id = a.id where g.id = :id
                 """;
@@ -105,7 +105,7 @@ public class GenreDaoJdbc implements GenreDao {
                 if (authorId > 0) {
                     Author author = new Author();
                     author.setId(authorId);
-                    author.setName(rs.getString("author_name"));
+                    author.setFullName(rs.getString("author_name"));
                     long bookId = rs.getLong("book_id");
                     Book book = new Book();
                     book.setId(bookId);

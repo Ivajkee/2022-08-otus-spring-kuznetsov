@@ -11,7 +11,7 @@ public class AuthorDtoToAuthorConverter implements Converter<AuthorDto, Author> 
     public Author convert(AuthorDto authorDto) {
         Author author = new Author();
         author.setId(authorDto.getId());
-        author.setName(authorDto.getName());
+        author.setFullName(authorDto.getFullName());
         return author;
     }
 }

@@ -1,8 +1,8 @@
-insert into AUTHORS (NAME) values ('Александр Сергеевич Пушкин');
-insert into AUTHORS (NAME) values ('Лев Николаевич Толстой');
-insert into AUTHORS (NAME) values ('Джоан Роулинг');
-insert into AUTHORS (NAME) values ('Агата Кристи');
-insert into AUTHORS (NAME) values ('Стивен Кинг');
+insert into AUTHORS (FULL_NAME) values ('Александр Сергеевич Пушкин');
+insert into AUTHORS (FULL_NAME) values ('Лев Николаевич Толстой');
+insert into AUTHORS (FULL_NAME) values ('Джоан Роулинг');
+insert into AUTHORS (FULL_NAME) values ('Агата Кристи');
+insert into AUTHORS (FULL_NAME) values ('Стивен Кинг');
 
 insert into GENRES (NAME) values ('Поэма');
 insert into GENRES (NAME) values ('Роман');

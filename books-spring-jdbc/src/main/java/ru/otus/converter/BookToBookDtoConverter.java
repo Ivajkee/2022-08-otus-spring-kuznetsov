@@ -17,7 +17,7 @@ public class BookToBookDtoConverter implements Converter<Book, BookDto> {
         if (book.getAuthor() != null) {
             AuthorDto authorDto = new AuthorDto();
             authorDto.setId(book.getAuthor().getId());
-            authorDto.setName(book.getAuthor().getName());
+            authorDto.setFullName(book.getAuthor().getFullName());
             bookDto.setAuthor(authorDto);
         }
         if (book.getGenre() != null) {

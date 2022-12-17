@@ -31,9 +31,9 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public Author save(Author author) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource("name", author.getName());
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("fullName", author.getFullName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update("insert into authors (name) values (:name)", parameterSource, keyHolder);
+        jdbc.update("insert into authors (full_name) values (:fullName)", parameterSource, keyHolder);
         author.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return author;
     }
@@ -42,9 +42,9 @@ public class AuthorDaoJdbc implements AuthorDao {
     public Author update(Author author) {
         Map<String, Object> values = Map.of(
                 "id", author.getId(),
-                "name", author.getName()
+                "fullName", author.getFullName()
         );
-        jdbc.update("update authors set name = :name where id = :id", values);
+        jdbc.update("update authors set full_name = :fullName where id = :id", values);
         return author;
     }
 
@@ -56,7 +56,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     @Override
     public Optional<Author> findById(long id) {
         String sql = """
-                select a.id, a.name, b.id as book_id, b.title as book_title, b.genre_id, g.id, g.name as genre_name from authors a
+                select a.id, a.full_name, b.id as book_id, b.title as book_title, b.genre_id, g.id, g.name as genre_name from authors a
                 left join books b on a.id = b.author_id
                 left join genres g on b.genre_id = g.id where a.id = :id
                 """;
@@ -66,7 +66,7 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public List<Author> findAll() {
-        return jdbc.query("select id, name from authors", new AuthorMapper());
+        return jdbc.query("select id, full_name from authors", new AuthorMapper());
     }
 
     @Override
@@ -78,10 +78,10 @@ public class AuthorDaoJdbc implements AuthorDao {
         @Override
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
+            String fullName = resultSet.getString("full_name");
             Author author = new Author();
             author.setId(id);
-            author.setName(name);
+            author.setFullName(fullName);
             return author;
         }
     }
@@ -97,7 +97,7 @@ public class AuthorDaoJdbc implements AuthorDao {
                 if (author == null) {
                     author = new Author();
                     author.setId(id);
-                    author.setName(rs.getString("name"));
+                    author.setFullName(rs.getString("full_name"));
                     author.setBooks(new ArrayList<>());
                     authorMap.put(id, author);
                 }

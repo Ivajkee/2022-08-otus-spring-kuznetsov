@@ -26,6 +26,12 @@ public class GenreCommands {
         genreDto.getBooks().forEach(bookDto -> log.info("{} ({})", bookDto.getTitle(), bookDto.getAuthor().getFullName()));
     }
 
+    @ShellMethod(value = "Show count of genres.", key = {"count-g"})
+    public void showCountOfGenres() {
+        long count = genreService.getCountOfGenres();
+        log.info("{}", count);
+    }
+
     @ShellMethod(value = "Add genre.", key = {"add-g"})
     public void addGenre(@ShellOption(arity = 3) String name) {
         GenreDto genreDto = new GenreDto();

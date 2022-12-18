@@ -26,6 +26,12 @@ public class AuthorCommands {
         authorDto.getBooks().forEach(bookDto -> log.info("{} ({})", bookDto.getTitle(), bookDto.getGenre().getName()));
     }
 
+    @ShellMethod(value = "Show count of authors.", key = {"count-a"})
+    public void showCountOfAuthors() {
+        long count = authorService.getCountOfAuthors();
+        log.info("{}", count);
+    }
+
     @ShellMethod(value = "Add author.", key = {"add-a"})
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
         AuthorDto authorDto = new AuthorDto();

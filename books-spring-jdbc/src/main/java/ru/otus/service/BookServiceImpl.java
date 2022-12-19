@@ -23,7 +23,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public long getCountOfBooks() {
-        return bookDao.count();
+        long count = bookDao.count();
+        log.debug("Found {} books", count);
+        return count;
     }
 
     @Transactional
@@ -31,7 +33,9 @@ public class BookServiceImpl implements BookService {
     public BookDto saveBook(BookDto bookDto) {
         Book book = conversionService.convert(bookDto, Book.class);
         Book savedBook = bookDao.save(book);
-        return conversionService.convert(savedBook, BookDto.class);
+        BookDto savedBookDto = conversionService.convert(savedBook, BookDto.class);
+        log.debug("Saved book: {}", savedBookDto);
+        return savedBookDto;
     }
 
     @Transactional
@@ -42,19 +46,25 @@ public class BookServiceImpl implements BookService {
                 .map(dto -> conversionService.convert(dto, Book.class))
                 .map(bookDao::update)
                 .orElseThrow(() -> new BookNotFoundException("Book with id " + bookDto.getId() + " not found!"));
-        return conversionService.convert(updatedBook, BookDto.class);
+        BookDto updatedBookDto = conversionService.convert(updatedBook, BookDto.class);
+        log.debug("Updated book: {}", updatedBookDto);
+        return updatedBookDto;
     }
 
     @Override
     public boolean existsBookById(long id) {
-        return bookDao.existsById(id);
+        boolean bookIsExist = bookDao.existsById(id);
+        log.debug("Book with id {} is exist: {}", id, bookIsExist);
+        return bookIsExist;
     }
 
     @Override
     public BookDto findBookById(long id) {
         Book book = bookDao.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book with id " + id + " not found!"));
-        return conversionService.convert(book, BookDto.class);
+        BookDto bookDto = conversionService.convert(book, BookDto.class);
+        log.debug("Found book: {}", bookDto);
+        return bookDto;
     }
 
     @Override
@@ -63,13 +73,13 @@ public class BookServiceImpl implements BookService {
         List<BookDto> booksDto = books.stream()
                 .map(book -> conversionService.convert(book, BookDto.class))
                 .collect(Collectors.toList());
-        log.info("Found {} books", booksDto.size());
+        log.debug("Found books: {}", booksDto);
         return booksDto;
     }
 
     @Override
     public void deleteBookById(long id) {
         bookDao.deleteById(id);
-        log.info("Book with id {} deleted", id);
+        log.debug("Book with id {} deleted", id);
     }
 }

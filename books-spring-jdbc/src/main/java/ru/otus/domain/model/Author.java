@@ -15,6 +15,11 @@ public class Author {
     private String fullName ;
     private List<Book> books;
 
+    public Author(String fullName, List<Book> books) {
+        this.fullName = fullName;
+        this.books = books;
+    }
+
     public boolean addBook(Book book) {
         if (books == null) {
             books = new ArrayList<>();

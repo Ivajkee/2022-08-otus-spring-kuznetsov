@@ -15,6 +15,11 @@ public class Genre {
     private String name;
     private List<Book> books;
 
+    public Genre(String name, List<Book> books) {
+        this.name = name;
+        this.books = books;
+    }
+
     public boolean addBook(Book book) {
         if (books == null) {
             books = new ArrayList<>();

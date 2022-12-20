@@ -20,26 +20,26 @@ class AuthorDaoTest {
     @Autowired
     private AuthorDao authorDao;
 
-    @DisplayName("Should return number of five authors")
+    @DisplayName("Should return expected authors count")
     @Test
-    void shouldReturnNumberOfFiveAuthors() {
+    void shouldReturnExpectedAuthorsCount() {
         long actualCount = authorDao.count();
-        assertThat(actualCount).isEqualTo(5);
+        assertThat(actualCount).isEqualTo(3);
     }
 
-    @DisplayName("Should save one author")
+    @DisplayName("Should save author")
     @Test
-    void shouldSaveOneAuthor() {
+    void shouldSaveAuthor() {
         Author expectedAuthor = new Author("Test author", List.of());
         expectedAuthor = authorDao.save(expectedAuthor);
         Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
-    @DisplayName("Should update one author")
+    @DisplayName("Should update author")
     @Test
-    void shouldUpdateOneAuthor() {
-        Author expectedAuthor = new Author(5L, "Edited author", null);
+    void shouldUpdateAuthor() {
+        Author expectedAuthor = new Author(3, "Edited author", null);
         expectedAuthor = authorDao.update(expectedAuthor);
         Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).get().extracting(Author::getFullName).isEqualTo(expectedAuthor.getFullName());
@@ -55,13 +55,13 @@ class AuthorDaoTest {
     @DisplayName("Should be not exist author")
     @Test
     void shouldBeNotExistAuthor() {
-        boolean actualValue = authorDao.existsById(6);
+        boolean actualValue = authorDao.existsById(4);
         assertThat(actualValue).isFalse();
     }
 
-    @DisplayName("Should find one author")
+    @DisplayName("Should find author")
     @Test
-    void shouldFindOneAuthor() {
+    void shouldFindAuthor() {
         Genre expectedGenre = new Genre(1, "Поэма", null);
         Book expectedBook = new Book(1, "Руслан и Людмила", null, expectedGenre);
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", List.of(expectedBook));
@@ -75,16 +75,14 @@ class AuthorDaoTest {
         Author expectedAuthor1 = new Author(1, "Александр Сергеевич Пушкин", null);
         Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой", null);
         Author expectedAuthor3 = new Author(3, "Джоан Роулинг", null);
-        Author expectedAuthor4 = new Author(4, "Агата Кристи", null);
-        Author expectedAuthor5 = new Author(5, "Стивен Кинг", null);
-        List<Author> expectedAuthors = List.of(expectedAuthor1, expectedAuthor2, expectedAuthor3, expectedAuthor4, expectedAuthor5);
+        List<Author> expectedAuthors = List.of(expectedAuthor1, expectedAuthor2, expectedAuthor3);
         List<Author> actualAuthors = authorDao.findAll();
         assertThat(actualAuthors).isEqualTo(expectedAuthors);
     }
 
-    @DisplayName("Should delete one author")
+    @DisplayName("Should delete author")
     @Test
-    void shouldDeleteOneAuthor() {
+    void shouldDeleteAuthor() {
         Author expectedAuthor = new Author("Test author", List.of());
         expectedAuthor = authorDao.save(expectedAuthor);
         Optional<Author> optionalAuthor = authorDao.findById(expectedAuthor.getId());

@@ -20,26 +20,26 @@ class GenreDaoTest {
     @Autowired
     private GenreDao genreDao;
 
-    @DisplayName("Should return number of five genres")
+    @DisplayName("Should return expected genres count")
     @Test
-    void shouldReturnNumberOfFiveGenres() {
+    void shouldReturnExpectedGenresCount() {
         long actualCount = genreDao.count();
-        assertThat(actualCount).isEqualTo(5);
+        assertThat(actualCount).isEqualTo(3);
     }
 
-    @DisplayName("Should save one genre")
+    @DisplayName("Should save genre")
     @Test
-    void shouldSaveOneGenre() {
+    void shouldSaveGenre() {
         Genre expectedGenre = new Genre("Test genre", List.of());
         expectedGenre = genreDao.save(expectedGenre);
         Optional<Genre> optionalActualGenre = genreDao.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
-    @DisplayName("Should update one genre")
+    @DisplayName("Should update genre")
     @Test
-    void shouldUpdateOneGenre() {
-        Genre expectedGenre = new Genre(5L, "Edited genre", null);
+    void shouldUpdateGenre() {
+        Genre expectedGenre = new Genre(3, "Edited genre", null);
         expectedGenre = genreDao.update(expectedGenre);
         Optional<Genre> optionalActualGenre = genreDao.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).get().extracting(Genre::getName).isEqualTo(expectedGenre.getName());
@@ -55,13 +55,13 @@ class GenreDaoTest {
     @DisplayName("Should be not exist genre")
     @Test
     void shouldBeNotExistGenre() {
-        boolean actualValue = genreDao.existsById(6);
+        boolean actualValue = genreDao.existsById(4);
         assertThat(actualValue).isFalse();
     }
 
-    @DisplayName("Should find one genre")
+    @DisplayName("Should find genre")
     @Test
-    void shouldFindOneGenre() {
+    void shouldFindGenre() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", null);
         Book expectedBook = new Book(1, "Руслан и Людмила", expectedAuthor, null);
         Genre expectedGenre = new Genre(1, "Поэма", List.of(expectedBook));
@@ -75,16 +75,14 @@ class GenreDaoTest {
         Genre expectedGenre1 = new Genre(1, "Поэма", null);
         Genre expectedGenre2 = new Genre(2, "Роман", null);
         Genre expectedGenre3 = new Genre(3, "Фэнтези", null);
-        Genre expectedGenre4 = new Genre(4, "Детектив", null);
-        Genre expectedGenre5 = new Genre(5, "Ужасы", null);
-        List<Genre> expectedGenres = List.of(expectedGenre1, expectedGenre2, expectedGenre3, expectedGenre4, expectedGenre5);
+        List<Genre> expectedGenres = List.of(expectedGenre1, expectedGenre2, expectedGenre3);
         List<Genre> actualGenres = genreDao.findAll();
         assertThat(actualGenres).isEqualTo(expectedGenres);
     }
 
-    @DisplayName("Should delete one genre")
+    @DisplayName("Should delete genre")
     @Test
-    void shouldDeleteOneGenre() {
+    void shouldDeleteGenre() {
         Genre expectedGenre = new Genre("Test genre", List.of());
         expectedGenre = genreDao.save(expectedGenre);
         Optional<Genre> optionalGenre = genreDao.findById(expectedGenre.getId());

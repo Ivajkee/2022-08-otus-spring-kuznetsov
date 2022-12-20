@@ -79,7 +79,7 @@ class AuthorDaoTest {
         Author expectedAuthor5 = new Author(5, "Стивен Кинг", null);
         List<Author> expectedAuthors = List.of(expectedAuthor1, expectedAuthor2, expectedAuthor3, expectedAuthor4, expectedAuthor5);
         List<Author> actualAuthors = authorDao.findAll();
-        assertThat(expectedAuthors).isEqualTo(actualAuthors);
+        assertThat(actualAuthors).isEqualTo(expectedAuthors);
     }
 
     @DisplayName("Should delete one author")

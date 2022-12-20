@@ -79,7 +79,7 @@ class GenreDaoTest {
         Genre expectedGenre5 = new Genre(5, "Ужасы", null);
         List<Genre> expectedGenres = List.of(expectedGenre1, expectedGenre2, expectedGenre3, expectedGenre4, expectedGenre5);
         List<Genre> actualGenres = genreDao.findAll();
-        assertThat(expectedGenres).isEqualTo(actualGenres);
+        assertThat(actualGenres).isEqualTo(expectedGenres);
     }
 
     @DisplayName("Should delete one genre")

@@ -11,3 +11,6 @@ spring:
     init:
       mode: always
       data-locations: data-test.sql
+logging:
+  level:
+    org.springframework: DEBUG

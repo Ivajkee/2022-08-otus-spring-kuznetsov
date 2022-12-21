@@ -83,8 +83,8 @@ class AuthorServiceTest {
     void shouldBeExistAuthor() {
         long id = 1;
         when(authorDao.existsById(id)).thenReturn(true);
-        boolean isExist = authorService.existsAuthorById(id);
-        assertThat(isExist).isTrue();
+        boolean authorIsExist = authorService.existsAuthorById(id);
+        assertThat(authorIsExist).isTrue();
     }
 
     @DisplayName("Should be not exist author")
@@ -102,7 +102,7 @@ class AuthorServiceTest {
         long id = 1;
         Genre genre = new Genre(id, "Test genre", null);
         Book book = new Book(id, "Test book", null, genre);
-        Author author = new Author(id, null, List.of(book));
+        Author author = new Author(id, "Test author", List.of(book));
         when(authorDao.findById(id)).thenReturn(Optional.of(author));
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
         BookDto expectedBookDto = new BookDto(id, book.getTitle(), null, expectedGenreDto);

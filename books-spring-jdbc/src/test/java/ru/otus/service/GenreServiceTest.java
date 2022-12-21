@@ -47,11 +47,12 @@ class GenreServiceTest {
     @DisplayName("Should save genre")
     @Test
     void shouldSaveGenre() {
+        long id = 1;
         GenreDto genreDto = new GenreDto("New genre", null);
         Genre genre = new Genre(genreDto.getName(), null);
-        Genre savedGenre = new Genre(1, genre.getName(), null);
+        Genre savedGenre = new Genre(id, genre.getName(), null);
         when(genreDao.save(genre)).thenReturn(savedGenre);
-        GenreDto expectedGenreDto = new GenreDto(1, savedGenre.getName(), null);
+        GenreDto expectedGenreDto = new GenreDto(id, savedGenre.getName(), null);
         GenreDto actualGenreDto = genreService.saveGenre(genreDto);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }

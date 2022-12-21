@@ -47,11 +47,12 @@ class AuthorServiceTest {
     @DisplayName("Should save author")
     @Test
     void shouldSaveAuthor() {
+        long id = 1;
         AuthorDto authorDto = new AuthorDto("New author", null);
         Author author = new Author(authorDto.getFullName(), null);
-        Author savedAuthor = new Author(1, author.getFullName(), null);
+        Author savedAuthor = new Author(id, author.getFullName(), null);
         when(authorDao.save(author)).thenReturn(savedAuthor);
-        AuthorDto expectedAuthorDto = new AuthorDto(1, savedAuthor.getFullName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, savedAuthor.getFullName(), null);
         AuthorDto actualAuthorDto = authorService.saveAuthor(authorDto);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
     }

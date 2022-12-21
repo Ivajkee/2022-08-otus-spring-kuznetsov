@@ -1,11 +1,11 @@
-insert into AUTHORS (FULL_NAME) values ('Александр Сергеевич Пушкин');
-insert into AUTHORS (FULL_NAME) values ('Лев Николаевич Толстой');
-insert into AUTHORS (FULL_NAME) values ('Джоан Роулинг');
+INSERT INTO AUTHORS (FULL_NAME) VALUES ('Александр Сергеевич Пушкин');
+INSERT INTO AUTHORS (FULL_NAME) VALUES ('Лев Николаевич Толстой');
+INSERT INTO AUTHORS (FULL_NAME) VALUES ('Джоан Роулинг');
 
-insert into GENRES (NAME) values ('Поэма');
-insert into GENRES (NAME) values ('Роман');
-insert into GENRES (NAME) values ('Фэнтези');
+INSERT INTO GENRES (NAME) VALUES ('Поэма');
+INSERT INTO GENRES (NAME) VALUES ('Роман');
+INSERT INTO GENRES (NAME) VALUES ('Фэнтези');
 
-insert into BOOKS (AUTHOR_ID, GENRE_ID, TITLE) values (1, 1, 'Руслан и Людмила');
-insert into BOOKS (AUTHOR_ID, GENRE_ID, TITLE) values (2, 2, 'Война и мир');
-insert into BOOKS (AUTHOR_ID, GENRE_ID, TITLE) values (3, 3, 'Гарри Поттер');
+INSERT INTO BOOKS (AUTHOR_ID, GENRE_ID, TITLE) VALUES (1, 1, 'Руслан и Людмила');
+INSERT INTO BOOKS (AUTHOR_ID, GENRE_ID, TITLE) VALUES (2, 2, 'Война и мир');
+INSERT INTO BOOKS (AUTHOR_ID, GENRE_ID, TITLE) VALUES (3, 3, 'Гарри Поттер');

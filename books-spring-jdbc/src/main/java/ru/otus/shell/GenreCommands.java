@@ -34,17 +34,14 @@ public class GenreCommands {
 
     @ShellMethod(value = "Add genre.", key = {"add-g"})
     public void addGenre(@ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto();
-        genreDto.setName(name);
+        GenreDto genreDto = new GenreDto(name, null);
         GenreDto addedGenre = genreService.saveGenre(genreDto);
         log.info("{}: {}", addedGenre.getId(), addedGenre.getName());
     }
 
     @ShellMethod(value = "Edit genre.", key = {"edit-g"})
     public void editGenre(@ShellOption long id, @ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto();
-        genreDto.setId(id);
-        genreDto.setName(name);
+        GenreDto genreDto = new GenreDto(id, name, null);
         GenreDto updatedGenre = genreService.updateGenre(genreDto);
         log.info("{}: {}", updatedGenre.getId(), updatedGenre.getName());
     }

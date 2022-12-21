@@ -34,17 +34,14 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Add author.", key = {"add-a"})
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setFullName(fullName);
+        AuthorDto authorDto = new AuthorDto(fullName, null);
         AuthorDto addedAuthor = authorService.saveAuthor(authorDto);
         log.info("{}: {}", addedAuthor.getId(), addedAuthor.getFullName());
     }
 
     @ShellMethod(value = "Edit author.", key = {"edit-a"})
     public void editAuthor(@ShellOption long id, @ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(id);
-        authorDto.setFullName(fullName);
+        AuthorDto authorDto = new AuthorDto(id, fullName, null);
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto);
         log.info("{}: {}", updatedAuthor.getId(), updatedAuthor.getFullName());
     }

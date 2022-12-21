@@ -35,29 +35,18 @@ public class BookCommands {
 
     @ShellMethod(value = "Add book.", key = {"add-b"})
     public void addBook(@ShellOption long authorId, @ShellOption long genreId, @ShellOption(arity = 10) String title) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(authorId);
-        GenreDto genreDto = new GenreDto();
-        genreDto.setId(genreId);
-        BookDto bookDto = new BookDto();
-        bookDto.setTitle(title);
-        bookDto.setAuthor(authorDto);
-        bookDto.setGenre(genreDto);
+        AuthorDto authorDto = new AuthorDto(authorId, null, null);
+        GenreDto genreDto = new GenreDto(genreId, null, null);
+        BookDto bookDto = new BookDto(title, authorDto, genreDto);
         BookDto addedBook = bookService.saveBook(bookDto);
         log.info("{}: {}", addedBook.getId(), addedBook.getTitle());
     }
 
     @ShellMethod(value = "Edit book.", key = {"edit-b"})
     public void editBook(@ShellOption long id, @ShellOption long authorId, @ShellOption long genreId, @ShellOption(arity = 10) String title) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(authorId);
-        GenreDto genreDto = new GenreDto();
-        genreDto.setId(genreId);
-        BookDto bookDto = new BookDto();
-        bookDto.setId(id);
-        bookDto.setTitle(title);
-        bookDto.setAuthor(authorDto);
-        bookDto.setGenre(genreDto);
+        AuthorDto authorDto = new AuthorDto(authorId, null, null);
+        GenreDto genreDto = new GenreDto(genreId, null, null);
+        BookDto bookDto = new BookDto(id, title, authorDto, genreDto);
         BookDto updatedBook = bookService.updateBook(bookDto);
         log.info("{}: {}", updatedBook.getId(), updatedBook.getTitle());
     }

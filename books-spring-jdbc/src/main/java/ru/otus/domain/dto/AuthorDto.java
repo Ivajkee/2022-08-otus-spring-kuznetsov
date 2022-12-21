@@ -13,4 +13,9 @@ public class AuthorDto {
     private long id;
     private String fullName;
     private List<BookDto> books;
+
+    public AuthorDto(String fullName, List<BookDto> books) {
+        this.fullName = fullName;
+        this.books = books;
+    }
 }

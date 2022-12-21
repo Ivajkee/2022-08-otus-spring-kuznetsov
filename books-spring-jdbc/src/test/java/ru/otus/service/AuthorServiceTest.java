@@ -1,0 +1,142 @@
+package ru.otus.service;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.convert.ConversionService;
+import ru.otus.config.ConversionServiceConfig;
+import ru.otus.config.ConverterConfig;
+import ru.otus.converter.AuthorDtoToAuthorConverter;
+import ru.otus.converter.AuthorToAuthorDtoConverter;
+import ru.otus.dao.AuthorDao;
+import ru.otus.domain.dto.AuthorDto;
+import ru.otus.domain.dto.BookDto;
+import ru.otus.domain.dto.GenreDto;
+import ru.otus.domain.model.Author;
+import ru.otus.domain.model.Book;
+import ru.otus.domain.model.Genre;
+import ru.otus.exception.AuthorNotFoundException;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+@SpringBootTest(classes = {AuthorServiceImpl.class, ConversionServiceConfig.class, ConverterConfig.class,
+        AuthorDtoToAuthorConverter.class, AuthorToAuthorDtoConverter.class})
+class AuthorServiceTest {
+    @Autowired
+    private AuthorService authorService;
+    @Autowired
+    private ConversionService conversionService;
+    @MockBean
+    private AuthorDao authorDao;
+
+    @DisplayName("Should return expected authors count")
+    @Test
+    void shouldReturnExpectedAuthorsCount() {
+        long expectedCount = 3;
+        when(authorDao.count()).thenReturn(expectedCount);
+        long actualCount = authorService.getCountOfAuthors();
+        assertThat(actualCount).isEqualTo(expectedCount);
+    }
+
+    @DisplayName("Should save author")
+    @Test
+    void shouldSaveAuthor() {
+        AuthorDto authorDto = new AuthorDto("New author", null);
+        Author author = new Author(authorDto.getFullName(), null);
+        Author savedAuthor = new Author(1, author.getFullName(), null);
+        when(authorDao.save(author)).thenReturn(savedAuthor);
+        AuthorDto expectedAuthorDto = new AuthorDto(1, savedAuthor.getFullName(), null);
+        AuthorDto actualAuthorDto = authorService.saveAuthor(authorDto);
+        assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
+    }
+
+    @DisplayName("Should update author")
+    @Test
+    void shouldUpdateAuthor() {
+        long id = 1;
+        AuthorDto authorDto = new AuthorDto(id, "Edited author", null);
+        Author author = new Author(id, authorDto.getFullName(), null);
+        when(authorDao.existsById(id)).thenReturn(true);
+        when(authorDao.update(author)).thenReturn(author);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
+        AuthorDto actualAuthorDto = authorService.updateAuthor(authorDto);
+        assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
+    }
+
+    @DisplayName("Should throw exception when try update not existing author")
+    @Test
+    void shouldThrowExceptionWhenTryUpdateNotExistingAuthor() {
+        long id = 1;
+        AuthorDto authorDto = new AuthorDto(id, "Edited author", null);
+        when(authorDao.existsById(id)).thenReturn(false);
+        assertThatThrownBy(() -> authorService.updateAuthor(authorDto)).isInstanceOf(AuthorNotFoundException.class);
+    }
+
+    @DisplayName("Should be exist author")
+    @Test
+    void shouldBeExistAuthor() {
+        long id = 1;
+        when(authorDao.existsById(id)).thenReturn(true);
+        boolean isExist = authorService.existsAuthorById(id);
+        assertThat(isExist).isTrue();
+    }
+
+    @DisplayName("Should be not exist author")
+    @Test
+    void shouldBeNotExistAuthor() {
+        long id = 1;
+        when(authorDao.existsById(id)).thenReturn(false);
+        boolean authorIsExist = authorService.existsAuthorById(id);
+        assertThat(authorIsExist).isFalse();
+    }
+
+    @DisplayName("Should find author")
+    @Test
+    void shouldFindAuthor() {
+        long id = 1;
+        Genre genre = new Genre(id, "Test genre", null);
+        Book book = new Book(id, "Test book", null, genre);
+        Author author = new Author(id, null, List.of(book));
+        when(authorDao.findById(id)).thenReturn(Optional.of(author));
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
+        BookDto expectedBookDto = new BookDto(id, book.getTitle(), null, expectedGenreDto);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), List.of(expectedBookDto));
+        AuthorDto actualAuthorDto = authorService.findAuthorById(id);
+        assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
+    }
+
+    @DisplayName("Should throw exception when try find not existing author")
+    @Test
+    void shouldThrowExceptionWhenTryFindNotExistingAuthor() {
+        long id = 1;
+        when(authorDao.findById(id)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> authorService.findAuthorById(id)).isInstanceOf(AuthorNotFoundException.class);
+    }
+
+    @DisplayName("Should find all authors")
+    @Test
+    void shouldFindAllAuthors() {
+        Author author1 = new Author(1, "Test author 1", null);
+        Author author2 = new Author(2, "Test author 2", null);
+        Author author3 = new Author(3, "Test author 3", null);
+        when(authorDao.findAll()).thenReturn(List.of(author1, author2, author3));
+        AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName(), null);
+        AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName(), null);
+        AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName(), null);
+        List<AuthorDto> expectedAuthorDtoList = List.of(authorDto1, authorDto2, authorDto3);
+        List<AuthorDto> actualAuthorDtoList = authorService.findAllAuthors();
+        assertThat(actualAuthorDtoList).isEqualTo(expectedAuthorDtoList);
+    }
+
+    @DisplayName("Should delete author")
+    @Test
+    void shouldDeleteAuthor() {
+        assertThatCode(() -> authorService.deleteAuthorById(1)).doesNotThrowAnyException();
+    }
+}

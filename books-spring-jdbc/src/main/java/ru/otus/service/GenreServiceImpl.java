@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Genre;
@@ -36,6 +37,7 @@ public class GenreServiceImpl implements GenreService {
         return savedGenreDto;
     }
 
+    @Transactional
     @Override
     public GenreDto updateGenre(GenreDto genreDto) {
         Genre updatedGenre = Optional.of(genreDto)

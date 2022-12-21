@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.AuthorDao;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
@@ -36,6 +37,7 @@ public class AuthorServiceImpl implements AuthorService {
         return savedAuthorDto;
     }
 
+    @Transactional
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto) {
         Author updatedAuthor = Optional.of(authorDto)

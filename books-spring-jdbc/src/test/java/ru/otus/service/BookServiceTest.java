@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
 import ru.otus.config.ConversionServiceConfig;
-import ru.otus.config.ConverterConfig;
 import ru.otus.converter.BookDtoToBookConverter;
 import ru.otus.converter.BookToBookDtoConverter;
 import ru.otus.dao.BookDao;
@@ -25,8 +24,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {BookServiceImpl.class, ConversionServiceConfig.class, ConverterConfig.class,
-        BookDtoToBookConverter.class, BookToBookDtoConverter.class})
+@SpringBootTest(classes = {BookServiceImpl.class, ConversionServiceConfig.class, BookDtoToBookConverter.class,
+        BookToBookDtoConverter.class})
 class BookServiceTest {
     @Autowired
     private BookService bookService;

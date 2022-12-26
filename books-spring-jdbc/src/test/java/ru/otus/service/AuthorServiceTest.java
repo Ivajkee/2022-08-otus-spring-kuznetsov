@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
 import ru.otus.config.ConversionServiceConfig;
-import ru.otus.config.ConverterConfig;
 import ru.otus.converter.AuthorDtoToAuthorConverter;
 import ru.otus.converter.AuthorToAuthorDtoConverter;
 import ru.otus.dao.AuthorDao;
@@ -21,8 +20,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {AuthorServiceImpl.class, ConversionServiceConfig.class, ConverterConfig.class,
-        AuthorDtoToAuthorConverter.class, AuthorToAuthorDtoConverter.class})
+@SpringBootTest(classes = {AuthorServiceImpl.class, ConversionServiceConfig.class, AuthorDtoToAuthorConverter.class,
+        AuthorToAuthorDtoConverter.class})
 class AuthorServiceTest {
     @Autowired
     private AuthorService authorService;

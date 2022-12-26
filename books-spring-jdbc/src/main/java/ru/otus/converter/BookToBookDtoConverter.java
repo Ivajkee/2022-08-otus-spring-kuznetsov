@@ -11,21 +11,8 @@ import ru.otus.domain.model.Book;
 public class BookToBookDtoConverter implements Converter<Book, BookDto> {
     @Override
     public BookDto convert(Book book) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(book.getId());
-        bookDto.setTitle(book.getTitle());
-        if (book.getAuthor() != null) {
-            AuthorDto authorDto = new AuthorDto();
-            authorDto.setId(book.getAuthor().getId());
-            authorDto.setFullName(book.getAuthor().getFullName());
-            bookDto.setAuthor(authorDto);
-        }
-        if (book.getGenre() != null) {
-            GenreDto genreDto = new GenreDto();
-            genreDto.setId(book.getGenre().getId());
-            genreDto.setName(book.getGenre().getName());
-            bookDto.setGenre(genreDto);
-        }
-        return bookDto;
+        AuthorDto authorDto = new AuthorDto(book.getAuthor().getId(), book.getAuthor().getFullName());
+        GenreDto genreDto = new GenreDto(book.getGenre().getId(), book.getGenre().getName());
+        return new BookDto(book.getId(), book.getTitle(), authorDto, genreDto);
     }
 }

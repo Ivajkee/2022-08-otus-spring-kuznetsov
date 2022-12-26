@@ -23,7 +23,6 @@ public class GenreCommands {
     public void showGenre(@ShellOption long id) {
         GenreDto genreDto = genreService.findGenreById(id);
         log.info("{}: {}", genreDto.getId(), genreDto.getName());
-        genreDto.getBooks().forEach(bookDto -> log.info("{} ({})", bookDto.getTitle(), bookDto.getAuthor().getFullName()));
     }
 
     @ShellMethod(value = "Show count of genres.", key = {"count-g"})
@@ -34,14 +33,14 @@ public class GenreCommands {
 
     @ShellMethod(value = "Add genre.", key = {"add-g"})
     public void addGenre(@ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto(name, null);
+        GenreDto genreDto = new GenreDto(name);
         GenreDto addedGenre = genreService.saveGenre(genreDto);
         log.info("{}: {}", addedGenre.getId(), addedGenre.getName());
     }
 
     @ShellMethod(value = "Edit genre.", key = {"edit-g"})
     public void editGenre(@ShellOption long id, @ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto(id, name, null);
+        GenreDto genreDto = new GenreDto(id, name);
         GenreDto updatedGenre = genreService.updateGenre(genreDto);
         log.info("{}: {}", updatedGenre.getId(), updatedGenre.getName());
     }

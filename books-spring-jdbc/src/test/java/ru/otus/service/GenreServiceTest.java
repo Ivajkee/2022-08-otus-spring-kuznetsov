@@ -11,11 +11,7 @@ import ru.otus.config.ConverterConfig;
 import ru.otus.converter.GenreDtoToGenreConverter;
 import ru.otus.converter.GenreToGenreDtoConverter;
 import ru.otus.dao.GenreDao;
-import ru.otus.domain.dto.AuthorDto;
-import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.dto.GenreDto;
-import ru.otus.domain.model.Author;
-import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 
@@ -48,11 +44,11 @@ class GenreServiceTest {
     @Test
     void shouldSaveGenre() {
         long id = 1;
-        GenreDto genreDto = new GenreDto("New genre", null);
-        Genre genre = new Genre(genreDto.getName(), null);
-        Genre savedGenre = new Genre(id, genre.getName(), null);
+        GenreDto genreDto = new GenreDto("New genre");
+        Genre genre = new Genre(genreDto.getName());
+        Genre savedGenre = new Genre(id, genre.getName());
         when(genreDao.save(genre)).thenReturn(savedGenre);
-        GenreDto expectedGenreDto = new GenreDto(id, savedGenre.getName(), null);
+        GenreDto expectedGenreDto = new GenreDto(id, savedGenre.getName());
         GenreDto actualGenreDto = genreService.saveGenre(genreDto);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
@@ -61,11 +57,11 @@ class GenreServiceTest {
     @Test
     void shouldUpdateGenre() {
         long id = 1;
-        GenreDto genreDto = new GenreDto(id, "Edited genre", null);
-        Genre genre = new Genre(id, genreDto.getName(), null);
+        GenreDto genreDto = new GenreDto(id, "Edited genre");
+        Genre genre = new Genre(id, genreDto.getName());
         when(genreDao.existsById(id)).thenReturn(true);
         when(genreDao.update(genre)).thenReturn(genre);
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         GenreDto actualGenreDto = genreService.updateGenre(genreDto);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
@@ -74,7 +70,7 @@ class GenreServiceTest {
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingGenre() {
         long id = 1;
-        GenreDto genreDto = new GenreDto(id, "Edited genre", null);
+        GenreDto genreDto = new GenreDto(id, "Edited genre");
         when(genreDao.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> genreService.updateGenre(genreDto)).isInstanceOf(GenreNotFoundException.class);
     }
@@ -101,13 +97,9 @@ class GenreServiceTest {
     @Test
     void shouldFindGenre() {
         long id = 1;
-        Author author = new Author(id, "Test author", null);
-        Book book = new Book(id, "Test book", author, null);
-        Genre genre = new Genre(id, "Test genre", List.of(book));
+        Genre genre = new Genre(id, "Test genre");
         when(genreDao.findById(id)).thenReturn(Optional.of(genre));
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
-        BookDto expectedBookDto = new BookDto(id, book.getTitle(), expectedAuthorDto, null);
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), List.of(expectedBookDto));
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         GenreDto actualGenreDto = genreService.findGenreById(id);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
@@ -123,13 +115,13 @@ class GenreServiceTest {
     @DisplayName("Should find all genres")
     @Test
     void shouldFindAllGenres() {
-        Genre genre1 = new Genre(1, "Test genre 1", null);
-        Genre genre2 = new Genre(2, "Test genre 2", null);
-        Genre genre3 = new Genre(3, "Test genre 3", null);
+        Genre genre1 = new Genre(1, "Test genre 1");
+        Genre genre2 = new Genre(2, "Test genre 2");
+        Genre genre3 = new Genre(3, "Test genre 3");
         when(genreDao.findAll()).thenReturn(List.of(genre1, genre2, genre3));
-        GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName(), null);
-        GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName(), null);
-        GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName(), null);
+        GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName());
+        GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName());
+        GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName());
         List<GenreDto> expectedGenreDtoList = List.of(genreDto1, genreDto2, genreDto3);
         List<GenreDto> actualGenreDtoList = genreService.findAllGenres();
         assertThat(actualGenreDtoList).isEqualTo(expectedGenreDtoList);

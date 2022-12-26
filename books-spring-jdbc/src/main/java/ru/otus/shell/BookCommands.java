@@ -18,7 +18,8 @@ public class BookCommands {
 
     @ShellMethod(value = "Show all books.", key = {"all-b"})
     public void showBooks() {
-        bookService.findAllBooks().forEach(bookDto -> log.info("{}: {}", bookDto.getId(), bookDto.getTitle()));
+        bookService.findAllBooks().forEach(bookDto -> log.info("{}: {} ({}, {})", bookDto.getId(), bookDto.getTitle(),
+                bookDto.getAuthor().getFullName(), bookDto.getGenre().getName()));
     }
 
     @ShellMethod(value = "Show book.", key = {"b"})
@@ -35,8 +36,8 @@ public class BookCommands {
 
     @ShellMethod(value = "Add book.", key = {"add-b"})
     public void addBook(@ShellOption long authorId, @ShellOption long genreId, @ShellOption(arity = 10) String title) {
-        AuthorDto authorDto = new AuthorDto(authorId, null, null);
-        GenreDto genreDto = new GenreDto(genreId, null, null);
+        AuthorDto authorDto = new AuthorDto(authorId, null);
+        GenreDto genreDto = new GenreDto(genreId, null);
         BookDto bookDto = new BookDto(title, authorDto, genreDto);
         BookDto addedBook = bookService.saveBook(bookDto);
         log.info("{}: {}", addedBook.getId(), addedBook.getTitle());
@@ -44,8 +45,8 @@ public class BookCommands {
 
     @ShellMethod(value = "Edit book.", key = {"edit-b"})
     public void editBook(@ShellOption long id, @ShellOption long authorId, @ShellOption long genreId, @ShellOption(arity = 10) String title) {
-        AuthorDto authorDto = new AuthorDto(authorId, null, null);
-        GenreDto genreDto = new GenreDto(genreId, null, null);
+        AuthorDto authorDto = new AuthorDto(authorId, null);
+        GenreDto genreDto = new GenreDto(genreId, null);
         BookDto bookDto = new BookDto(id, title, authorDto, genreDto);
         BookDto updatedBook = bookService.updateBook(bookDto);
         log.info("{}: {}", updatedBook.getId(), updatedBook.getTitle());

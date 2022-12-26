@@ -1,8 +1,6 @@
 package ru.otus.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -66,13 +64,18 @@ public class BookDaoJdbc implements BookDao {
                 left join authors a on b.author_id = a.id
                 left join genres g on b.genre_id = g.id where b.id = :id
                 """;
-        List<Book> books = jdbc.query(sql, Map.of("id", id), new BookWithDetailExtractor());
+        List<Book> books = jdbc.query(sql, Map.of("id", id), new BookMapper());
         return CollectionUtils.isEmpty(books) ? Optional.empty() : Optional.of(books.get(0));
     }
 
     @Override
     public List<Book> findAll() {
-        return jdbc.query("select id, title from books", new BookMapper());
+        String sql = """
+                select b.id, b.title, b.author_id, a.full_name as author_name, b.genre_id, g.name as genre_name from books b
+                left join authors a on b.author_id = a.id
+                left join genres g on b.genre_id = g.id
+                """;
+        return jdbc.query(sql, new BookMapper());
     }
 
     @Override
@@ -85,39 +88,11 @@ public class BookDaoJdbc implements BookDao {
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
             String title = resultSet.getString("title");
-            Book book = new Book();
-            book.setId(id);
-            book.setTitle(title);
-            return book;
-        }
-    }
-
-    private static final class BookWithDetailExtractor implements ResultSetExtractor<List<Book>> {
-        @Override
-        public List<Book> extractData(ResultSet rs) throws SQLException, DataAccessException {
-            Map<Long, Book> bookMap = new HashMap<>();
-            Book book;
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                book = bookMap.get(id);
-                if (book == null) {
-                    book = new Book();
-                    book.setId(id);
-                    book.setTitle(rs.getString("title"));
-                    bookMap.put(id, book);
-                }
-                long authorId = rs.getLong("author_id");
-                Author author = new Author();
-                author.setId(authorId);
-                author.setFullName(rs.getString("author_name"));
-                book.setAuthor(author);
-                long genreId = rs.getLong("genre_id");
-                Genre genre = new Genre();
-                genre.setId(genreId);
-                genre.setName(rs.getString("genre_name"));
-                book.setGenre(genre);
-            }
-            return new ArrayList<>(bookMap.values());
+            long authorId = resultSet.getLong("author_id");
+            String authorName = resultSet.getString("author_name");
+            long genreId = resultSet.getLong("genre_id");
+            String genreName = resultSet.getString("genre_name");
+            return new Book(id, title, new Author(authorId, authorName), new Genre(genreId, genreName));
         }
     }
 }

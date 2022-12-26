@@ -12,11 +12,7 @@ import ru.otus.converter.AuthorDtoToAuthorConverter;
 import ru.otus.converter.AuthorToAuthorDtoConverter;
 import ru.otus.dao.AuthorDao;
 import ru.otus.domain.dto.AuthorDto;
-import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Author;
-import ru.otus.domain.model.Book;
-import ru.otus.domain.model.Genre;
 import ru.otus.exception.AuthorNotFoundException;
 
 import java.util.List;
@@ -48,11 +44,11 @@ class AuthorServiceTest {
     @Test
     void shouldSaveAuthor() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto("New author", null);
-        Author author = new Author(authorDto.getFullName(), null);
-        Author savedAuthor = new Author(id, author.getFullName(), null);
+        AuthorDto authorDto = new AuthorDto("New author");
+        Author author = new Author(authorDto.getFullName());
+        Author savedAuthor = new Author(id, author.getFullName());
         when(authorDao.save(author)).thenReturn(savedAuthor);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, savedAuthor.getFullName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, savedAuthor.getFullName());
         AuthorDto actualAuthorDto = authorService.saveAuthor(authorDto);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
     }
@@ -61,11 +57,11 @@ class AuthorServiceTest {
     @Test
     void shouldUpdateAuthor() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, "Edited author", null);
-        Author author = new Author(id, authorDto.getFullName(), null);
+        AuthorDto authorDto = new AuthorDto(id, "Edited author");
+        Author author = new Author(id, authorDto.getFullName());
         when(authorDao.existsById(id)).thenReturn(true);
         when(authorDao.update(author)).thenReturn(author);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         AuthorDto actualAuthorDto = authorService.updateAuthor(authorDto);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
     }
@@ -74,7 +70,7 @@ class AuthorServiceTest {
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingAuthor() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, "Edited author", null);
+        AuthorDto authorDto = new AuthorDto(id, "Edited author");
         when(authorDao.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> authorService.updateAuthor(authorDto)).isInstanceOf(AuthorNotFoundException.class);
     }
@@ -101,13 +97,9 @@ class AuthorServiceTest {
     @Test
     void shouldFindAuthor() {
         long id = 1;
-        Genre genre = new Genre(id, "Test genre", null);
-        Book book = new Book(id, "Test book", null, genre);
-        Author author = new Author(id, "Test author", List.of(book));
+        Author author = new Author(id, "Test author");
         when(authorDao.findById(id)).thenReturn(Optional.of(author));
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
-        BookDto expectedBookDto = new BookDto(id, book.getTitle(), null, expectedGenreDto);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), List.of(expectedBookDto));
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         AuthorDto actualAuthorDto = authorService.findAuthorById(id);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
     }
@@ -123,13 +115,13 @@ class AuthorServiceTest {
     @DisplayName("Should find all authors")
     @Test
     void shouldFindAllAuthors() {
-        Author author1 = new Author(1, "Test author 1", null);
-        Author author2 = new Author(2, "Test author 2", null);
-        Author author3 = new Author(3, "Test author 3", null);
+        Author author1 = new Author(1, "Test author 1");
+        Author author2 = new Author(2, "Test author 2");
+        Author author3 = new Author(3, "Test author 3");
         when(authorDao.findAll()).thenReturn(List.of(author1, author2, author3));
-        AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName(), null);
-        AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName(), null);
-        AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName(), null);
+        AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
+        AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
+        AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());
         List<AuthorDto> expectedAuthorDtoList = List.of(authorDto1, authorDto2, authorDto3);
         List<AuthorDto> actualAuthorDtoList = authorService.findAllAuthors();
         assertThat(actualAuthorDtoList).isEqualTo(expectedAuthorDtoList);

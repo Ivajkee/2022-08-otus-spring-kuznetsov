@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Author;
-import ru.otus.domain.model.Book;
-import ru.otus.domain.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +28,7 @@ class AuthorDaoTest {
     @DisplayName("Should save author")
     @Test
     void shouldSaveAuthor() {
-        Author expectedAuthor = new Author("Test author", List.of());
+        Author expectedAuthor = new Author("Test author");
         expectedAuthor = authorDao.save(expectedAuthor);
         Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
@@ -39,7 +37,7 @@ class AuthorDaoTest {
     @DisplayName("Should update author")
     @Test
     void shouldUpdateAuthor() {
-        Author expectedAuthor = new Author(3, "Edited author", null);
+        Author expectedAuthor = new Author(3, "Edited author");
         expectedAuthor = authorDao.update(expectedAuthor);
         Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).get().extracting(Author::getFullName).isEqualTo(expectedAuthor.getFullName());
@@ -62,9 +60,7 @@ class AuthorDaoTest {
     @DisplayName("Should find author")
     @Test
     void shouldFindAuthor() {
-        Genre expectedGenre = new Genre(1, "Поэма", null);
-        Book expectedBook = new Book(1, "Руслан и Людмила", null, expectedGenre);
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", List.of(expectedBook));
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Optional<Author> optionalActualAuthor = authorDao.findById(1);
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
@@ -72,9 +68,9 @@ class AuthorDaoTest {
     @DisplayName("Should find all authors")
     @Test
     void shouldFindAllAuthors() {
-        Author expectedAuthor1 = new Author(1, "Александр Сергеевич Пушкин", null);
-        Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой", null);
-        Author expectedAuthor3 = new Author(3, "Джоан Роулинг", null);
+        Author expectedAuthor1 = new Author(1, "Александр Сергеевич Пушкин");
+        Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой");
+        Author expectedAuthor3 = new Author(3, "Джоан Роулинг");
         List<Author> expectedAuthors = List.of(expectedAuthor1, expectedAuthor2, expectedAuthor3);
         List<Author> actualAuthors = authorDao.findAll();
         assertThat(actualAuthors).isEqualTo(expectedAuthors);
@@ -83,7 +79,7 @@ class AuthorDaoTest {
     @DisplayName("Should delete author")
     @Test
     void shouldDeleteAuthor() {
-        Author expectedAuthor = new Author("Test author", List.of());
+        Author expectedAuthor = new Author("Test author");
         expectedAuthor = authorDao.save(expectedAuthor);
         Optional<Author> optionalAuthor = authorDao.findById(expectedAuthor.getId());
         assertThat(optionalAuthor).hasValue(expectedAuthor);

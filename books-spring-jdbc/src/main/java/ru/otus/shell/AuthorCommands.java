@@ -23,7 +23,6 @@ public class AuthorCommands {
     public void showAuthor(@ShellOption long id) {
         AuthorDto authorDto = authorService.findAuthorById(id);
         log.info("{}: {}", authorDto.getId(), authorDto.getFullName());
-        authorDto.getBooks().forEach(bookDto -> log.info("{} ({})", bookDto.getTitle(), bookDto.getGenre().getName()));
     }
 
     @ShellMethod(value = "Show count of authors.", key = {"count-a"})
@@ -34,14 +33,14 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Add author.", key = {"add-a"})
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto(fullName, null);
+        AuthorDto authorDto = new AuthorDto(fullName);
         AuthorDto addedAuthor = authorService.saveAuthor(authorDto);
         log.info("{}: {}", addedAuthor.getId(), addedAuthor.getFullName());
     }
 
     @ShellMethod(value = "Edit author.", key = {"edit-a"})
     public void editAuthor(@ShellOption long id, @ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto(id, fullName, null);
+        AuthorDto authorDto = new AuthorDto(id, fullName);
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto);
         log.info("{}: {}", updatedAuthor.getId(), updatedAuthor.getFullName());
     }

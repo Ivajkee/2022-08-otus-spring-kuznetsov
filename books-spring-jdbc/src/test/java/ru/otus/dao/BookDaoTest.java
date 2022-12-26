@@ -30,8 +30,8 @@ class BookDaoTest {
     @DisplayName("Should save book")
     @Test
     void shouldSaveBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", null);
-        Genre expectedGenre = new Genre(3, "Фэнтези", null);
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
+        Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
         expectedBook = bookDao.save(expectedBook);
         Optional<Book> optionalActualBook = bookDao.findById(expectedBook.getId());
@@ -41,8 +41,8 @@ class BookDaoTest {
     @DisplayName("Should update book")
     @Test
     void shouldUpdateBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", null);
-        Genre expectedGenre = new Genre(3, "Фэнтези", null);
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
+        Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book(3, "Edited book", expectedAuthor, expectedGenre);
         expectedBook = bookDao.update(expectedBook);
         Optional<Book> optionalActualBook = bookDao.findById(expectedBook.getId());
@@ -66,8 +66,8 @@ class BookDaoTest {
     @DisplayName("Should find book")
     @Test
     void shouldFindBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", null);
-        Genre expectedGenre = new Genre(1, "Поэма", null);
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
+        Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book(1, "Руслан и Людмила", expectedAuthor, expectedGenre);
         Optional<Book> optionalActualBook = bookDao.findById(1);
         assertThat(optionalActualBook).hasValue(expectedBook);
@@ -76,9 +76,15 @@ class BookDaoTest {
     @DisplayName("Should find all books")
     @Test
     void shouldFindAllBooks() {
-        Book expectedBook1 = new Book(1, "Руслан и Людмила", null, null);
-        Book expectedBook2 = new Book(2, "Война и мир", null, null);
-        Book expectedBook3 = new Book(3, "Гарри Поттер", null, null);
+        Author expectedAuthor1 = new Author(1, "Александр Сергеевич Пушкин");
+        Genre expectedGenre1 = new Genre(1, "Поэма");
+        Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой");
+        Genre expectedGenre2 = new Genre(2, "Роман");
+        Author expectedAuthor3 = new Author(3, "Джоан Роулинг");
+        Genre expectedGenre3 = new Genre(3, "Фэнтези");
+        Book expectedBook1 = new Book(1, "Руслан и Людмила", expectedAuthor1, expectedGenre1);
+        Book expectedBook2 = new Book(2, "Война и мир", expectedAuthor2, expectedGenre2);
+        Book expectedBook3 = new Book(3, "Гарри Поттер", expectedAuthor3, expectedGenre3);
         List<Book> expectedBooks = List.of(expectedBook1, expectedBook2, expectedBook3);
         List<Book> actualBooks = bookDao.findAll();
         assertThat(actualBooks).isEqualTo(expectedBooks);
@@ -87,8 +93,8 @@ class BookDaoTest {
     @DisplayName("Should delete book")
     @Test
     void shouldDeleteBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин", null);
-        Genre expectedGenre = new Genre(1, "Поэма", null);
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
+        Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
         expectedBook = bookDao.save(expectedBook);
         Optional<Book> optionalAuthor = bookDao.findById(expectedBook.getId());

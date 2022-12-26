@@ -9,9 +9,6 @@ import ru.otus.domain.model.Author;
 public class AuthorDtoToAuthorConverter implements Converter<AuthorDto, Author> {
     @Override
     public Author convert(AuthorDto authorDto) {
-        Author author = new Author();
-        author.setId(authorDto.getId());
-        author.setFullName(authorDto.getFullName());
-        return author;
+        return new Author(authorDto.getId(), authorDto.getFullName());
     }
 }

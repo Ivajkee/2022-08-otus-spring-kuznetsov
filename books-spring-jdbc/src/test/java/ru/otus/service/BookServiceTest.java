@@ -48,18 +48,18 @@ class BookServiceTest {
     @Test
     void shouldSaveBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto("New author", null);
-        GenreDto genreDto = new GenreDto("New genre", null);
+        AuthorDto authorDto = new AuthorDto("New author");
+        GenreDto genreDto = new GenreDto("New genre");
         BookDto bookDto = new BookDto("New book", authorDto, genreDto);
-        Author author = new Author(authorDto.getFullName(), null);
-        Genre genre = new Genre(genreDto.getName(), null);
+        Author author = new Author(authorDto.getFullName());
+        Genre genre = new Genre(genreDto.getName());
         Book book = new Book(bookDto.getTitle(), author, genre);
-        Author savedAuthor = new Author(id, authorDto.getFullName(), null);
-        Genre savedGenre = new Genre(id, genreDto.getName(), null);
+        Author savedAuthor = new Author(id, authorDto.getFullName());
+        Genre savedGenre = new Genre(id, genreDto.getName());
         Book savedBook = new Book(id, book.getTitle(), savedAuthor, savedGenre);
         when(bookDao.save(book)).thenReturn(savedBook);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, savedBook.getTitle(), expectedAuthorDto, expectedGenreDto);
         BookDto actualBookDto = bookService.saveBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -69,16 +69,16 @@ class BookServiceTest {
     @Test
     void shouldUpdateBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, null, null);
-        GenreDto genreDto = new GenreDto(id, null, null);
+        AuthorDto authorDto = new AuthorDto(id, null);
+        GenreDto genreDto = new GenreDto(id, null);
         BookDto bookDto = new BookDto(id, "Edited book", authorDto, genreDto);
-        Author author = new Author(id, null, null);
-        Genre genre = new Genre(id, null, null);
+        Author author = new Author(id, null);
+        Genre genre = new Genre(id, null);
         Book book = new Book(id, bookDto.getTitle(), author, genre);
         when(bookDao.existsById(id)).thenReturn(true);
         when(bookDao.update(book)).thenReturn(book);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle(), expectedAuthorDto, expectedGenreDto);
         BookDto actualBookDto = bookService.updateBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -88,8 +88,8 @@ class BookServiceTest {
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, null, null);
-        GenreDto genreDto = new GenreDto(id, null, null);
+        AuthorDto authorDto = new AuthorDto(id, null);
+        GenreDto genreDto = new GenreDto(id, null);
         BookDto bookDto = new BookDto(id, "Edited book", authorDto, genreDto);
         when(bookDao.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> bookService.updateBook(bookDto)).isInstanceOf(BookNotFoundException.class);
@@ -117,12 +117,12 @@ class BookServiceTest {
     @Test
     void shouldFindBook() {
         long id = 1;
-        Author author = new Author(id, "Test author", null);
-        Genre genre = new Genre(id, "Test genre", null);
+        Author author = new Author(id, "Test author");
+        Genre genre = new Genre(id, "Test genre");
         Book book = new Book(id, "Test book", author, genre);
         when(bookDao.findById(id)).thenReturn(Optional.of(book));
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName(), null);
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName(), null);
+        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
+        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle(), expectedAuthorDto, expectedGenreDto);
         BookDto actualBookDto = bookService.findBookById(id);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -139,13 +139,25 @@ class BookServiceTest {
     @DisplayName("Should find all books")
     @Test
     void shouldFindAllBooks() {
-        Book book1 = new Book(1, "Test book 1", null, null);
-        Book book2 = new Book(2, "Test book 2", null, null);
-        Book book3 = new Book(3, "Test book 3", null, null);
+        Author author1 = new Author(1, "Test author 1");
+        Author author2 = new Author(2, "Test author 2");
+        Author author3 = new Author(3, "Test author 3");
+        Genre genre1 = new Genre(1, "Test genre 1");
+        Genre genre2 = new Genre(2, "Test genre 2");
+        Genre genre3 = new Genre(3, "Test genre 3");
+        Book book1 = new Book(1, "Test book 1", author1, genre1);
+        Book book2 = new Book(2, "Test book 2", author2, genre2);
+        Book book3 = new Book(3, "Test book 3", author3, genre3);
         when(bookDao.findAll()).thenReturn(List.of(book1, book2, book3));
-        BookDto bookDto1 = new BookDto(book1.getId(), book1.getTitle(), null, null);
-        BookDto bookDto2 = new BookDto(book2.getId(), book2.getTitle(), null, null);
-        BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle(), null, null);
+        AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
+        AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
+        AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());
+        GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName());
+        GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName());
+        GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName());
+        BookDto bookDto1 = new BookDto(book1.getId(), book1.getTitle(), authorDto1, genreDto1);
+        BookDto bookDto2 = new BookDto(book2.getId(), book2.getTitle(), authorDto2, genreDto2);
+        BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle(), authorDto3, genreDto3);
         List<BookDto> expectedBookDtoList = List.of(bookDto1, bookDto2, bookDto3);
         List<BookDto> actualBookDtoList = bookService.findAllBooks();
         assertThat(actualBookDtoList).isEqualTo(expectedBookDtoList);

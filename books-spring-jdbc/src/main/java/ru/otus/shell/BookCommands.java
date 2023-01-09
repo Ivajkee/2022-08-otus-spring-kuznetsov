@@ -1,7 +1,6 @@
 package ru.otus.shell;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -9,29 +8,31 @@ import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.service.BookService;
+import ru.otus.service.io.OutputService;
 
-@Slf4j
 @RequiredArgsConstructor
 @ShellComponent
 public class BookCommands {
     private final BookService bookService;
+    private final OutputService outputService;
 
     @ShellMethod(value = "Show all books.", key = {"all-b"})
     public void showBooks() {
-        bookService.findAllBooks().forEach(bookDto -> log.info("{}: {} ({}, {})", bookDto.getId(), bookDto.getTitle(),
-                bookDto.getAuthor().getFullName(), bookDto.getGenre().getName()));
+        bookService.findAllBooks().forEach(bookDto -> outputService.output(String.format("%d: %s (%s, %s)", bookDto.getId(),
+                bookDto.getTitle(), bookDto.getAuthor().getFullName(), bookDto.getGenre().getName())));
     }
 
     @ShellMethod(value = "Show book.", key = {"b"})
     public void showBook(@ShellOption long id) {
         BookDto bookDto = bookService.findBookById(id);
-        log.info("{}: {} ({}, {})", bookDto.getId(), bookDto.getTitle(), bookDto.getAuthor().getFullName(), bookDto.getGenre().getName());
+        outputService.output(String.format("%d: %s (%s, %s)", bookDto.getId(), bookDto.getTitle(), bookDto.getAuthor().getFullName(),
+                bookDto.getGenre().getName()));
     }
 
     @ShellMethod(value = "Show count of books.", key = {"count-b"})
     public void showCountOfBooks() {
         long count = bookService.getCountOfBooks();
-        log.info("{}", count);
+        outputService.output(count);
     }
 
     @ShellMethod(value = "Add book.", key = {"add-b"})
@@ -40,7 +41,7 @@ public class BookCommands {
         GenreDto genreDto = new GenreDto(genreId, null);
         BookDto bookDto = new BookDto(title, authorDto, genreDto);
         BookDto addedBook = bookService.saveBook(bookDto);
-        log.info("{}: {}", addedBook.getId(), addedBook.getTitle());
+        outputService.output(String.format("%d: %s", addedBook.getId(), addedBook.getTitle()));
     }
 
     @ShellMethod(value = "Edit book.", key = {"edit-b"})
@@ -49,7 +50,7 @@ public class BookCommands {
         GenreDto genreDto = new GenreDto(genreId, null);
         BookDto bookDto = new BookDto(id, title, authorDto, genreDto);
         BookDto updatedBook = bookService.updateBook(bookDto);
-        log.info("{}: {}", updatedBook.getId(), updatedBook.getTitle());
+        outputService.output(String.format("%d: %s", updatedBook.getId(), updatedBook.getTitle()));
     }
 
     @ShellMethod(value = "Delete book.", key = {"del-b"})

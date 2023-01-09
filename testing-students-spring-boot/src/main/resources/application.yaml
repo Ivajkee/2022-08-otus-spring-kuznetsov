@@ -1,6 +1,6 @@
 spring:
   output:
-     ansi:
+    ansi:
       enabled: ALWAYS
 
 resource:

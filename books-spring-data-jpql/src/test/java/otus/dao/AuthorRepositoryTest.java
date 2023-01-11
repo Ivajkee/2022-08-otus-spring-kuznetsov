@@ -5,25 +5,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.dao.AuthorDao;
-import ru.otus.dao.AuthorDaoJpa;
 import ru.otus.domain.model.Author;
+import ru.otus.repository.AuthorRepository;
+import ru.otus.repository.AuthorRepositoryJpa;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(AuthorDaoJpa.class)
+@Import(AuthorRepositoryJpa.class)
 @JdbcTest
-class AuthorDaoTest {
+class AuthorRepositoryTest {
     @Autowired
-    private AuthorDao authorDao;
+    private AuthorRepository authorRepository;
 
     @DisplayName("Should return expected authors count")
     @Test
     void shouldReturnExpectedAuthorsCount() {
-        long actualCount = authorDao.count();
+        long actualCount = authorRepository.count();
         assertThat(actualCount).isEqualTo(3);
     }
 
@@ -31,8 +31,8 @@ class AuthorDaoTest {
     @Test
     void shouldSaveAuthor() {
         Author expectedAuthor = new Author("Test author");
-        expectedAuthor = authorDao.save(expectedAuthor);
-        Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
+        expectedAuthor = authorRepository.save(expectedAuthor);
+        Optional<Author> optionalActualAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
@@ -40,22 +40,22 @@ class AuthorDaoTest {
     @Test
     void shouldUpdateAuthor() {
         Author expectedAuthor = new Author(3, "Edited author");
-        expectedAuthor = authorDao.update(expectedAuthor);
-        Optional<Author> optionalActualAuthor = authorDao.findById(expectedAuthor.getId());
+        expectedAuthor = authorRepository.update(expectedAuthor);
+        Optional<Author> optionalActualAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).get().extracting(Author::getFullName).isEqualTo(expectedAuthor.getFullName());
     }
 
     @DisplayName("Should be exist author")
     @Test
     void shouldBeExistAuthor() {
-        boolean actualValue = authorDao.existsById(1);
+        boolean actualValue = authorRepository.existsById(1);
         assertThat(actualValue).isTrue();
     }
 
     @DisplayName("Should be not exist author")
     @Test
     void shouldBeNotExistAuthor() {
-        boolean actualValue = authorDao.existsById(4);
+        boolean actualValue = authorRepository.existsById(4);
         assertThat(actualValue).isFalse();
     }
 
@@ -63,7 +63,7 @@ class AuthorDaoTest {
     @Test
     void shouldFindAuthor() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Optional<Author> optionalActualAuthor = authorDao.findById(1);
+        Optional<Author> optionalActualAuthor = authorRepository.findById(1);
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
@@ -74,7 +74,7 @@ class AuthorDaoTest {
         Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой");
         Author expectedAuthor3 = new Author(3, "Джоан Роулинг");
         List<Author> expectedAuthors = List.of(expectedAuthor1, expectedAuthor2, expectedAuthor3);
-        List<Author> actualAuthors = authorDao.findAll();
+        List<Author> actualAuthors = authorRepository.findAll();
         assertThat(actualAuthors).isEqualTo(expectedAuthors);
     }
 
@@ -82,11 +82,11 @@ class AuthorDaoTest {
     @Test
     void shouldDeleteAuthor() {
         Author expectedAuthor = new Author("Test author");
-        expectedAuthor = authorDao.save(expectedAuthor);
-        Optional<Author> optionalAuthor = authorDao.findById(expectedAuthor.getId());
+        expectedAuthor = authorRepository.save(expectedAuthor);
+        Optional<Author> optionalAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalAuthor).hasValue(expectedAuthor);
-        authorDao.deleteById(expectedAuthor.getId());
-        Optional<Author> optionalDeletedAuthor = authorDao.findById(expectedAuthor.getId());
+        authorRepository.deleteById(expectedAuthor.getId());
+        Optional<Author> optionalDeletedAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalDeletedAuthor).isEmpty();
     }
 }

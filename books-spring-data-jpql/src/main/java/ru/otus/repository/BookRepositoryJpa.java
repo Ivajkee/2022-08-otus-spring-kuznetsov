@@ -1,4 +1,4 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class BookDaoJpa implements BookDao {
+public class BookRepositoryJpa implements BookRepository {
     @PersistenceContext
     private final EntityManager em;
 

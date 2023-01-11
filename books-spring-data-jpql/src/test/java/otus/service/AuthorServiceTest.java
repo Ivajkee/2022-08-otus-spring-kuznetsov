@@ -9,10 +9,10 @@ import org.springframework.core.convert.ConversionService;
 import ru.otus.config.ConversionServiceConfig;
 import ru.otus.converter.AuthorDtoToAuthorConverter;
 import ru.otus.converter.AuthorToAuthorDtoConverter;
-import ru.otus.dao.AuthorDao;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
+import ru.otus.repository.AuthorRepository;
 import ru.otus.service.AuthorService;
 import ru.otus.service.AuthorServiceImpl;
 
@@ -30,13 +30,13 @@ class AuthorServiceTest {
     @Autowired
     private ConversionService conversionService;
     @MockBean
-    private AuthorDao authorDao;
+    private AuthorRepository authorRepository;
 
     @DisplayName("Should return expected authors count")
     @Test
     void shouldReturnExpectedAuthorsCount() {
         long expectedCount = 3;
-        when(authorDao.count()).thenReturn(expectedCount);
+        when(authorRepository.count()).thenReturn(expectedCount);
         long actualCount = authorService.getCountOfAuthors();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
@@ -48,7 +48,7 @@ class AuthorServiceTest {
         AuthorDto authorDto = new AuthorDto("New author");
         Author author = new Author(authorDto.getFullName());
         Author savedAuthor = new Author(id, author.getFullName());
-        when(authorDao.save(author)).thenReturn(savedAuthor);
+        when(authorRepository.save(author)).thenReturn(savedAuthor);
         AuthorDto expectedAuthorDto = new AuthorDto(id, savedAuthor.getFullName());
         AuthorDto actualAuthorDto = authorService.saveAuthor(authorDto);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
@@ -60,8 +60,8 @@ class AuthorServiceTest {
         long id = 1;
         AuthorDto authorDto = new AuthorDto(id, "Edited author");
         Author author = new Author(id, authorDto.getFullName());
-        when(authorDao.existsById(id)).thenReturn(true);
-        when(authorDao.update(author)).thenReturn(author);
+        when(authorRepository.existsById(id)).thenReturn(true);
+        when(authorRepository.update(author)).thenReturn(author);
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         AuthorDto actualAuthorDto = authorService.updateAuthor(authorDto);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
@@ -72,7 +72,7 @@ class AuthorServiceTest {
     void shouldThrowExceptionWhenTryUpdateNotExistingAuthor() {
         long id = 1;
         AuthorDto authorDto = new AuthorDto(id, "Edited author");
-        when(authorDao.existsById(id)).thenReturn(false);
+        when(authorRepository.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> authorService.updateAuthor(authorDto)).isInstanceOf(AuthorNotFoundException.class);
     }
 
@@ -80,7 +80,7 @@ class AuthorServiceTest {
     @Test
     void shouldBeExistAuthor() {
         long id = 1;
-        when(authorDao.existsById(id)).thenReturn(true);
+        when(authorRepository.existsById(id)).thenReturn(true);
         boolean authorIsExist = authorService.existsAuthorById(id);
         assertThat(authorIsExist).isTrue();
     }
@@ -89,7 +89,7 @@ class AuthorServiceTest {
     @Test
     void shouldBeNotExistAuthor() {
         long id = 1;
-        when(authorDao.existsById(id)).thenReturn(false);
+        when(authorRepository.existsById(id)).thenReturn(false);
         boolean authorIsExist = authorService.existsAuthorById(id);
         assertThat(authorIsExist).isFalse();
     }
@@ -99,7 +99,7 @@ class AuthorServiceTest {
     void shouldFindAuthor() {
         long id = 1;
         Author author = new Author(id, "Test author");
-        when(authorDao.findById(id)).thenReturn(Optional.of(author));
+        when(authorRepository.findById(id)).thenReturn(Optional.of(author));
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         AuthorDto actualAuthorDto = authorService.findAuthorById(id);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
@@ -109,7 +109,7 @@ class AuthorServiceTest {
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingAuthor() {
         long id = 1;
-        when(authorDao.findById(id)).thenReturn(Optional.empty());
+        when(authorRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.findAuthorById(id)).isInstanceOf(AuthorNotFoundException.class);
     }
 
@@ -119,7 +119,7 @@ class AuthorServiceTest {
         Author author1 = new Author(1, "Test author 1");
         Author author2 = new Author(2, "Test author 2");
         Author author3 = new Author(3, "Test author 3");
-        when(authorDao.findAll()).thenReturn(List.of(author1, author2, author3));
+        when(authorRepository.findAll()).thenReturn(List.of(author1, author2, author3));
         AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
         AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
         AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());

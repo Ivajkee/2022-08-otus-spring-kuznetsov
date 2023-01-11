@@ -1,11 +1,11 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import ru.otus.domain.model.Author;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AuthorDao {
+public interface AuthorRepository {
     long count();
 
     Author save(Author author);

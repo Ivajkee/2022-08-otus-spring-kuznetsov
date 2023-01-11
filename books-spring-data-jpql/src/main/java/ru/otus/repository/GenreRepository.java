@@ -1,11 +1,11 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import ru.otus.domain.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GenreDao {
+public interface GenreRepository {
     long count();
 
     Genre save(Genre genre);

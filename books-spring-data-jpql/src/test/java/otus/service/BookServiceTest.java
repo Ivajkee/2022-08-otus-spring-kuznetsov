@@ -9,7 +9,6 @@ import org.springframework.core.convert.ConversionService;
 import ru.otus.config.ConversionServiceConfig;
 import ru.otus.converter.BookDtoToBookConverter;
 import ru.otus.converter.BookToBookDtoConverter;
-import ru.otus.dao.BookDao;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.dto.GenreDto;
@@ -17,6 +16,7 @@ import ru.otus.domain.model.Author;
 import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.BookNotFoundException;
+import ru.otus.repository.BookRepository;
 import ru.otus.service.BookService;
 import ru.otus.service.BookServiceImpl;
 
@@ -34,13 +34,13 @@ class BookServiceTest {
     @Autowired
     private ConversionService conversionService;
     @MockBean
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     @DisplayName("Should return expected books count")
     @Test
     void shouldReturnExpectedBooksCount() {
         long expectedCount = 3;
-        when(bookDao.count()).thenReturn(expectedCount);
+        when(bookRepository.count()).thenReturn(expectedCount);
         long actualCount = bookService.getCountOfBooks();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
@@ -58,7 +58,7 @@ class BookServiceTest {
         Author savedAuthor = new Author(id, authorDto.getFullName());
         Genre savedGenre = new Genre(id, genreDto.getName());
         Book savedBook = new Book(id, book.getTitle(), savedAuthor, savedGenre);
-        when(bookDao.save(book)).thenReturn(savedBook);
+        when(bookRepository.save(book)).thenReturn(savedBook);
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, savedBook.getTitle(), expectedAuthorDto, expectedGenreDto);
@@ -76,8 +76,8 @@ class BookServiceTest {
         Author author = new Author(id, null);
         Genre genre = new Genre(id, null);
         Book book = new Book(id, bookDto.getTitle(), author, genre);
-        when(bookDao.existsById(id)).thenReturn(true);
-        when(bookDao.update(book)).thenReturn(book);
+        when(bookRepository.existsById(id)).thenReturn(true);
+        when(bookRepository.update(book)).thenReturn(book);
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle(), expectedAuthorDto, expectedGenreDto);
@@ -92,7 +92,7 @@ class BookServiceTest {
         AuthorDto authorDto = new AuthorDto(id, null);
         GenreDto genreDto = new GenreDto(id, null);
         BookDto bookDto = new BookDto(id, "Edited book", authorDto, genreDto);
-        when(bookDao.existsById(id)).thenReturn(false);
+        when(bookRepository.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> bookService.updateBook(bookDto)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -100,7 +100,7 @@ class BookServiceTest {
     @Test
     void shouldBeExistBook() {
         long id = 1;
-        when(bookDao.existsById(id)).thenReturn(true);
+        when(bookRepository.existsById(id)).thenReturn(true);
         boolean bookIsExist = bookService.existsBookById(id);
         assertThat(bookIsExist).isTrue();
     }
@@ -109,7 +109,7 @@ class BookServiceTest {
     @Test
     void shouldBeNotExistBook() {
         long id = 1;
-        when(bookDao.existsById(id)).thenReturn(false);
+        when(bookRepository.existsById(id)).thenReturn(false);
         boolean bookIsExist = bookService.existsBookById(id);
         assertThat(bookIsExist).isFalse();
     }
@@ -121,7 +121,7 @@ class BookServiceTest {
         Author author = new Author(id, "Test author");
         Genre genre = new Genre(id, "Test genre");
         Book book = new Book(id, "Test book", author, genre);
-        when(bookDao.findById(id)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle(), expectedAuthorDto, expectedGenreDto);
@@ -133,7 +133,7 @@ class BookServiceTest {
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingBook() {
         long id = 1;
-        when(bookDao.findById(id)).thenReturn(Optional.empty());
+        when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.findBookById(id)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -149,7 +149,7 @@ class BookServiceTest {
         Book book1 = new Book(1, "Test book 1", author1, genre1);
         Book book2 = new Book(2, "Test book 2", author2, genre2);
         Book book3 = new Book(3, "Test book 3", author3, genre3);
-        when(bookDao.findAll()).thenReturn(List.of(book1, book2, book3));
+        when(bookRepository.findAll()).thenReturn(List.of(book1, book2, book3));
         AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
         AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
         AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());

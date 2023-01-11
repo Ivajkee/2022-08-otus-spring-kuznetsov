@@ -3,29 +3,29 @@ package otus.dao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.dao.BookDao;
-import ru.otus.dao.BookDaoJpa;
 import ru.otus.domain.model.Author;
 import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Genre;
+import ru.otus.repository.BookRepository;
+import ru.otus.repository.BookRepositoryJpa;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(BookDaoJpa.class)
-@JdbcTest
-class BookDaoTest {
+@Import(BookRepositoryJpa.class)
+@DataJpaTest
+class BookRepositoryTest {
     @Autowired
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     @DisplayName("Should return expected books count")
     @Test
     void shouldReturnExpectedBooksCount() {
-        long actualCount = bookDao.count();
+        long actualCount = bookRepository.count();
         assertThat(actualCount).isEqualTo(3);
     }
 
@@ -35,8 +35,8 @@ class BookDaoTest {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
-        expectedBook = bookDao.save(expectedBook);
-        Optional<Book> optionalActualBook = bookDao.findById(expectedBook.getId());
+        expectedBook = bookRepository.save(expectedBook);
+        Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -46,22 +46,22 @@ class BookDaoTest {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book(3, "Edited book", expectedAuthor, expectedGenre);
-        expectedBook = bookDao.update(expectedBook);
-        Optional<Book> optionalActualBook = bookDao.findById(expectedBook.getId());
+        expectedBook = bookRepository.update(expectedBook);
+        Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
     @DisplayName("Should be exist book")
     @Test
     void shouldBeExistBook() {
-        boolean actualValue = bookDao.existsById(1);
+        boolean actualValue = bookRepository.existsById(1);
         assertThat(actualValue).isTrue();
     }
 
     @DisplayName("Should be not exist book")
     @Test
     void shouldBeNotExistBook() {
-        boolean actualValue = bookDao.existsById(4);
+        boolean actualValue = bookRepository.existsById(4);
         assertThat(actualValue).isFalse();
     }
 
@@ -71,7 +71,7 @@ class BookDaoTest {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book(1, "Руслан и Людмила", expectedAuthor, expectedGenre);
-        Optional<Book> optionalActualBook = bookDao.findById(1);
+        Optional<Book> optionalActualBook = bookRepository.findById(1);
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -88,7 +88,7 @@ class BookDaoTest {
         Book expectedBook2 = new Book(2, "Война и мир", expectedAuthor2, expectedGenre2);
         Book expectedBook3 = new Book(3, "Гарри Поттер", expectedAuthor3, expectedGenre3);
         List<Book> expectedBooks = List.of(expectedBook1, expectedBook2, expectedBook3);
-        List<Book> actualBooks = bookDao.findAll();
+        List<Book> actualBooks = bookRepository.findAll();
         assertThat(actualBooks).isEqualTo(expectedBooks);
     }
 
@@ -98,11 +98,11 @@ class BookDaoTest {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
-        expectedBook = bookDao.save(expectedBook);
-        Optional<Book> optionalAuthor = bookDao.findById(expectedBook.getId());
+        expectedBook = bookRepository.save(expectedBook);
+        Optional<Book> optionalAuthor = bookRepository.findById(expectedBook.getId());
         assertThat(optionalAuthor).hasValue(expectedBook);
-        bookDao.deleteById(expectedBook.getId());
-        Optional<Book> optionalDeletedAuthor = bookDao.findById(expectedBook.getId());
+        bookRepository.deleteById(expectedBook.getId());
+        Optional<Book> optionalDeletedAuthor = bookRepository.findById(expectedBook.getId());
         assertThat(optionalDeletedAuthor).isEmpty();
     }
 }

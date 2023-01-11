@@ -1,11 +1,11 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import ru.otus.domain.model.Book;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BookDao {
+public interface BookRepository {
     long count();
 
     Book save(Book book);

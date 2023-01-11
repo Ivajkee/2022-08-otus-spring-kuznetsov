@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "genres")
-public class Genre {
+@Table(name = "comments")
+public class Comment {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "name", unique = true)
-    private String name;
+    @Column(name = "text")
+    private String text;
 
-    public Genre(String name) {
-        this.name = name;
+    public Comment(String text) {
+        this.text = text;
     }
 }

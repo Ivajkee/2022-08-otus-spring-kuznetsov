@@ -5,25 +5,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.dao.GenreDao;
-import ru.otus.dao.GenreDaoJpa;
 import ru.otus.domain.model.Genre;
+import ru.otus.repository.GenreRepository;
+import ru.otus.repository.GenreRepositoryJpa;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(GenreDaoJpa.class)
+@Import(GenreRepositoryJpa.class)
 @JdbcTest
-class GenreDaoTest {
+class GenreRepositoryTest {
     @Autowired
-    private GenreDao genreDao;
+    private GenreRepository genreRepository;
 
     @DisplayName("Should return expected genres count")
     @Test
     void shouldReturnExpectedGenresCount() {
-        long actualCount = genreDao.count();
+        long actualCount = genreRepository.count();
         assertThat(actualCount).isEqualTo(3);
     }
 
@@ -31,8 +31,8 @@ class GenreDaoTest {
     @Test
     void shouldSaveGenre() {
         Genre expectedGenre = new Genre("Test genre");
-        expectedGenre = genreDao.save(expectedGenre);
-        Optional<Genre> optionalActualGenre = genreDao.findById(expectedGenre.getId());
+        expectedGenre = genreRepository.save(expectedGenre);
+        Optional<Genre> optionalActualGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
@@ -40,22 +40,22 @@ class GenreDaoTest {
     @Test
     void shouldUpdateGenre() {
         Genre expectedGenre = new Genre(3, "Edited genre");
-        expectedGenre = genreDao.update(expectedGenre);
-        Optional<Genre> optionalActualGenre = genreDao.findById(expectedGenre.getId());
+        expectedGenre = genreRepository.update(expectedGenre);
+        Optional<Genre> optionalActualGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).get().extracting(Genre::getName).isEqualTo(expectedGenre.getName());
     }
 
     @DisplayName("Should be exist genre")
     @Test
     void shouldBeExistGenre() {
-        boolean actualValue = genreDao.existsById(1);
+        boolean actualValue = genreRepository.existsById(1);
         assertThat(actualValue).isTrue();
     }
 
     @DisplayName("Should be not exist genre")
     @Test
     void shouldBeNotExistGenre() {
-        boolean actualValue = genreDao.existsById(4);
+        boolean actualValue = genreRepository.existsById(4);
         assertThat(actualValue).isFalse();
     }
 
@@ -63,7 +63,7 @@ class GenreDaoTest {
     @Test
     void shouldFindGenre() {
         Genre expectedGenre = new Genre(1, "Поэма");
-        Optional<Genre> optionalActualGenre = genreDao.findById(1);
+        Optional<Genre> optionalActualGenre = genreRepository.findById(1);
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
@@ -74,7 +74,7 @@ class GenreDaoTest {
         Genre expectedGenre2 = new Genre(2, "Роман");
         Genre expectedGenre3 = new Genre(3, "Фэнтези");
         List<Genre> expectedGenres = List.of(expectedGenre1, expectedGenre2, expectedGenre3);
-        List<Genre> actualGenres = genreDao.findAll();
+        List<Genre> actualGenres = genreRepository.findAll();
         assertThat(actualGenres).isEqualTo(expectedGenres);
     }
 
@@ -82,11 +82,11 @@ class GenreDaoTest {
     @Test
     void shouldDeleteGenre() {
         Genre expectedGenre = new Genre("Test genre");
-        expectedGenre = genreDao.save(expectedGenre);
-        Optional<Genre> optionalGenre = genreDao.findById(expectedGenre.getId());
+        expectedGenre = genreRepository.save(expectedGenre);
+        Optional<Genre> optionalGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalGenre).hasValue(expectedGenre);
-        genreDao.deleteById(expectedGenre.getId());
-        Optional<Genre> optionalDeletedGenre = genreDao.findById(expectedGenre.getId());
+        genreRepository.deleteById(expectedGenre.getId());
+        Optional<Genre> optionalDeletedGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalDeletedGenre).isEmpty();
     }
 }

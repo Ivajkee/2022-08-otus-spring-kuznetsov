@@ -58,6 +58,7 @@ public class BookServiceImpl implements BookService {
         return bookIsExist;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public BookDto findBookById(long id) {
         Book book = bookRepository.findById(id)
@@ -67,6 +68,7 @@ public class BookServiceImpl implements BookService {
         return bookDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAllBooks() {
         List<Book> books = bookRepository.findAll();

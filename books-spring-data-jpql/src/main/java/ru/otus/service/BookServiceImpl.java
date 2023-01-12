@@ -94,53 +94,61 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void addAuthorToBook(long bookId, long authorId) {
-        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
-                .ifPresentOrElse(author -> {
-                    if (!book.getAuthors().contains(author)) {
-                        book.addAuthor(author);
-                    }
-                }, () -> {
-                    throw new AuthorNotFoundException(authorId);
-                }), () -> {
-            throw new BookNotFoundException(bookId);
-        });
+    public BookDto addAuthorToBook(long bookId, long authorId) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            authorRepository.findById(authorId).ifPresentOrElse(author -> {
+                if (!book.getAuthors().contains(author)) {
+                    book.addAuthor(author);
+                }
+            }, () -> {
+                throw new AuthorNotFoundException(authorId);
+            });
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
     }
 
     @Transactional
     @Override
-    public void deleteAuthorFromBook(long bookId, long authorId) {
-        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
-                .ifPresentOrElse(book::deleteAuthor, () -> {
-                    throw new AuthorNotFoundException(authorId);
-                }), () -> {
-            throw new BookNotFoundException(bookId);
-        });
+    public BookDto deleteAuthorFromBook(long bookId, long authorId) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            authorRepository.findById(authorId).ifPresentOrElse(book::deleteAuthor, () -> {
+                throw new AuthorNotFoundException(authorId);
+            });
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
     }
 
     @Transactional
     @Override
-    public void addGenreToBook(long bookId, long genreId) {
-        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
-                .ifPresentOrElse(genre -> {
-                    if (!book.getGenres().contains(genre)) {
-                        book.addGenre(genre);
-                    }
-                }, () -> {
-                    throw new GenreNotFoundException(genreId);
-                }), () -> {
-            throw new BookNotFoundException(bookId);
-        });
+    public BookDto addGenreToBook(long bookId, long genreId) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            genreRepository.findById(genreId).ifPresentOrElse(genre -> {
+                if (!book.getGenres().contains(genre)) {
+                    book.addGenre(genre);
+                }
+            }, () -> {
+                throw new GenreNotFoundException(genreId);
+            });
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
     }
 
     @Transactional
     @Override
-    public void deleteGenreFromBook(long bookId, long genreId) {
-        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
-                .ifPresentOrElse(book::deleteGenre, () -> {
-                    throw new GenreNotFoundException(genreId);
-                }), () -> {
-            throw new BookNotFoundException(bookId);
-        });
+    public BookDto deleteGenreFromBook(long bookId, long genreId) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            genreRepository.findById(genreId).ifPresentOrElse(book::deleteGenre, () -> {
+                throw new AuthorNotFoundException(genreId);
+            });
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new GenreNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
     }
 }

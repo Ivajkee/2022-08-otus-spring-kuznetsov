@@ -19,11 +19,11 @@ public interface BookService {
 
     void deleteBookById(long id);
 
-    void addAuthorToBook(long bookId, long authorId);
+    BookDto addAuthorToBook(long bookId, long authorId);
 
-    void deleteAuthorFromBook(long bookId, long authorId);
+    BookDto deleteAuthorFromBook(long bookId, long authorId);
 
-    void addGenreToBook(long bookId, long genreId);
+    BookDto addGenreToBook(long bookId, long genreId);
 
-    void deleteGenreFromBook(long bookId, long genreId);
+    BookDto deleteGenreFromBook(long bookId, long genreId);
 }

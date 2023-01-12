@@ -28,7 +28,7 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Genre> genres = new ArrayList<>();
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

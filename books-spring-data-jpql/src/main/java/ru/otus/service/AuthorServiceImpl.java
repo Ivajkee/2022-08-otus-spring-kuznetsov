@@ -11,7 +11,6 @@ import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,12 +40,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto) {
-        Author updatedAuthor = Optional.of(authorDto)
-                .filter(dto -> authorRepository.existsById(dto.getId()))
-                .map(dto -> conversionService.convert(dto, Author.class))
-                .map(authorRepository::update)
-                .orElseThrow(() -> new AuthorNotFoundException(authorDto.getId()));
-        AuthorDto updatedAuthorDto = conversionService.convert(updatedAuthor, AuthorDto.class);
+        AuthorDto updatedAuthorDto = authorRepository.findById(authorDto.getId()).map(author -> {
+            author.setFullName(authorDto.getFullName());
+            return conversionService.convert(author, AuthorDto.class);
+        }).orElseThrow(() -> new AuthorNotFoundException(authorDto.getId()));
         log.debug("Updated author: {}", updatedAuthorDto);
         return updatedAuthorDto;
     }

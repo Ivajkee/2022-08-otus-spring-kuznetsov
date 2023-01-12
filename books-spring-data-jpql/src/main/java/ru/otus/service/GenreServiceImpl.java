@@ -11,7 +11,6 @@ import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,12 +40,10 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     @Override
     public GenreDto updateGenre(GenreDto genreDto) {
-        Genre updatedGenre = Optional.of(genreDto)
-                .filter(dto -> genreRepository.existsById(dto.getId()))
-                .map(dto -> conversionService.convert(dto, Genre.class))
-                .map(genreRepository::update)
-                .orElseThrow(() -> new GenreNotFoundException(genreDto.getId()));
-        GenreDto updatedGenreDto = conversionService.convert(updatedGenre, GenreDto.class);
+        GenreDto updatedGenreDto = genreRepository.findById(genreDto.getId()).map(genre -> {
+            genre.setName(genreDto.getName());
+            return conversionService.convert(genre, GenreDto.class);
+        }).orElseThrow(() -> new GenreNotFoundException(genreDto.getId()));
         log.debug("Updated genre: {}", updatedGenreDto);
         return updatedGenreDto;
     }

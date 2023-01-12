@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class CommentDto {
     private long id;
     private String text;
+
+    public CommentDto(String text) {
+        this.text = text;
+    }
 }

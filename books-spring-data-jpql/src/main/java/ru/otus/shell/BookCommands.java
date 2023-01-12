@@ -6,9 +6,12 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
+import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.service.BookService;
 import ru.otus.service.io.OutputService;
+
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @ShellComponent
@@ -76,9 +79,24 @@ public class BookCommands {
         printBook(bookDto);
     }
 
+    @ShellMethod(value = "Add comment to book.", key = {"add-c-to-b"})
+    public void addCommentToBook(@ShellOption long bookId, @ShellOption String text) {
+        CommentDto commentDto = new CommentDto(text);
+        BookDto bookDto = bookService.addCommentToBook(bookId, commentDto);
+        printBook(bookDto);
+    }
+
+    @ShellMethod(value = "Delete comment from book.", key = {"del-c-from-b"})
+    public void deleteCommentFromBook(@ShellOption long bookId, @ShellOption long commentId) {
+        BookDto bookDto = bookService.deleteCommentFromBook(bookId, commentId);
+        printBook(bookDto);
+    }
+
     private void printBook(BookDto bookDto) {
-        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)", bookDto.getId(), bookDto.getTitle(),
+        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)\nКомментарии:\n%s", bookDto.getId(), bookDto.getTitle(),
                 bookDto.getAuthors().stream().map(AuthorDto::getFullName).toList(),
-                bookDto.getGenres().stream().map(GenreDto::getName).toList()));
+                bookDto.getGenres().stream().map(GenreDto::getName).toList(),
+                bookDto.getComments().stream().map(commentDto -> String.format("%d: %s", commentDto.getId(), commentDto.getText()))
+                        .collect(Collectors.joining("\n"))));
     }
 }

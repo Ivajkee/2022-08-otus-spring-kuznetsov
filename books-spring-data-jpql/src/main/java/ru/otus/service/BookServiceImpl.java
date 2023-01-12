@@ -6,16 +6,19 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.dto.BookDto;
+import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.model.Book;
+import ru.otus.domain.model.Comment;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.exception.BookNotFoundException;
+import ru.otus.exception.CommentNotFoundException;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,6 +28,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final CommentRepository commentRepository;
     private final ConversionService conversionService;
 
     @Override
@@ -47,12 +51,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookDto updateBook(BookDto bookDto) {
-        Book updatedBook = Optional.of(bookDto)
-                .filter(dto -> bookRepository.existsById(dto.getId()))
-                .map(dto -> conversionService.convert(dto, Book.class))
-                .map(bookRepository::update)
-                .orElseThrow(() -> new BookNotFoundException(bookDto.getId()));
-        BookDto updatedBookDto = conversionService.convert(updatedBook, BookDto.class);
+        BookDto updatedBookDto = bookRepository.findById(bookDto.getId()).map(book -> {
+            book.setTitle(bookDto.getTitle());
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookDto.getId()));
         log.debug("Updated book: {}", updatedBookDto);
         return updatedBookDto;
     }
@@ -144,10 +146,35 @@ public class BookServiceImpl implements BookService {
     public BookDto deleteGenreFromBook(long bookId, long genreId) {
         BookDto bookDto = bookRepository.findById(bookId).map(book -> {
             genreRepository.findById(genreId).ifPresentOrElse(book::deleteGenre, () -> {
-                throw new AuthorNotFoundException(genreId);
+                throw new GenreNotFoundException(genreId);
             });
             return conversionService.convert(book, BookDto.class);
-        }).orElseThrow(() -> new GenreNotFoundException(bookId));
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
+    }
+
+    @Transactional
+    @Override
+    public BookDto addCommentToBook(long bookId, CommentDto commentDto) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            Comment comment = conversionService.convert(commentDto, Comment.class);
+            book.addComment(comment);
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
+        log.debug("Updated book: {}", bookDto);
+        return bookDto;
+    }
+
+    @Transactional
+    @Override
+    public BookDto deleteCommentFromBook(long bookId, long commentId) {
+        BookDto bookDto = bookRepository.findById(bookId).map(book -> {
+            commentRepository.findById(commentId).ifPresentOrElse(book::deleteComment, () -> {
+                throw new CommentNotFoundException(commentId);
+            });
+            return conversionService.convert(book, BookDto.class);
+        }).orElseThrow(() -> new BookNotFoundException(bookId));
         log.debug("Updated book: {}", bookDto);
         return bookDto;
     }

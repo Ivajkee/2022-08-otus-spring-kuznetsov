@@ -1,6 +1,7 @@
 package ru.otus.service;
 
 import ru.otus.domain.dto.BookDto;
+import ru.otus.domain.dto.CommentDto;
 
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface BookService {
     BookDto addGenreToBook(long bookId, long genreId);
 
     BookDto deleteGenreFromBook(long bookId, long genreId);
+
+    BookDto addCommentToBook(long bookId, CommentDto commentDto);
+
+    BookDto deleteCommentFromBook(long bookId, long commentId);
 }

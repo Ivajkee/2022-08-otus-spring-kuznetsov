@@ -60,4 +60,8 @@ public class Book {
     public boolean addComment(Comment comment) {
         return comments.add(comment);
     }
+
+    public boolean deleteComment(Comment comment) {
+        return comments.remove(comment);
+    }
 }

@@ -14,11 +14,15 @@ import java.util.List;
 public class BookToBookDtoConverter implements Converter<Book, BookDto> {
     @Override
     public BookDto convert(Book book) {
-        AuthorDto authorDto = new AuthorDto(book.getAuthor().getId(), book.getAuthor().getFullName());
-        GenreDto genreDto = new GenreDto(book.getGenre().getId(), book.getGenre().getName());
+        List<AuthorDto> authors = book.getAuthors().stream()
+                .map(author -> new AuthorDto(author.getId(), author.getFullName()))
+                .toList();
+        List<GenreDto> genres = book.getGenres().stream()
+                .map(genre -> new GenreDto(genre.getId(), genre.getName()))
+                .toList();
         List<CommentDto> comments = book.getComments().stream()
                 .map(comment -> new CommentDto(comment.getId(), comment.getText()))
                 .toList();
-        return new BookDto(book.getId(), book.getTitle(), authorDto, genreDto, comments);
+        return new BookDto(book.getId(), book.getTitle(), authors, genres, comments);
     }
 }

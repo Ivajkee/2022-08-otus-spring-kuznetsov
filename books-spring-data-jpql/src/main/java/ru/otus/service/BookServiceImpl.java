@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.model.Book;
+import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.exception.BookNotFoundException;
+import ru.otus.exception.GenreNotFoundException;
+import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.GenreRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final GenreRepository genreRepository;
     private final ConversionService conversionService;
 
     @Override
@@ -45,7 +51,7 @@ public class BookServiceImpl implements BookService {
                 .filter(dto -> bookRepository.existsById(dto.getId()))
                 .map(dto -> conversionService.convert(dto, Book.class))
                 .map(bookRepository::update)
-                .orElseThrow(() -> new BookNotFoundException("Book with id " + bookDto.getId() + " not found!"));
+                .orElseThrow(() -> new BookNotFoundException(bookDto.getId()));
         BookDto updatedBookDto = conversionService.convert(updatedBook, BookDto.class);
         log.debug("Updated book: {}", updatedBookDto);
         return updatedBookDto;
@@ -62,7 +68,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto findBookById(long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book with id " + id + " not found!"));
+                .orElseThrow(() -> new BookNotFoundException(id));
         BookDto bookDto = conversionService.convert(book, BookDto.class);
         log.debug("Found book: {}", bookDto);
         return bookDto;
@@ -84,5 +90,57 @@ public class BookServiceImpl implements BookService {
     public void deleteBookById(long id) {
         bookRepository.deleteById(id);
         log.debug("Book with id {} deleted", id);
+    }
+
+    @Transactional
+    @Override
+    public void addAuthorToBook(long bookId, long authorId) {
+        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
+                .ifPresentOrElse(author -> {
+                    if (!book.getAuthors().contains(author)) {
+                        book.addAuthor(author);
+                    }
+                }, () -> {
+                    throw new AuthorNotFoundException(authorId);
+                }), () -> {
+            throw new BookNotFoundException(bookId);
+        });
+    }
+
+    @Transactional
+    @Override
+    public void deleteAuthorFromBook(long bookId, long authorId) {
+        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
+                .ifPresentOrElse(book::deleteAuthor, () -> {
+                    throw new AuthorNotFoundException(authorId);
+                }), () -> {
+            throw new BookNotFoundException(bookId);
+        });
+    }
+
+    @Transactional
+    @Override
+    public void addGenreToBook(long bookId, long genreId) {
+        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
+                .ifPresentOrElse(genre -> {
+                    if (!book.getGenres().contains(genre)) {
+                        book.addGenre(genre);
+                    }
+                }, () -> {
+                    throw new GenreNotFoundException(genreId);
+                }), () -> {
+            throw new BookNotFoundException(bookId);
+        });
+    }
+
+    @Transactional
+    @Override
+    public void deleteGenreFromBook(long bookId, long genreId) {
+        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
+                .ifPresentOrElse(book::deleteGenre, () -> {
+                    throw new GenreNotFoundException(genreId);
+                }), () -> {
+            throw new BookNotFoundException(bookId);
+        });
     }
 }

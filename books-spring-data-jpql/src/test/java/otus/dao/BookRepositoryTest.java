@@ -34,7 +34,7 @@ class BookRepositoryTest {
     void shouldSaveBook() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(3, "Фэнтези");
-        Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
+        Book expectedBook = new Book("Test book");
         expectedBook = bookRepository.save(expectedBook);
         Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
@@ -45,7 +45,7 @@ class BookRepositoryTest {
     void shouldUpdateBook() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(3, "Фэнтези");
-        Book expectedBook = new Book(3, "Edited book", expectedAuthor, expectedGenre);
+        Book expectedBook = new Book(3, "Edited book");
         expectedBook = bookRepository.update(expectedBook);
         Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
@@ -70,7 +70,7 @@ class BookRepositoryTest {
     void shouldFindBook() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(1, "Поэма");
-        Book expectedBook = new Book(1, "Руслан и Людмила", expectedAuthor, expectedGenre);
+        Book expectedBook = new Book(1, "Руслан и Людмила");
         Optional<Book> optionalActualBook = bookRepository.findById(1);
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
@@ -84,9 +84,9 @@ class BookRepositoryTest {
         Genre expectedGenre2 = new Genre(2, "Роман");
         Author expectedAuthor3 = new Author(3, "Джоан Роулинг");
         Genre expectedGenre3 = new Genre(3, "Фэнтези");
-        Book expectedBook1 = new Book(1, "Руслан и Людмила", expectedAuthor1, expectedGenre1);
-        Book expectedBook2 = new Book(2, "Война и мир", expectedAuthor2, expectedGenre2);
-        Book expectedBook3 = new Book(3, "Гарри Поттер", expectedAuthor3, expectedGenre3);
+        Book expectedBook1 = new Book(1, "Руслан и Людмила");
+        Book expectedBook2 = new Book(2, "Война и мир");
+        Book expectedBook3 = new Book(3, "Гарри Поттер");
         List<Book> expectedBooks = List.of(expectedBook1, expectedBook2, expectedBook3);
         List<Book> actualBooks = bookRepository.findAll();
         assertThat(actualBooks).isEqualTo(expectedBooks);
@@ -97,7 +97,7 @@ class BookRepositoryTest {
     void shouldDeleteBook() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Genre expectedGenre = new Genre(1, "Поэма");
-        Book expectedBook = new Book("Test book", expectedAuthor, expectedGenre);
+        Book expectedBook = new Book("Test book");
         expectedBook = bookRepository.save(expectedBook);
         Optional<Book> optionalAuthor = bookRepository.findById(expectedBook.getId());
         assertThat(optionalAuthor).hasValue(expectedBook);

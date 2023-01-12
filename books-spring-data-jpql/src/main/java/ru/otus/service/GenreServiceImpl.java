@@ -45,7 +45,7 @@ public class GenreServiceImpl implements GenreService {
                 .filter(dto -> genreRepository.existsById(dto.getId()))
                 .map(dto -> conversionService.convert(dto, Genre.class))
                 .map(genreRepository::update)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + genreDto.getId() + " not found!"));
+                .orElseThrow(() -> new GenreNotFoundException(genreDto.getId()));
         GenreDto updatedGenreDto = conversionService.convert(updatedGenre, GenreDto.class);
         log.debug("Updated genre: {}", updatedGenreDto);
         return updatedGenreDto;
@@ -61,7 +61,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto findGenreById(long id) {
         Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new GenreNotFoundException("Genre with id " + id + " not found!"));
+                .orElseThrow(() -> new GenreNotFoundException(id));
         GenreDto genreDto = conversionService.convert(genre, GenreDto.class);
         log.debug("Found genre: {}", genreDto);
         return genreDto;

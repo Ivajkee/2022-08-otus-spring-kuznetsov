@@ -45,7 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .filter(dto -> authorRepository.existsById(dto.getId()))
                 .map(dto -> conversionService.convert(dto, Author.class))
                 .map(authorRepository::update)
-                .orElseThrow(() -> new AuthorNotFoundException("Author with id " + authorDto.getId() + " not found!"));
+                .orElseThrow(() -> new AuthorNotFoundException(authorDto.getId()));
         AuthorDto updatedAuthorDto = conversionService.convert(updatedAuthor, AuthorDto.class);
         log.debug("Updated author: {}", updatedAuthorDto);
         return updatedAuthorDto;
@@ -61,7 +61,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto findAuthorById(long id) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException("Author with id " + id + " not found!"));
+                .orElseThrow(() -> new AuthorNotFoundException(id));
         AuthorDto authorDto = conversionService.convert(author, AuthorDto.class);
         log.debug("Found author: {}", authorDto);
         return authorDto;

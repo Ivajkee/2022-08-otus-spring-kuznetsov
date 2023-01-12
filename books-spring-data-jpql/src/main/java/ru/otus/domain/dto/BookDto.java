@@ -12,20 +12,16 @@ import java.util.List;
 public class BookDto {
     private long id;
     private String title;
-    private AuthorDto author;
-    private GenreDto genre;
+    private List<AuthorDto> authors;
+    private List<GenreDto> genres;
     private List<CommentDto> comments;
 
-    public BookDto(long id, String title, AuthorDto author, GenreDto genre) {
+    public BookDto(long id, String title) {
         this.id = id;
         this.title = title;
-        this.author = author;
-        this.genre = genre;
     }
 
-    public BookDto(String title, AuthorDto author, GenreDto genre) {
+    public BookDto(String title) {
         this.title = title;
-        this.author = author;
-        this.genre = genre;
     }
 }

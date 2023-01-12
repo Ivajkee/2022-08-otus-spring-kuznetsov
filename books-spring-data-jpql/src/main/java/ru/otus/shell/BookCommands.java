@@ -77,7 +77,7 @@ public class BookCommands {
     }
 
     private void printBook(BookDto bookDto) {
-        outputService.output(String.format("%d: %s (%s, %s)", bookDto.getId(), bookDto.getTitle(), bookDto.getAuthors()
+        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)", bookDto.getId(), bookDto.getTitle(), bookDto.getAuthors()
                 .stream().map(AuthorDto::getFullName).toList(), bookDto.getGenres().stream().map(GenreDto::getName).toList()));
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Comment;
 
 import java.util.List;
@@ -18,15 +19,6 @@ public class CommentRepositoryJpa implements CommentRepository {
     @Override
     public long count() {
         return em.createQuery("select count(c) from Comment c", Long.class).getSingleResult();
-    }
-
-    @Override
-    public Comment save(Comment comment) {
-        if (comment.getId() == 0) {
-            em.persist(comment);
-            return comment;
-        }
-        return em.merge(comment);
     }
 
     @Override
@@ -49,6 +41,13 @@ public class CommentRepositoryJpa implements CommentRepository {
     @Override
     public List<Comment> findAll() {
         return em.createQuery("select c from Comment c", Comment.class).getResultList();
+    }
+
+    @Override
+    public List<Comment> findAllByBook(Book book) {
+        return em.createQuery("select c from Comment c where c.book = :book", Comment.class)
+                .setParameter("book", book)
+                .getResultList();
     }
 
     @Override

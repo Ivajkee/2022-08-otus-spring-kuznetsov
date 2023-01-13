@@ -14,29 +14,10 @@ public class CommentCommands {
     private final CommentService commentService;
     private final OutputService outputService;
 
-    @ShellMethod(value = "Show all comments.", key = {"all-c"})
-    public void showComments() {
-        commentService.findAllComments().forEach(commentDto -> outputService.output(String.format("%d: %s", commentDto.getId(),
-                commentDto.getText())));
-    }
-
     @ShellMethod(value = "Show comment.", key = {"c"})
     public void showComment(@ShellOption long id) {
         CommentDto commentDto = commentService.findCommentById(id);
         outputService.output(String.format("%d: %s", commentDto.getId(), commentDto.getText()));
-    }
-
-    @ShellMethod(value = "Show count of comments.", key = {"count-c"})
-    public void showCountOfComments() {
-        long count = commentService.getCountOfComments();
-        outputService.output(count);
-    }
-
-    @ShellMethod(value = "Add comment.", key = {"add-c"})
-    public void addComment(@ShellOption(arity = 10) String text) {
-        CommentDto commentDto = new CommentDto(text);
-        CommentDto addedComment = commentService.saveComment(commentDto);
-        outputService.output(String.format("%d: %s", addedComment.getId(), addedComment.getText()));
     }
 
     @ShellMethod(value = "Edit comment.", key = {"edit-c"})

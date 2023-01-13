@@ -6,7 +6,6 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.service.BookService;
 import ru.otus.service.io.OutputService;
@@ -53,43 +52,6 @@ public class BookCommands {
     @ShellMethod(value = "Delete book.", key = {"del-b"})
     public void deleteBook(@ShellOption long id) {
         bookService.deleteBookById(id);
-    }
-
-    @ShellMethod(value = "Add author to book.", key = {"add-a-to-b"})
-    public void addAuthorToBook(@ShellOption long bookId, @ShellOption long authorId) {
-        BookDto bookDto = bookService.addAuthorToBook(bookId, authorId);
-        printBook(bookDto);
-    }
-
-    @ShellMethod(value = "Delete author from book.", key = {"del-a-from-b"})
-    public void deleteAuthorFromBook(@ShellOption long bookId, @ShellOption long authorId) {
-        BookDto bookDto = bookService.deleteAuthorFromBook(bookId, authorId);
-        printBook(bookDto);
-    }
-
-    @ShellMethod(value = "Add genre to book.", key = {"add-g-to-b"})
-    public void addGenreToBook(@ShellOption long bookId, @ShellOption long genreId) {
-        BookDto bookDto = bookService.addGenreToBook(bookId, genreId);
-        printBook(bookDto);
-    }
-
-    @ShellMethod(value = "Delete genre from book.", key = {"del-g-from-b"})
-    public void deleteGenreFromBook(@ShellOption long bookId, @ShellOption long genreId) {
-        BookDto bookDto = bookService.deleteGenreFromBook(bookId, genreId);
-        printBook(bookDto);
-    }
-
-    @ShellMethod(value = "Add comment to book.", key = {"add-c-to-b"})
-    public void addCommentToBook(@ShellOption long bookId, @ShellOption String text) {
-        CommentDto commentDto = new CommentDto(text);
-        BookDto bookDto = bookService.addCommentToBook(bookId, commentDto);
-        printBook(bookDto);
-    }
-
-    @ShellMethod(value = "Delete comment from book.", key = {"del-c-from-b"})
-    public void deleteCommentFromBook(@ShellOption long bookId, @ShellOption long commentId) {
-        BookDto bookDto = bookService.deleteCommentFromBook(bookId, commentId);
-        printBook(bookDto);
     }
 
     private void printBook(BookDto bookDto) {

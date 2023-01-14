@@ -33,7 +33,7 @@ public class LibraryCommands {
     }
 
     @ShellMethod(value = "Add comment to book.", key = {"add-c-to-b"})
-    public void addCommentToBook(@ShellOption long bookId, @ShellOption String text) {
+    public void addCommentToBook(@ShellOption long bookId, @ShellOption(arity = 10) String text) {
         CommentDto commentDto = new CommentDto(text);
         libraryService.addCommentToBook(bookId, commentDto);
     }

@@ -4,13 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.dto.GenreDto;
 import ru.otus.service.BookService;
 import ru.otus.service.io.OutputService;
-
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @ShellComponent
@@ -55,10 +51,9 @@ public class BookCommands {
     }
 
     private void printBook(BookDto bookDto) {
-        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)\nКомментарии:\n%s", bookDto.getId(), bookDto.getTitle(),
-                bookDto.getAuthors().stream().map(AuthorDto::getFullName).toList(),
-                bookDto.getGenres().stream().map(GenreDto::getName).toList(),
-                bookDto.getComments().stream().map(commentDto -> String.format("%d: %s", commentDto.getId(), commentDto.getText()))
-                        .collect(Collectors.joining("\n"))));
+        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s, Комментарии: %s)", bookDto.getId(), bookDto.getTitle(),
+                bookDto.getAuthors().stream().map(authorDto -> String.format("%d: %s", authorDto.getId(), authorDto.getFullName())).toList(),
+                bookDto.getGenres().stream().map(genreDto -> String.format("%d: %s", genreDto.getId(), genreDto.getName())).toList(),
+                bookDto.getComments().stream().map(commentDto -> String.format("%d: %s", commentDto.getId(), commentDto.getText())).toList()));
     }
 }

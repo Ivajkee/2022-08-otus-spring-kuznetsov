@@ -8,18 +8,24 @@ import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Book;
 
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BookToBookDtoConverter implements Converter<Book, BookDto> {
     @Override
     public BookDto convert(Book book) {
-        List<AuthorDto> authors = book.getAuthors().stream()
+        Set<AuthorDto> authors = book.getAuthors().stream()
                 .map(author -> new AuthorDto(author.getId(), author.getFullName()))
-                .toList();
-        List<GenreDto> genres = book.getGenres().stream()
+                .sorted(Comparator.comparing(AuthorDto::getId))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<GenreDto> genres = book.getGenres().stream()
                 .map(genre -> new GenreDto(genre.getId(), genre.getName()))
-                .toList();
+                .sorted(Comparator.comparing(GenreDto::getId))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         List<CommentDto> comments = book.getComments().stream()
                 .map(comment -> new CommentDto(comment.getId(), comment.getText()))
                 .toList();

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.util.List;
 public class AuthorDto {
     private long id;
     private String fullName;
-    private List<BookDto> books;
+    private Set<BookDto> books;
 
     public AuthorDto(long id, String fullName) {
         this.id = id;

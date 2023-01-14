@@ -29,11 +29,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public void addAuthorToBook(long authorId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
-                .ifPresentOrElse(author -> {
-                    if (!book.getAuthors().contains(author)) {
-                        book.addAuthor(author);
-                    }
-                }, () -> {
+                .ifPresentOrElse(book::addAuthor, () -> {
                     throw new AuthorNotFoundException(authorId);
                 }), () -> {
             throw new BookNotFoundException(bookId);
@@ -55,11 +51,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public void addGenreToBook(long genreId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
-                .ifPresentOrElse(genre -> {
-                    if (!book.getGenres().contains(genre)) {
-                        book.addGenre(genre);
-                    }
-                }, () -> {
+                .ifPresentOrElse(book::addGenre, () -> {
                     throw new GenreNotFoundException(genreId);
                 }), () -> {
             throw new BookNotFoundException(bookId);

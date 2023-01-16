@@ -53,6 +53,11 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public void deleteById(long id) {
-        findById(id).ifPresent(em::remove);
+        findById(id).ifPresent(this::delete);
+    }
+
+    @Override
+    public void delete(Genre genre) {
+        em.remove(genre);
     }
 }

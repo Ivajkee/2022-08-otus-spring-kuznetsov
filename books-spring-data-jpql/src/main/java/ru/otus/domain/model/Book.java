@@ -1,9 +1,7 @@
 package ru.otus.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@ToString(exclude = {"authors", "genres"})
+@EqualsAndHashCode(exclude = {"authors", "genres"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -52,6 +52,7 @@ public class Book {
         if (authors.contains(author)) {
             return false;
         }
+        author.addBook(this);
         return authors.add(author);
     }
 
@@ -63,6 +64,7 @@ public class Book {
         if (genres.contains(genre)) {
             return false;
         }
+        genre.addBook(this);
         return genres.add(genre);
     }
 

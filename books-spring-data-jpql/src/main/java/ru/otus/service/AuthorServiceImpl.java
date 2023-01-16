@@ -55,6 +55,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorIsExist;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public AuthorDto findAuthorById(long id) {
         Author author = authorRepository.findById(id)
@@ -64,6 +65,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<AuthorDto> findAllAuthors() {
         List<Author> authors = authorRepository.findAll();
@@ -77,7 +79,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public void deleteAuthorById(long id) {
-        authorRepository.deleteById(id);
+        authorRepository.findById(id).ifPresentOrElse(author -> {
+            author.getBooks().forEach(book -> book.deleteAuthor(author));
+            authorRepository.delete(author);
+        }, () -> {
+            throw new AuthorNotFoundException(id);
+        });
         log.debug("Author with id {} deleted", id);
     }
 }

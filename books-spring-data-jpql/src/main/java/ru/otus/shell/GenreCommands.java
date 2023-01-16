@@ -16,13 +16,13 @@ public class GenreCommands {
 
     @ShellMethod(value = "Show all genres.", key = {"all-g"})
     public void showGenres() {
-        genreService.findAllGenres().forEach(genreDto -> outputService.output(String.format("%d: %s", genreDto.getId(), genreDto.getName())));
+        genreService.findAllGenres().forEach(this::printGenre);
     }
 
     @ShellMethod(value = "Show genre.", key = {"g"})
     public void showGenre(@ShellOption long id) {
         GenreDto genreDto = genreService.findGenreById(id);
-        outputService.output(String.format("%d: %s", genreDto.getId(), genreDto.getName()));
+        printGenre(genreDto);
     }
 
     @ShellMethod(value = "Show count of genres.", key = {"count-g"})
@@ -35,18 +35,23 @@ public class GenreCommands {
     public void addGenre(@ShellOption(arity = 3) String name) {
         GenreDto genreDto = new GenreDto(name);
         GenreDto addedGenre = genreService.saveGenre(genreDto);
-        outputService.output(String.format("%d: %s", addedGenre.getId(), addedGenre.getName()));
+        printGenre(addedGenre);
     }
 
     @ShellMethod(value = "Edit genre.", key = {"edit-g"})
     public void editGenre(@ShellOption long id, @ShellOption(arity = 3) String name) {
         GenreDto genreDto = new GenreDto(id, name);
         GenreDto updatedGenre = genreService.updateGenre(genreDto);
-        outputService.output(String.format("%d: %s", updatedGenre.getId(), updatedGenre.getName()));
+        printGenre(updatedGenre);
     }
 
     @ShellMethod(value = "Delete genre.", key = {"del-g"})
     public void deleteGenre(@ShellOption long id) {
         genreService.deleteGenreById(id);
+    }
+
+    private void printGenre(GenreDto genreDto) {
+        outputService.output(String.format("%d: %s (Книги: %s)", genreDto.getId(), genreDto.getName(),
+                genreDto.getBooks().stream().map(bookDto -> String.format("%d: %s", bookDto.getId(), bookDto.getTitle())).toList()));
     }
 }

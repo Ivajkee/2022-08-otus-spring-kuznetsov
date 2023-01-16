@@ -1,5 +1,6 @@
 package ru.otus.repository;
 
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,10 @@ import org.springframework.stereotype.Repository;
 import ru.otus.domain.model.Author;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
 @RequiredArgsConstructor
 @Repository
@@ -43,12 +47,17 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Optional<Author> findById(long id) {
-        return Optional.ofNullable(em.find(Author.class, id));
+        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
+        Map<String, Object> properties = Map.of(FETCH.name(), authorBooksGraph);
+        return Optional.ofNullable(em.find(Author.class, id, properties));
     }
 
     @Override
     public List<Author> findAll() {
-        return em.createQuery("select a from Author a", Author.class).getResultList();
+        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
+        return em.createQuery("select a from Author a", Author.class)
+                .setHint(FETCH.name(), authorBooksGraph)
+                .getResultList();
     }
 
     @Override

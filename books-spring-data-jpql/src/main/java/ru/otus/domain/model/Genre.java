@@ -13,6 +13,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "genres")
+@NamedEntityGraph(name = "genre-books-graph", attributeNodes = {
+        @NamedAttributeNode("books")
+})
 public class Genre {
     @Id
     @Column(name = "id")
@@ -20,7 +23,7 @@ public class Genre {
     private long id;
     @Column(name = "name", unique = true)
     private String name;
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres")
     private Set<Book> books = new HashSet<>();
 
     public Genre(long id, String name) {

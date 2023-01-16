@@ -1,5 +1,6 @@
 package ru.otus.repository;
 
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,10 @@ import org.springframework.stereotype.Repository;
 import ru.otus.domain.model.Genre;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
 @RequiredArgsConstructor
 @Repository
@@ -43,12 +47,17 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public Optional<Genre> findById(long id) {
-        return Optional.ofNullable(em.find(Genre.class, id));
+        EntityGraph<?> genreBooksGraph = em.getEntityGraph("genre-books-graph");
+        Map<String, Object> properties = Map.of(FETCH.name(), genreBooksGraph);
+        return Optional.ofNullable(em.find(Genre.class, id, properties));
     }
 
     @Override
     public List<Genre> findAll() {
-        return em.createQuery("select g from Genre g", Genre.class).getResultList();
+        EntityGraph<?> genreBooksGraph = em.getEntityGraph("genre-books-graph");
+        return em.createQuery("select g from Genre g", Genre.class)
+                .setHint(FETCH.name(), genreBooksGraph)
+                .getResultList();
     }
 
     @Override

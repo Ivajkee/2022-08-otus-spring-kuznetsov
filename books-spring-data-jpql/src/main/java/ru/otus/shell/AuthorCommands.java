@@ -16,14 +16,13 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Show all authors.", key = {"all-a"})
     public void showAuthors() {
-        authorService.findAllAuthors().forEach(authorDto -> outputService.output(String.format("%d: %s", authorDto.getId(),
-                authorDto.getFullName())));
+        authorService.findAllAuthors().forEach(this::printAuthor);
     }
 
     @ShellMethod(value = "Show author.", key = {"a"})
     public void showAuthor(@ShellOption long id) {
         AuthorDto authorDto = authorService.findAuthorById(id);
-        outputService.output(String.format("%d: %s", authorDto.getId(), authorDto.getFullName()));
+        printAuthor(authorDto);
     }
 
     @ShellMethod(value = "Show count of authors.", key = {"count-a"})
@@ -36,18 +35,24 @@ public class AuthorCommands {
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
         AuthorDto authorDto = new AuthorDto(fullName);
         AuthorDto addedAuthor = authorService.saveAuthor(authorDto);
-        outputService.output(String.format("%d: %s", addedAuthor.getId(), addedAuthor.getFullName()));
+        printAuthor(addedAuthor);
     }
+
 
     @ShellMethod(value = "Edit author.", key = {"edit-a"})
     public void editAuthor(@ShellOption long id, @ShellOption(arity = 3) String fullName) {
         AuthorDto authorDto = new AuthorDto(id, fullName);
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto);
-        outputService.output(String.format("%d: %s", updatedAuthor.getId(), updatedAuthor.getFullName()));
+        printAuthor(updatedAuthor);
     }
 
     @ShellMethod(value = "Delete author.", key = {"del-a"})
     public void deleteAuthor(@ShellOption long id) {
         authorService.deleteAuthorById(id);
+    }
+
+    private void printAuthor(AuthorDto authorDto) {
+        outputService.output(String.format("%d: %s (Книги: %s)", authorDto.getId(), authorDto.getFullName(),
+                authorDto.getBooks().stream().map(bookDto -> String.format("%d: %s", bookDto.getId(), bookDto.getTitle())).toList()));
     }
 }

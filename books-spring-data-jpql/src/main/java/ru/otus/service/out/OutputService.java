@@ -1,4 +1,4 @@
-package ru.otus.service.io;
+package ru.otus.service.out;
 
 @FunctionalInterface
 public interface OutputService {

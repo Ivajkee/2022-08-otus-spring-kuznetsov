@@ -6,7 +6,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.service.BookService;
-import ru.otus.service.io.OutputService;
+import ru.otus.service.out.OutputService;
 
 @RequiredArgsConstructor
 @ShellComponent

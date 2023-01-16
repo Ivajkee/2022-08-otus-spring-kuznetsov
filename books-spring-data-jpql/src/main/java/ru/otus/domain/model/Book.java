@@ -15,6 +15,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
+@NamedEntityGraph(name = "book-graph", attributeNodes = {
+        @NamedAttributeNode("authors"),
+        @NamedAttributeNode("genres"),
+        @NamedAttributeNode("comments")
+})
 public class Book {
     @Id
     @Column(name = "id")

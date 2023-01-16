@@ -25,4 +25,4 @@ spring:
       #format_sql: true
 logging:
   level:
-    ru.otus: INFO
+    ru.otus: DEBUG

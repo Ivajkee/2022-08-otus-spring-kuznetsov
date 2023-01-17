@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Author;
 import ru.otus.repository.AuthorRepository;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthorRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private TestEntityManager em;
 
     @DisplayName("Should return expected authors count")
     @Test
@@ -59,11 +62,19 @@ class AuthorRepositoryTest {
         assertThat(actualValue).isFalse();
     }
 
-    @DisplayName("Should find author")
+    @DisplayName("Should find author by id")
     @Test
-    void shouldFindAuthor() {
+    void shouldFindAuthorById() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
         Optional<Author> optionalActualAuthor = authorRepository.findById(1);
+        assertThat(optionalActualAuthor).hasValue(expectedAuthor);
+    }
+
+    @DisplayName("Should find author by full name")
+    @Test
+    void shouldFindAuthorByFullName() {
+        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
+        Optional<Author> optionalActualAuthor = authorRepository.findByFullName("александр сергеевич пушкин");
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
@@ -81,8 +92,8 @@ class AuthorRepositoryTest {
     @DisplayName("Should delete author")
     @Test
     void shouldDeleteAuthor() {
-        Author expectedAuthor = new Author("Test author");
-        expectedAuthor = authorRepository.save(expectedAuthor);
+        Author author = new Author("Test author");
+        Author expectedAuthor = em.persistAndFlush(author);
         Optional<Author> optionalAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalAuthor).hasValue(expectedAuthor);
         authorRepository.deleteById(expectedAuthor.getId());

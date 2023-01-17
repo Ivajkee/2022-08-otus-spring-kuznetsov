@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Book;
 import ru.otus.repository.BookRepository;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private TestEntityManager em;
 
     @DisplayName("Should return expected books count")
     @Test
@@ -59,11 +62,19 @@ class BookRepositoryTest {
         assertThat(actualValue).isFalse();
     }
 
-    @DisplayName("Should find book")
+    @DisplayName("Should find book by id")
     @Test
-    void shouldFindBook() {
+    void shouldFindBookById() {
         Book expectedBook = new Book(1, "Руслан и Людмила");
         Optional<Book> optionalActualBook = bookRepository.findById(1);
+        assertThat(optionalActualBook).hasValue(expectedBook);
+    }
+
+    @DisplayName("Should find book by title")
+    @Test
+    void shouldFindBookByTitle() {
+        Book expectedBook = new Book(1, "Руслан и Людмила");
+        Optional<Book> optionalActualBook = bookRepository.findByTitle("руслан и людмила");
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -81,8 +92,8 @@ class BookRepositoryTest {
     @DisplayName("Should delete book")
     @Test
     void shouldDeleteBook() {
-        Book expectedBook = new Book("Test book");
-        expectedBook = bookRepository.save(expectedBook);
+        Book book = new Book("Test book");
+        Book expectedBook = em.persistAndFlush(book);
         Optional<Book> optionalAuthor = bookRepository.findById(expectedBook.getId());
         assertThat(optionalAuthor).hasValue(expectedBook);
         bookRepository.deleteById(expectedBook.getId());

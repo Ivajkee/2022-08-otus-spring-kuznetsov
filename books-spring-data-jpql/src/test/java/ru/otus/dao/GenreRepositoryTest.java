@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Genre;
 import ru.otus.repository.GenreRepository;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GenreRepositoryTest {
     @Autowired
     private GenreRepository genreRepository;
+    @Autowired
+    private TestEntityManager em;
 
     @DisplayName("Should return expected genres count")
     @Test
@@ -59,11 +62,19 @@ class GenreRepositoryTest {
         assertThat(actualValue).isFalse();
     }
 
-    @DisplayName("Should find genre")
+    @DisplayName("Should find genre by id")
     @Test
-    void shouldFindGenre() {
+    void shouldFindGenreById() {
         Genre expectedGenre = new Genre(1, "Поэма");
         Optional<Genre> optionalActualGenre = genreRepository.findById(1);
+        assertThat(optionalActualGenre).hasValue(expectedGenre);
+    }
+
+    @DisplayName("Should find genre by name")
+    @Test
+    void shouldFindGenreByName() {
+        Genre expectedGenre = new Genre(1, "Поэма");
+        Optional<Genre> optionalActualGenre = genreRepository.findByName("поэма");
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
@@ -81,8 +92,8 @@ class GenreRepositoryTest {
     @DisplayName("Should delete genre")
     @Test
     void shouldDeleteGenre() {
-        Genre expectedGenre = new Genre("Test genre");
-        expectedGenre = genreRepository.save(expectedGenre);
+        Genre genre = new Genre("Test genre");
+        Genre expectedGenre = em.persistAndFlush(genre);
         Optional<Genre> optionalGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalGenre).hasValue(expectedGenre);
         genreRepository.deleteById(expectedGenre.getId());

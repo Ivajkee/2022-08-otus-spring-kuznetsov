@@ -70,7 +70,7 @@ class GenreServiceTest {
     void shouldThrowExceptionWhenTryUpdateNotExistingGenre() {
         long id = 1;
         GenreDto genreDto = new GenreDto(id, "Edited genre");
-        when(genreRepository.existsById(id)).thenReturn(false);
+        when(genreRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> genreService.updateGenre(genreDto)).isInstanceOf(GenreNotFoundException.class);
     }
 

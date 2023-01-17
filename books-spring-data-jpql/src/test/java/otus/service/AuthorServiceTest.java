@@ -70,7 +70,7 @@ class AuthorServiceTest {
     void shouldThrowExceptionWhenTryUpdateNotExistingAuthor() {
         long id = 1;
         AuthorDto authorDto = new AuthorDto(id, "Edited author");
-        when(authorRepository.existsById(id)).thenReturn(false);
+        when(authorRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.updateAuthor(authorDto)).isInstanceOf(AuthorNotFoundException.class);
     }
 

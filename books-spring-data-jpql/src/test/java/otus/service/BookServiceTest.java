@@ -6,15 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
-import ru.otus.config.ConversionServiceConfig;
-import ru.otus.converter.BookDtoToBookConverter;
-import ru.otus.converter.BookToBookDtoConverter;
-import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.dto.GenreDto;
-import ru.otus.domain.model.Author;
 import ru.otus.domain.model.Book;
-import ru.otus.domain.model.Genre;
 import ru.otus.exception.BookNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.service.BookService;
@@ -26,12 +19,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {BookServiceImpl.class, ConversionServiceConfig.class, BookDtoToBookConverter.class,
-        BookToBookDtoConverter.class})
+@SpringBootTest(classes = BookServiceImpl.class)
 class BookServiceTest {
     @Autowired
     private BookService bookService;
-    @Autowired
+    @MockBean
     private ConversionService conversionService;
     @MockBean
     private BookRepository bookRepository;
@@ -49,19 +41,13 @@ class BookServiceTest {
     @Test
     void shouldSaveBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto("New author");
-        GenreDto genreDto = new GenreDto("New genre");
         BookDto bookDto = new BookDto("New book");
-        Author author = new Author(authorDto.getFullName());
-        Genre genre = new Genre(genreDto.getName());
         Book book = new Book(bookDto.getTitle());
-        Author savedAuthor = new Author(id, authorDto.getFullName());
-        Genre savedGenre = new Genre(id, genreDto.getName());
         Book savedBook = new Book(id, book.getTitle());
-        when(bookRepository.save(book)).thenReturn(savedBook);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, savedBook.getTitle());
+        when(bookRepository.save(book)).thenReturn(savedBook);
+        when(conversionService.convert(bookDto, Book.class)).thenReturn(book);
+        when(conversionService.convert(savedBook, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.saveBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
     }
@@ -70,17 +56,11 @@ class BookServiceTest {
     @Test
     void shouldUpdateBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, null);
-        GenreDto genreDto = new GenreDto(id, null);
         BookDto bookDto = new BookDto(id, "Edited book");
-        Author author = new Author(id, null);
-        Genre genre = new Genre(id, null);
         Book book = new Book(id, bookDto.getTitle());
-        when(bookRepository.existsById(id)).thenReturn(true);
-        when(bookRepository.update(book)).thenReturn(book);
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle());
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
+        when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.updateBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
     }
@@ -89,10 +69,8 @@ class BookServiceTest {
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingBook() {
         long id = 1;
-        AuthorDto authorDto = new AuthorDto(id, null);
-        GenreDto genreDto = new GenreDto(id, null);
         BookDto bookDto = new BookDto(id, "Edited book");
-        when(bookRepository.existsById(id)).thenReturn(false);
+        when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.updateBook(bookDto)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -114,52 +92,62 @@ class BookServiceTest {
         assertThat(bookIsExist).isFalse();
     }
 
-    @DisplayName("Should find book")
+    @DisplayName("Should find book by id")
     @Test
-    void shouldFindBook() {
+    void shouldFindBookById() {
         long id = 1;
-        Author author = new Author(id, "Test author");
-        Genre genre = new Genre(id, "Test genre");
         Book book = new Book(id, "Test book");
-        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
-        GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         BookDto expectedBookDto = new BookDto(id, book.getTitle());
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
+        when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.findBookById(id);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
     }
 
-    @DisplayName("Should throw exception when try find not existing book")
+    @DisplayName("Should throw exception when try find not existing book by id")
     @Test
-    void shouldThrowExceptionWhenTryFindNotExistingBook() {
+    void shouldThrowExceptionWhenTryFindNotExistingBookById() {
         long id = 1;
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.findBookById(id)).isInstanceOf(BookNotFoundException.class);
     }
 
+    @DisplayName("Should find book by title")
+    @Test
+    void shouldFindBookByTitle() {
+        long id = 1;
+        String title = "Test book";
+        Book book = new Book(id, title);
+        BookDto expectedBookDto = new BookDto(id, title);
+        when(bookRepository.findByTitle(title)).thenReturn(Optional.of(book));
+        when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
+        BookDto actualBookDto = bookService.findBookByTitle(title);
+        assertThat(actualBookDto).isEqualTo(expectedBookDto);
+    }
+
+    @DisplayName("Should throw exception when try find not existing book by title")
+    @Test
+    void shouldThrowExceptionWhenTryFindNotExistingBookByTitle() {
+        String title = "Test book";
+        when(bookRepository.findByTitle(title)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> bookService.findBookByTitle(title)).isInstanceOf(BookNotFoundException.class);
+    }
+
     @DisplayName("Should find all books")
     @Test
     void shouldFindAllBooks() {
-        Author author1 = new Author(1, "Test author 1");
-        Author author2 = new Author(2, "Test author 2");
-        Author author3 = new Author(3, "Test author 3");
-        Genre genre1 = new Genre(1, "Test genre 1");
-        Genre genre2 = new Genre(2, "Test genre 2");
-        Genre genre3 = new Genre(3, "Test genre 3");
         Book book1 = new Book(1, "Test book 1");
         Book book2 = new Book(2, "Test book 2");
         Book book3 = new Book(3, "Test book 3");
-        when(bookRepository.findAll()).thenReturn(List.of(book1, book2, book3));
-        AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
-        AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
-        AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());
-        GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName());
-        GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName());
-        GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName());
         BookDto bookDto1 = new BookDto(book1.getId(), book1.getTitle());
         BookDto bookDto2 = new BookDto(book2.getId(), book2.getTitle());
         BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle());
+        List<Book> books = List.of(book1, book2, book3);
         List<BookDto> expectedBookDtoList = List.of(bookDto1, bookDto2, bookDto3);
+        when(bookRepository.findAll()).thenReturn(books);
+        when(conversionService.convert(book1, BookDto.class)).thenReturn(bookDto1);
+        when(conversionService.convert(book2, BookDto.class)).thenReturn(bookDto2);
+        when(conversionService.convert(book3, BookDto.class)).thenReturn(bookDto3);
         List<BookDto> actualBookDtoList = bookService.findAllBooks();
         assertThat(actualBookDtoList).isEqualTo(expectedBookDtoList);
     }
@@ -167,6 +155,9 @@ class BookServiceTest {
     @DisplayName("Should delete book")
     @Test
     void shouldDeleteBook() {
+        long id = 1;
+        Book book = new Book(id, "Test book");
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         assertThatCode(() -> bookService.deleteBookById(1)).doesNotThrowAnyException();
     }
 }

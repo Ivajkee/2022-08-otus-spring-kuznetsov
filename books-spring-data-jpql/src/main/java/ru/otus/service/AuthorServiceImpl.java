@@ -67,6 +67,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     @Override
+    public AuthorDto findAuthorByFullName(String fullName) {
+        Author author = authorRepository.findByFullName(fullName)
+                .orElseThrow(() -> new AuthorNotFoundException(fullName));
+        AuthorDto authorDto = conversionService.convert(author, AuthorDto.class);
+        log.debug("Found author: {}", authorDto);
+        return authorDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<AuthorDto> findAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         List<AuthorDto> authorsDto = authors.stream()

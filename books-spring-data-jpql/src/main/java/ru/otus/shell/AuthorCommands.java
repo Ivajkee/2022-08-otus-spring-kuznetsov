@@ -19,9 +19,15 @@ public class AuthorCommands {
         authorService.findAllAuthors().forEach(this::printAuthor);
     }
 
-    @ShellMethod(value = "Show author.", key = {"a"})
+    @ShellMethod(value = "Show author by id.", key = {"a"})
     public void showAuthor(@ShellOption long id) {
         AuthorDto authorDto = authorService.findAuthorById(id);
+        printAuthor(authorDto);
+    }
+
+    @ShellMethod(value = "Show author by name.", key = {"a-name"})
+    public void showAuthor(@ShellOption String fullName) {
+        AuthorDto authorDto = authorService.findAuthorByFullName(fullName.trim());
         printAuthor(authorDto);
     }
 
@@ -33,7 +39,7 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Add author.", key = {"add-a"})
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto(fullName);
+        AuthorDto authorDto = new AuthorDto(fullName.trim());
         AuthorDto addedAuthor = authorService.saveAuthor(authorDto);
         printAuthor(addedAuthor);
     }
@@ -41,7 +47,7 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Edit author.", key = {"edit-a"})
     public void editAuthor(@ShellOption long id, @ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto(id, fullName);
+        AuthorDto authorDto = new AuthorDto(id, fullName.trim());
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto);
         printAuthor(updatedAuthor);
     }

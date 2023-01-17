@@ -67,6 +67,16 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional(readOnly = true)
     @Override
+    public GenreDto findGenreByName(String name) {
+        Genre genre = genreRepository.findByName(name)
+                .orElseThrow(() -> new GenreNotFoundException(name));
+        GenreDto genreDto = conversionService.convert(genre, GenreDto.class);
+        log.debug("Found genre: {}", genreDto);
+        return genreDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<GenreDto> findAllGenres() {
         List<Genre> genres = genreRepository.findAll();
         List<GenreDto> genresDto = genres.stream()

@@ -22,7 +22,7 @@ public class CommentCommands {
 
     @ShellMethod(value = "Edit comment.", key = {"edit-c"})
     public void editComment(@ShellOption long id, @ShellOption(arity = 10) String text) {
-        CommentDto commentDto = new CommentDto(id, text);
+        CommentDto commentDto = new CommentDto(id, text.trim());
         CommentDto updatedComment = commentService.updateComment(commentDto);
         outputService.output(String.format("%d: %s", updatedComment.getId(), updatedComment.getText()));
     }

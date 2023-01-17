@@ -19,9 +19,15 @@ public class BookCommands {
         bookService.findAllBooks().forEach(this::printBook);
     }
 
-    @ShellMethod(value = "Show book.", key = {"b"})
+    @ShellMethod(value = "Show book by id.", key = {"b"})
     public void showBook(@ShellOption long id) {
         BookDto bookDto = bookService.findBookById(id);
+        printBook(bookDto);
+    }
+
+    @ShellMethod(value = "Show book by title.", key = {"b-title"})
+    public void showBook(@ShellOption String title) {
+        BookDto bookDto = bookService.findBookByTitle(title.trim());
         printBook(bookDto);
     }
 
@@ -33,14 +39,14 @@ public class BookCommands {
 
     @ShellMethod(value = "Add book.", key = {"add-b"})
     public void addBook(@ShellOption(arity = 5) String title) {
-        BookDto bookDto = new BookDto(title);
+        BookDto bookDto = new BookDto(title.trim());
         BookDto addedBook = bookService.saveBook(bookDto);
         printBook(addedBook);
     }
 
     @ShellMethod(value = "Edit book.", key = {"edit-b"})
     public void editBook(@ShellOption long id, @ShellOption(arity = 5) String title) {
-        BookDto bookDto = new BookDto(id, title);
+        BookDto bookDto = new BookDto(id, title.trim());
         BookDto updatedBook = bookService.updateBook(bookDto);
         printBook(updatedBook);
     }

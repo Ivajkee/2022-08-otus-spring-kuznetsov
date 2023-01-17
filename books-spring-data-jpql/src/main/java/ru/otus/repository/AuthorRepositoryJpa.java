@@ -2,6 +2,7 @@ package ru.otus.repository;
 
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,20 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
         Map<String, Object> properties = Map.of(FETCH.name(), authorBooksGraph);
         return Optional.ofNullable(em.find(Author.class, id, properties));
+    }
+
+    @Override
+    public Optional<Author> findByFullName(String fullName) {
+        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
+        try {
+            Author author = em.createQuery("select a from Author a where lower(a.fullName) = lower(:fullName)", Author.class)
+                    .setParameter("fullName", fullName)
+                    .setHint(FETCH.name(), authorBooksGraph)
+                    .getSingleResult();
+            return Optional.of(author);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

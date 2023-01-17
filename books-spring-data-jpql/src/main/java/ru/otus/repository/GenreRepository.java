@@ -16,6 +16,8 @@ public interface GenreRepository {
 
     Optional<Genre> findById(long id);
 
+    Optional<Genre> findByName(String name);
+
     List<Genre> findAll();
 
     void deleteById(long id);

@@ -19,9 +19,15 @@ public class GenreCommands {
         genreService.findAllGenres().forEach(this::printGenre);
     }
 
-    @ShellMethod(value = "Show genre.", key = {"g"})
+    @ShellMethod(value = "Show genre by id.", key = {"g"})
     public void showGenre(@ShellOption long id) {
         GenreDto genreDto = genreService.findGenreById(id);
+        printGenre(genreDto);
+    }
+
+    @ShellMethod(value = "Show genre by name.", key = {"g-name"})
+    public void showGenre(@ShellOption String name) {
+        GenreDto genreDto = genreService.findGenreByName(name.trim());
         printGenre(genreDto);
     }
 
@@ -33,14 +39,14 @@ public class GenreCommands {
 
     @ShellMethod(value = "Add genre.", key = {"add-g"})
     public void addGenre(@ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto(name);
+        GenreDto genreDto = new GenreDto(name.trim());
         GenreDto addedGenre = genreService.saveGenre(genreDto);
         printGenre(addedGenre);
     }
 
     @ShellMethod(value = "Edit genre.", key = {"edit-g"})
     public void editGenre(@ShellOption long id, @ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto(id, name);
+        GenreDto genreDto = new GenreDto(id, name.trim());
         GenreDto updatedGenre = genreService.updateGenre(genreDto);
         printGenre(updatedGenre);
     }

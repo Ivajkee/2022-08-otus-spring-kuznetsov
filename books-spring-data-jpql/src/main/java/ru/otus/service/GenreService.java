@@ -15,6 +15,8 @@ public interface GenreService {
 
     GenreDto findGenreById(long id);
 
+    GenreDto findGenreByName(String name);
+
     List<GenreDto> findAllGenres();
 
     void deleteGenreById(long id);

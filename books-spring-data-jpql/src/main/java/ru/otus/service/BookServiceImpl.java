@@ -67,6 +67,16 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     @Override
+    public BookDto findBookByTitle(String title) {
+        Book book = bookRepository.findByTitle(title)
+                .orElseThrow(() -> new BookNotFoundException(title));
+        BookDto bookDto = conversionService.convert(book, BookDto.class);
+        log.debug("Found book: {}", bookDto);
+        return bookDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<BookDto> findAllBooks() {
         List<Book> books = bookRepository.findAll();
         List<BookDto> booksDto = books.stream()

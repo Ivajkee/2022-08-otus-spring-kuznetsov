@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
-import ru.otus.config.ConversionServiceConfig;
-import ru.otus.converter.GenreDtoToGenreConverter;
-import ru.otus.converter.GenreToGenreDtoConverter;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
@@ -22,12 +19,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {GenreServiceImpl.class, ConversionServiceConfig.class, GenreDtoToGenreConverter.class,
-        GenreToGenreDtoConverter.class})
+@SpringBootTest(classes = GenreServiceImpl.class)
 class GenreServiceTest {
     @Autowired
     private GenreService genreService;
-    @Autowired
+    @MockBean
     private ConversionService conversionService;
     @MockBean
     private GenreRepository genreRepository;
@@ -48,8 +44,10 @@ class GenreServiceTest {
         GenreDto genreDto = new GenreDto("New genre");
         Genre genre = new Genre(genreDto.getName());
         Genre savedGenre = new Genre(id, genre.getName());
-        when(genreRepository.save(genre)).thenReturn(savedGenre);
         GenreDto expectedGenreDto = new GenreDto(id, savedGenre.getName());
+        when(genreRepository.save(genre)).thenReturn(savedGenre);
+        when(conversionService.convert(genreDto, Genre.class)).thenReturn(genre);
+        when(conversionService.convert(savedGenre, GenreDto.class)).thenReturn(expectedGenreDto);
         GenreDto actualGenreDto = genreService.saveGenre(genreDto);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
@@ -60,9 +58,9 @@ class GenreServiceTest {
         long id = 1;
         GenreDto genreDto = new GenreDto(id, "Edited genre");
         Genre genre = new Genre(id, genreDto.getName());
-        when(genreRepository.existsById(id)).thenReturn(true);
-        when(genreRepository.update(genre)).thenReturn(genre);
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
+        when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
+        when(conversionService.convert(genre, GenreDto.class)).thenReturn(expectedGenreDto);
         GenreDto actualGenreDto = genreService.updateGenre(genreDto);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
@@ -94,23 +92,45 @@ class GenreServiceTest {
         assertThat(genreIsExist).isFalse();
     }
 
-    @DisplayName("Should find genre")
+    @DisplayName("Should find genre by id")
     @Test
-    void shouldFindGenre() {
+    void shouldFindGenreById() {
         long id = 1;
         Genre genre = new Genre(id, "Test genre");
-        when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
+        when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
+        when(conversionService.convert(genre, GenreDto.class)).thenReturn(expectedGenreDto);
         GenreDto actualGenreDto = genreService.findGenreById(id);
         assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
     }
 
-    @DisplayName("Should throw exception when try find not existing genre")
+    @DisplayName("Should throw exception when try find not existing genre by id")
     @Test
-    void shouldThrowExceptionWhenTryFindNotExistingGenre() {
+    void shouldThrowExceptionWhenTryFindNotExistingGenreById() {
         long id = 1;
         when(genreRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> genreService.findGenreById(id)).isInstanceOf(GenreNotFoundException.class);
+    }
+
+    @DisplayName("Should find genre by name")
+    @Test
+    void shouldFindGenreByName() {
+        long id = 1;
+        String name = "Test genre";
+        Genre genre = new Genre(id, name);
+        GenreDto expectedGenreDto = new GenreDto(id, name);
+        when(genreRepository.findByName(name)).thenReturn(Optional.of(genre));
+        when(conversionService.convert(genre, GenreDto.class)).thenReturn(expectedGenreDto);
+        GenreDto actualGenreDto = genreService.findGenreByName(name);
+        assertThat(actualGenreDto).isEqualTo(expectedGenreDto);
+    }
+
+    @DisplayName("Should throw exception when try find not existing genre by name")
+    @Test
+    void shouldThrowExceptionWhenTryFindNotExistingGenreByName() {
+        String name = "Test genre";
+        when(genreRepository.findByName(name)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> genreService.findGenreByName(name)).isInstanceOf(GenreNotFoundException.class);
     }
 
     @DisplayName("Should find all genres")
@@ -119,11 +139,15 @@ class GenreServiceTest {
         Genre genre1 = new Genre(1, "Test genre 1");
         Genre genre2 = new Genre(2, "Test genre 2");
         Genre genre3 = new Genre(3, "Test genre 3");
-        when(genreRepository.findAll()).thenReturn(List.of(genre1, genre2, genre3));
         GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName());
         GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName());
         GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName());
+        List<Genre> genres = List.of(genre1, genre2, genre3);
         List<GenreDto> expectedGenreDtoList = List.of(genreDto1, genreDto2, genreDto3);
+        when(genreRepository.findAll()).thenReturn(genres);
+        when(conversionService.convert(genre1, GenreDto.class)).thenReturn(genreDto1);
+        when(conversionService.convert(genre2, GenreDto.class)).thenReturn(genreDto2);
+        when(conversionService.convert(genre3, GenreDto.class)).thenReturn(genreDto3);
         List<GenreDto> actualGenreDtoList = genreService.findAllGenres();
         assertThat(actualGenreDtoList).isEqualTo(expectedGenreDtoList);
     }
@@ -131,6 +155,17 @@ class GenreServiceTest {
     @DisplayName("Should delete genre")
     @Test
     void shouldDeleteGenre() {
-        assertThatCode(() -> genreService.deleteGenreById(1)).doesNotThrowAnyException();
+        long id = 1;
+        Genre genre = new Genre(id, "Test genre");
+        when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
+        assertThatCode(() -> genreService.deleteGenreById(id)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("Should throw exception when try delete genre")
+    @Test
+    void shouldThrowExceptionWhenTryDeleteGenre() {
+        long id = 1;
+        when(genreRepository.findById(id)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> genreService.deleteGenreById(id)).isInstanceOf(GenreNotFoundException.class);
     }
 }

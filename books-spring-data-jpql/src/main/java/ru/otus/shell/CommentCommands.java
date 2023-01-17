@@ -17,18 +17,22 @@ public class CommentCommands {
     @ShellMethod(value = "Show comment.", key = {"c"})
     public void showComment(@ShellOption long id) {
         CommentDto commentDto = commentService.findCommentById(id);
-        outputService.output(String.format("%d: %s", commentDto.getId(), commentDto.getText()));
+        printComment(commentDto);
     }
 
     @ShellMethod(value = "Edit comment.", key = {"edit-c"})
     public void editComment(@ShellOption long id, @ShellOption(arity = 10) String text) {
         CommentDto commentDto = new CommentDto(id, text.trim());
         CommentDto updatedComment = commentService.updateComment(commentDto);
-        outputService.output(String.format("%d: %s", updatedComment.getId(), updatedComment.getText()));
+        printComment(updatedComment);
     }
 
     @ShellMethod(value = "Delete comment.", key = {"del-c"})
     public void deleteComment(@ShellOption long id) {
         commentService.deleteCommentById(id);
+    }
+
+    private void printComment(CommentDto commentDto) {
+        outputService.output(String.format("%d: %s", commentDto.getId(), commentDto.getText()));
     }
 }

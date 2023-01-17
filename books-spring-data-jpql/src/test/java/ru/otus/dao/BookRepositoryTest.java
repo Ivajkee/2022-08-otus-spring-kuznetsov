@@ -1,13 +1,11 @@
-package otus.dao;
+package ru.otus.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.domain.model.Author;
 import ru.otus.domain.model.Book;
-import ru.otus.domain.model.Genre;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.BookRepositoryJpa;
 
@@ -32,8 +30,6 @@ class BookRepositoryTest {
     @DisplayName("Should save book")
     @Test
     void shouldSaveBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book("Test book");
         expectedBook = bookRepository.save(expectedBook);
         Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
@@ -43,8 +39,6 @@ class BookRepositoryTest {
     @DisplayName("Should update book")
     @Test
     void shouldUpdateBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Genre expectedGenre = new Genre(3, "Фэнтези");
         Book expectedBook = new Book(3, "Edited book");
         expectedBook = bookRepository.update(expectedBook);
         Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
@@ -68,8 +62,6 @@ class BookRepositoryTest {
     @DisplayName("Should find book")
     @Test
     void shouldFindBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book(1, "Руслан и Людмила");
         Optional<Book> optionalActualBook = bookRepository.findById(1);
         assertThat(optionalActualBook).hasValue(expectedBook);
@@ -78,12 +70,6 @@ class BookRepositoryTest {
     @DisplayName("Should find all books")
     @Test
     void shouldFindAllBooks() {
-        Author expectedAuthor1 = new Author(1, "Александр Сергеевич Пушкин");
-        Genre expectedGenre1 = new Genre(1, "Поэма");
-        Author expectedAuthor2 = new Author(2, "Лев Николаевич Толстой");
-        Genre expectedGenre2 = new Genre(2, "Роман");
-        Author expectedAuthor3 = new Author(3, "Джоан Роулинг");
-        Genre expectedGenre3 = new Genre(3, "Фэнтези");
         Book expectedBook1 = new Book(1, "Руслан и Людмила");
         Book expectedBook2 = new Book(2, "Война и мир");
         Book expectedBook3 = new Book(3, "Гарри Поттер");
@@ -95,8 +81,6 @@ class BookRepositoryTest {
     @DisplayName("Should delete book")
     @Test
     void shouldDeleteBook() {
-        Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Genre expectedGenre = new Genre(1, "Поэма");
         Book expectedBook = new Book("Test book");
         expectedBook = bookRepository.save(expectedBook);
         Optional<Book> optionalAuthor = bookRepository.findById(expectedBook.getId());

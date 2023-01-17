@@ -1,4 +1,4 @@
-package otus.service;
+package ru.otus.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,6 @@ import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.GenreRepository;
-import ru.otus.service.GenreService;
-import ru.otus.service.GenreServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

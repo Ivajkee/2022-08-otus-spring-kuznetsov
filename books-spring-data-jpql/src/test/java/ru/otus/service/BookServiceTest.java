@@ -1,4 +1,4 @@
-package otus.service;
+package ru.otus.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,6 @@ import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.model.Book;
 import ru.otus.exception.BookNotFoundException;
 import ru.otus.repository.BookRepository;
-import ru.otus.service.BookService;
-import ru.otus.service.BookServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

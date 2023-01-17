@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@ToString(exclude = {"authors", "genres"})
-@EqualsAndHashCode(exclude = {"authors", "genres"})
+@ToString(exclude = {"authors", "genres", "comments"})
+@EqualsAndHashCode(exclude = {"authors", "genres", "comments"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

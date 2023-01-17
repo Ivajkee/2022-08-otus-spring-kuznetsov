@@ -1,4 +1,4 @@
-package otus.service;
+package ru.otus.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,6 @@ import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
-import ru.otus.service.AuthorService;
-import ru.otus.service.AuthorServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

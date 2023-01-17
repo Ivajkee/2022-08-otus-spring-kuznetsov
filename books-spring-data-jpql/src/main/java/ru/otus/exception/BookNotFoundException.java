@@ -6,6 +6,6 @@ public class BookNotFoundException extends RuntimeException {
     }
 
     public BookNotFoundException(String title) {
-        super("Book with name " + title + " not found!");
+        super("Book with title " + title + " not found!");
     }
 }

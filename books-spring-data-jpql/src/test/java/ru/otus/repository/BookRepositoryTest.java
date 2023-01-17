@@ -1,4 +1,4 @@
-package ru.otus.dao;
+package ru.otus.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,8 +7,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Book;
-import ru.otus.repository.BookRepository;
-import ru.otus.repository.BookRepositoryJpa;
 
 import java.util.List;
 import java.util.Optional;

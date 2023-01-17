@@ -41,4 +41,8 @@ public class Genre {
         }
         return books.add(book);
     }
+
+    public boolean deleteBook(Book book) {
+        return books.remove(book);
+    }
 }

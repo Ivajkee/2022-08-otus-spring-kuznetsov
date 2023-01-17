@@ -22,9 +22,9 @@ class GenreServiceTest {
     @Autowired
     private GenreService genreService;
     @MockBean
-    private ConversionService conversionService;
-    @MockBean
     private GenreRepository genreRepository;
+    @MockBean
+    private ConversionService conversionService;
 
     @DisplayName("Should return expected genres count")
     @Test

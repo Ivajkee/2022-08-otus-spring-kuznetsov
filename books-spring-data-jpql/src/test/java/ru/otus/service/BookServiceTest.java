@@ -22,9 +22,9 @@ class BookServiceTest {
     @Autowired
     private BookService bookService;
     @MockBean
-    private ConversionService conversionService;
-    @MockBean
     private BookRepository bookRepository;
+    @MockBean
+    private ConversionService conversionService;
 
     @DisplayName("Should return expected books count")
     @Test

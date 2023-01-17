@@ -57,6 +57,7 @@ public class Book {
     }
 
     public boolean deleteAuthor(Author author) {
+        author.deleteBook(this);
         return authors.remove(author);
     }
 
@@ -69,6 +70,7 @@ public class Book {
     }
 
     public boolean deleteGenre(Genre genre) {
+        genre.deleteBook(this);
         return genres.remove(genre);
     }
 

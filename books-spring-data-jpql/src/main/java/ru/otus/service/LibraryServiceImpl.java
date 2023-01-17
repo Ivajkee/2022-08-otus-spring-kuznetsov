@@ -34,6 +34,7 @@ public class LibraryServiceImpl implements LibraryService {
                 }), () -> {
             throw new BookNotFoundException(bookId);
         });
+        log.debug("Author with id {} added to book with id {}", authorId, bookId);
     }
 
     @Transactional
@@ -45,6 +46,7 @@ public class LibraryServiceImpl implements LibraryService {
                 }), () -> {
             throw new BookNotFoundException(bookId);
         });
+        log.debug("Author with id {} deleted from book with id {}", authorId, bookId);
     }
 
     @Transactional
@@ -56,6 +58,7 @@ public class LibraryServiceImpl implements LibraryService {
                 }), () -> {
             throw new BookNotFoundException(bookId);
         });
+        log.debug("Genre with id {} added to book with id {}", genreId, bookId);
     }
 
     @Transactional
@@ -67,6 +70,7 @@ public class LibraryServiceImpl implements LibraryService {
                 }), () -> {
             throw new BookNotFoundException(bookId);
         });
+        log.debug("Genre with id {} deleted from book with id {}", genreId, bookId);
     }
 
     @Transactional
@@ -76,5 +80,6 @@ public class LibraryServiceImpl implements LibraryService {
         bookRepository.findById(bookId).ifPresentOrElse(book -> book.addComment(Objects.requireNonNull(comment)), () -> {
             throw new BookNotFoundException(bookId);
         });
+        log.debug("Comment with text '{}' added to book with id {}", commentDto.getText(), bookId);
     }
 }

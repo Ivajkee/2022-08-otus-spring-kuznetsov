@@ -41,4 +41,8 @@ public class Author {
         }
         return books.add(book);
     }
+
+    public boolean deleteBook(Book book) {
+        return books.remove(book);
+    }
 }

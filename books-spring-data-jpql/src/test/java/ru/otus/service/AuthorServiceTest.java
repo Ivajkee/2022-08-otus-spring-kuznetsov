@@ -22,9 +22,9 @@ class AuthorServiceTest {
     @Autowired
     private AuthorService authorService;
     @MockBean
-    private ConversionService conversionService;
-    @MockBean
     private AuthorRepository authorRepository;
+    @MockBean
+    private ConversionService conversionService;
 
     @DisplayName("Should return expected authors count")
     @Test

@@ -63,12 +63,10 @@ public class Book {
         if (genres.contains(genre)) {
             return false;
         }
-        genre.addBook(this);
         return genres.add(genre);
     }
 
     public boolean deleteGenre(Genre genre) {
-        genre.deleteBook(this);
         return genres.remove(genre);
     }
 

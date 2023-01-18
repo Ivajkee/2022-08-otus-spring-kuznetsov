@@ -57,7 +57,6 @@ public class GenreCommands {
     }
 
     private void printGenre(GenreDto genreDto) {
-        outputService.output(String.format("%d: %s (Книги: %s)", genreDto.getId(), genreDto.getName(),
-                genreDto.getBooks().stream().map(bookDto -> String.format("%d: %s", bookDto.getId(), bookDto.getTitle())).toList()));
+        outputService.output(String.format("%d: %s", genreDto.getId(), genreDto.getName()));
     }
 }

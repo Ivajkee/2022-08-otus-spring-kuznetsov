@@ -89,10 +89,7 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     @Override
     public void deleteGenreById(long id) {
-        genreRepository.findById(id).ifPresentOrElse(genre -> {
-            genre.getBooks().forEach(book -> book.deleteGenre(genre));
-            genreRepository.delete(genre);
-        }, () -> {
+        genreRepository.findById(id).ifPresentOrElse(genreRepository::delete, () -> {
             throw new GenreNotFoundException(id);
         });
         log.debug("Genre with id {} deleted", id);

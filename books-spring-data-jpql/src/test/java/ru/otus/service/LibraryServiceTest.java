@@ -133,7 +133,6 @@ class LibraryServiceTest {
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         libraryService.addGenreToBook(genreId, bookId);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
     }
 
     @DisplayName("Should throw exception when try add genre to not existing book")
@@ -147,7 +146,6 @@ class LibraryServiceTest {
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         assertThatThrownBy(() -> libraryService.addGenreToBook(genreId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getGenres()).doesNotContain(genre);
-        assertThat(genre.getBooks()).doesNotContain(book);
 
     }
 
@@ -162,7 +160,6 @@ class LibraryServiceTest {
         when(genreRepository.findById(genreId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> libraryService.addGenreToBook(genreId, bookId)).isInstanceOf(GenreNotFoundException.class);
         assertThat(book.getGenres()).doesNotContain(genre);
-        assertThat(genre.getBooks()).doesNotContain(book);
     }
 
     @DisplayName("Should delete genre from book")
@@ -174,12 +171,10 @@ class LibraryServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         libraryService.deleteGenreFromBook(genreId, bookId);
         assertThat(book.getGenres()).doesNotContain(genre);
-        assertThat(genre.getBooks()).doesNotContain(book);
     }
 
     @DisplayName("Should throw exception when try delete genre from not existing book")
@@ -191,12 +186,10 @@ class LibraryServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         assertThatThrownBy(() -> libraryService.deleteGenreFromBook(genreId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
     }
 
     @DisplayName("Should throw exception when try delete not existing genre from book")
@@ -208,12 +201,10 @@ class LibraryServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> libraryService.deleteGenreFromBook(genreId, bookId)).isInstanceOf(GenreNotFoundException.class);
         assertThat(book.getGenres()).contains(genre);
-        assertThat(genre.getBooks()).contains(book);
     }
 
     @DisplayName("Should add comment to book")

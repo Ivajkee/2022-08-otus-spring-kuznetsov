@@ -48,7 +48,6 @@ class LibraryServiceTest {
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         libraryService.addAuthorToBook(authorId, bookId);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
     }
 
     @DisplayName("Should throw exception when try add author to not existing book")
@@ -62,7 +61,6 @@ class LibraryServiceTest {
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         assertThatThrownBy(() -> libraryService.addAuthorToBook(authorId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getAuthors()).doesNotContain(author);
-        assertThat(author.getBooks()).doesNotContain(book);
 
     }
 
@@ -77,7 +75,6 @@ class LibraryServiceTest {
         when(authorRepository.findById(authorId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> libraryService.addAuthorToBook(authorId, bookId)).isInstanceOf(AuthorNotFoundException.class);
         assertThat(book.getAuthors()).doesNotContain(author);
-        assertThat(author.getBooks()).doesNotContain(book);
     }
 
     @DisplayName("Should delete author from book")
@@ -89,12 +86,10 @@ class LibraryServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         libraryService.deleteAuthorFromBook(authorId, bookId);
         assertThat(book.getAuthors()).doesNotContain(author);
-        assertThat(author.getBooks()).doesNotContain(book);
     }
 
     @DisplayName("Should throw exception when try delete author from not existing book")
@@ -106,12 +101,10 @@ class LibraryServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         assertThatThrownBy(() -> libraryService.deleteAuthorFromBook(authorId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
     }
 
     @DisplayName("Should throw exception when try delete not existing author from book")
@@ -123,12 +116,10 @@ class LibraryServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> libraryService.deleteAuthorFromBook(authorId, bookId)).isInstanceOf(AuthorNotFoundException.class);
         assertThat(book.getAuthors()).contains(author);
-        assertThat(author.getBooks()).contains(book);
     }
 
     @DisplayName("Should add genre to book")

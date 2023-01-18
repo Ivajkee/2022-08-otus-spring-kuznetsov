@@ -52,12 +52,10 @@ public class Book {
         if (authors.contains(author)) {
             return false;
         }
-        author.addBook(this);
         return authors.add(author);
     }
 
     public boolean deleteAuthor(Author author) {
-        author.deleteBook(this);
         return authors.remove(author);
     }
 

@@ -89,10 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public void deleteAuthorById(long id) {
-        authorRepository.findById(id).ifPresentOrElse(author -> {
-            author.getBooks().forEach(book -> book.deleteAuthor(author));
-            authorRepository.delete(author);
-        }, () -> {
+        authorRepository.findById(id).ifPresentOrElse(authorRepository::delete, () -> {
             throw new AuthorNotFoundException(id);
         });
         log.debug("Author with id {} deleted", id);

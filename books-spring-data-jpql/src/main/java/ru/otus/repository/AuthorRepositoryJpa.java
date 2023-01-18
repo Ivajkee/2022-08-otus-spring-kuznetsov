@@ -1,6 +1,5 @@
 package ru.otus.repository;
 
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -9,10 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.domain.model.Author;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
 @RequiredArgsConstructor
 @Repository
@@ -48,18 +44,14 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Optional<Author> findById(long id) {
-        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
-        Map<String, Object> properties = Map.of(FETCH.getKey(), authorBooksGraph);
-        return Optional.ofNullable(em.find(Author.class, id, properties));
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 
     @Override
     public Optional<Author> findByFullName(String fullName) {
-        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
         try {
             Author author = em.createQuery("select a from Author a where lower(a.fullName) = lower(:fullName)", Author.class)
                     .setParameter("fullName", fullName)
-                    .setHint(FETCH.getKey(), authorBooksGraph)
                     .getSingleResult();
             return Optional.of(author);
         } catch (NoResultException e) {
@@ -69,10 +61,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public List<Author> findAll() {
-        EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
-        return em.createQuery("select a from Author a", Author.class)
-                .setHint(FETCH.getKey(), authorBooksGraph)
-                .getResultList();
+        return em.createQuery("select a from Author a", Author.class).getResultList();
     }
 
     @Override

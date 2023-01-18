@@ -58,7 +58,6 @@ public class AuthorCommands {
     }
 
     private void printAuthor(AuthorDto authorDto) {
-        outputService.output(String.format("%d: %s (Книги: %s)", authorDto.getId(), authorDto.getFullName(),
-                authorDto.getBooks().stream().map(bookDto -> String.format("%d: %s", bookDto.getId(), bookDto.getTitle())).toList()));
+        outputService.output(String.format("%d: %s", authorDto.getId(), authorDto.getFullName()));
     }
 }

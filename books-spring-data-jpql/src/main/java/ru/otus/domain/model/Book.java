@@ -3,22 +3,19 @@ package ru.otus.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
-@ToString(exclude = {"authors", "genres", "comments"})
-@EqualsAndHashCode(exclude = {"authors", "genres", "comments"})
+@ToString(exclude = {"authors", "genres"})
+@EqualsAndHashCode(exclude = {"authors", "genres"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "book-graph", attributeNodes = {
         @NamedAttributeNode("authors"),
-        @NamedAttributeNode("genres"),
-        @NamedAttributeNode("comments")
+        @NamedAttributeNode("genres")
 })
 public class Book {
     @Id
@@ -35,9 +32,6 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Genre> genres = new HashSet<>();
-    @JoinColumn(name = "book_id", nullable = false)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
 
     public Book(long id, String title) {
         this.id = id;
@@ -68,9 +62,5 @@ public class Book {
 
     public boolean deleteGenre(Genre genre) {
         return genres.remove(genre);
-    }
-
-    public boolean addComment(Comment comment) {
-        return comments.add(comment);
     }
 }

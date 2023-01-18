@@ -14,6 +14,8 @@ public interface BookRepository {
 
     boolean existsById(long id);
 
+    Optional<Book> findByIdWithInfo(long id);
+
     Optional<Book> findById(long id);
 
     Optional<Book> findByTitle(String title);

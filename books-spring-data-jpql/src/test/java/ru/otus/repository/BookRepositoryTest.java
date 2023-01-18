@@ -33,7 +33,7 @@ class BookRepositoryTest {
     void shouldSaveBook() {
         Book expectedBook = new Book("Test book");
         expectedBook = bookRepository.save(expectedBook);
-        Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
+        Optional<Book> optionalActualBook = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -42,7 +42,7 @@ class BookRepositoryTest {
     void shouldUpdateBook() {
         Book expectedBook = new Book(3, "Edited book");
         expectedBook = bookRepository.update(expectedBook);
-        Optional<Book> optionalActualBook = bookRepository.findById(expectedBook.getId());
+        Optional<Book> optionalActualBook = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -64,7 +64,7 @@ class BookRepositoryTest {
     @Test
     void shouldFindBookById() {
         Book expectedBook = new Book(1, "Руслан и Людмила");
-        Optional<Book> optionalActualBook = bookRepository.findById(1);
+        Optional<Book> optionalActualBook = bookRepository.findByIdWithInfo(1);
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
 
@@ -92,10 +92,10 @@ class BookRepositoryTest {
     void shouldDeleteBook() {
         Book book = new Book("Test book");
         Book expectedBook = em.persistAndFlush(book);
-        Optional<Book> optionalAuthor = bookRepository.findById(expectedBook.getId());
+        Optional<Book> optionalAuthor = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalAuthor).hasValue(expectedBook);
         bookRepository.deleteById(expectedBook.getId());
-        Optional<Book> optionalDeletedAuthor = bookRepository.findById(expectedBook.getId());
+        Optional<Book> optionalDeletedAuthor = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalDeletedAuthor).isEmpty();
     }
 }

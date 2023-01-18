@@ -56,10 +56,29 @@ public class BookCommands {
         bookService.deleteBookById(id);
     }
 
+    @ShellMethod(value = "Add author to book.", key = {"add-a-to-b"})
+    public void addAuthorToBook(@ShellOption long authorId, @ShellOption long bookId) {
+        bookService.addAuthorToBook(authorId, bookId);
+    }
+
+    @ShellMethod(value = "Delete author from book.", key = {"del-a-from-b"})
+    public void deleteAuthorFromBook(@ShellOption long authorId, @ShellOption long bookId) {
+        bookService.deleteAuthorFromBook(authorId, bookId);
+    }
+
+    @ShellMethod(value = "Add genre to book.", key = {"add-g-to-b"})
+    public void addGenreToBook(@ShellOption long genreId, @ShellOption long bookId) {
+        bookService.addGenreToBook(genreId, bookId);
+    }
+
+    @ShellMethod(value = "Delete genre from book.", key = {"del-g-from-b"})
+    public void deleteGenreFromBook(@ShellOption long genreId, @ShellOption long bookId) {
+        bookService.deleteGenreFromBook(genreId, bookId);
+    }
+
     private void printBook(BookDto bookDto) {
-        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s, Комментарии: %s)", bookDto.getId(), bookDto.getTitle(),
+        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)", bookDto.getId(), bookDto.getTitle(),
                 bookDto.getAuthors().stream().map(authorDto -> String.format("%d: %s", authorDto.getId(), authorDto.getFullName())).toList(),
-                bookDto.getGenres().stream().map(genreDto -> String.format("%d: %s", genreDto.getId(), genreDto.getName())).toList(),
-                bookDto.getComments().stream().map(commentDto -> String.format("%d: %s", commentDto.getId(), commentDto.getText())).toList()));
+                bookDto.getGenres().stream().map(genreDto -> String.format("%d: %s", genreDto.getId(), genreDto.getName())).toList()));
     }
 }

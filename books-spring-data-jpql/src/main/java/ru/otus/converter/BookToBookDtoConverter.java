@@ -4,13 +4,11 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Book;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,9 +24,6 @@ public class BookToBookDtoConverter implements Converter<Book, BookDto> {
                 .map(genre -> new GenreDto(genre.getId(), genre.getName()))
                 .sorted(Comparator.comparing(GenreDto::getId))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-        List<CommentDto> comments = book.getComments().stream()
-                .map(comment -> new CommentDto(comment.getId(), comment.getText()))
-                .toList();
-        return new BookDto(book.getId(), book.getTitle(), authors, genres, comments);
+        return new BookDto(book.getId(), book.getTitle(), authors, genres);
     }
 }

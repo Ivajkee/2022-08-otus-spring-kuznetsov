@@ -20,4 +20,12 @@ public interface BookService {
     List<BookDto> findAllBooks();
 
     void deleteBookById(long id);
+
+    void addAuthorToBook(long authorId, long bookId);
+
+    void deleteAuthorFromBook(long authorId, long bookId);
+
+    void addGenreToBook(long genreId, long bookId);
+
+    void deleteGenreFromBook(long genreId, long bookId);
 }

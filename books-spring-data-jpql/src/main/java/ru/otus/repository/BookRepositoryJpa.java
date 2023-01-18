@@ -47,10 +47,15 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Optional<Book> findById(long id) {
+    public Optional<Book> findByIdWithInfo(long id) {
         EntityGraph<?> bookGraph = em.getEntityGraph("book-graph");
         Map<String, Object> properties = Map.of(FETCH.getKey(), bookGraph);
         return Optional.ofNullable(em.find(Book.class, id, properties));
+    }
+
+    @Override
+    public Optional<Book> findById(long id) {
+        return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override
@@ -77,6 +82,6 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public void deleteById(long id) {
-        findById(id).ifPresent(em::remove);
+        findByIdWithInfo(id).ifPresent(em::remove);
     }
 }

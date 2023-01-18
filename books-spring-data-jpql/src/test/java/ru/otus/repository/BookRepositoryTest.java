@@ -31,8 +31,8 @@ class BookRepositoryTest {
     @DisplayName("Should save book")
     @Test
     void shouldSaveBook() {
-        Book expectedBook = new Book("Test book");
-        expectedBook = bookRepository.save(expectedBook);
+        Book book = new Book("Test book");
+        Book expectedBook = bookRepository.save(book);
         Optional<Book> optionalActualBook = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }
@@ -40,8 +40,8 @@ class BookRepositoryTest {
     @DisplayName("Should update book")
     @Test
     void shouldUpdateBook() {
-        Book expectedBook = new Book(3, "Edited book");
-        expectedBook = bookRepository.update(expectedBook);
+        Book book = new Book(3, "Edited book");
+        Book expectedBook = bookRepository.update(book);
         Optional<Book> optionalActualBook = bookRepository.findByIdWithInfo(expectedBook.getId());
         assertThat(optionalActualBook).hasValue(expectedBook);
     }

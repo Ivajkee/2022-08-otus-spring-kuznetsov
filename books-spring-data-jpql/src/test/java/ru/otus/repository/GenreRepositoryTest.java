@@ -31,8 +31,8 @@ class GenreRepositoryTest {
     @DisplayName("Should save genre")
     @Test
     void shouldSaveGenre() {
-        Genre expectedGenre = new Genre("Test genre");
-        expectedGenre = genreRepository.save(expectedGenre);
+        Genre genre = new Genre("Test genre");
+        Genre expectedGenre = genreRepository.save(genre);
         Optional<Genre> optionalActualGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
@@ -40,8 +40,8 @@ class GenreRepositoryTest {
     @DisplayName("Should update genre")
     @Test
     void shouldUpdateGenre() {
-        Genre expectedGenre = new Genre(3, "Edited genre");
-        expectedGenre = genreRepository.update(expectedGenre);
+        Genre genre = new Genre(3, "Edited genre");
+        Genre expectedGenre = genreRepository.update(genre);
         Optional<Genre> optionalActualGenre = genreRepository.findById(expectedGenre.getId());
         assertThat(optionalActualGenre).get().extracting(Genre::getName).isEqualTo(expectedGenre.getName());
     }

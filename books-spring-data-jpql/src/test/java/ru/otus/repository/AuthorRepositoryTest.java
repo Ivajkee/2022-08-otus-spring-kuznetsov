@@ -31,8 +31,8 @@ class AuthorRepositoryTest {
     @DisplayName("Should save author")
     @Test
     void shouldSaveAuthor() {
-        Author expectedAuthor = new Author("Test author");
-        expectedAuthor = authorRepository.save(expectedAuthor);
+        Author author = new Author("Test author");
+        Author expectedAuthor = authorRepository.save(author);
         Optional<Author> optionalActualAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
@@ -40,8 +40,8 @@ class AuthorRepositoryTest {
     @DisplayName("Should update author")
     @Test
     void shouldUpdateAuthor() {
-        Author expectedAuthor = new Author(3, "Edited author");
-        expectedAuthor = authorRepository.update(expectedAuthor);
+        Author author = new Author(3, "Edited author");
+        Author expectedAuthor = authorRepository.update(author);
         Optional<Author> optionalActualAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(optionalActualAuthor).get().extracting(Author::getFullName).isEqualTo(expectedAuthor.getFullName());
     }

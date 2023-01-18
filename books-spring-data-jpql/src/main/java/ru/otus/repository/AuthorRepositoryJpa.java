@@ -49,7 +49,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     @Override
     public Optional<Author> findById(long id) {
         EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
-        Map<String, Object> properties = Map.of(FETCH.name(), authorBooksGraph);
+        Map<String, Object> properties = Map.of(FETCH.getKey(), authorBooksGraph);
         return Optional.ofNullable(em.find(Author.class, id, properties));
     }
 
@@ -59,7 +59,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         try {
             Author author = em.createQuery("select a from Author a where lower(a.fullName) = lower(:fullName)", Author.class)
                     .setParameter("fullName", fullName)
-                    .setHint(FETCH.name(), authorBooksGraph)
+                    .setHint(FETCH.getKey(), authorBooksGraph)
                     .getSingleResult();
             return Optional.of(author);
         } catch (NoResultException e) {
@@ -71,7 +71,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     public List<Author> findAll() {
         EntityGraph<?> authorBooksGraph = em.getEntityGraph("author-books-graph");
         return em.createQuery("select a from Author a", Author.class)
-                .setHint(FETCH.name(), authorBooksGraph)
+                .setHint(FETCH.getKey(), authorBooksGraph)
                 .getResultList();
     }
 

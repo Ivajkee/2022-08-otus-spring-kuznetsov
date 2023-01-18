@@ -49,7 +49,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     @Override
     public Optional<Genre> findById(long id) {
         EntityGraph<?> genreBooksGraph = em.getEntityGraph("genre-books-graph");
-        Map<String, Object> properties = Map.of(FETCH.name(), genreBooksGraph);
+        Map<String, Object> properties = Map.of(FETCH.getKey(), genreBooksGraph);
         return Optional.ofNullable(em.find(Genre.class, id, properties));
     }
 
@@ -59,7 +59,7 @@ public class GenreRepositoryJpa implements GenreRepository {
         try {
             Genre genre = em.createQuery("select g from Genre g where lower(g.name) = lower(:name)", Genre.class)
                     .setParameter("name", name)
-                    .setHint(FETCH.name(), genreBooksGraph)
+                    .setHint(FETCH.getKey(), genreBooksGraph)
                     .getSingleResult();
             return Optional.of(genre);
         } catch (NoResultException e) {
@@ -71,7 +71,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     public List<Genre> findAll() {
         EntityGraph<?> genreBooksGraph = em.getEntityGraph("genre-books-graph");
         return em.createQuery("select g from Genre g", Genre.class)
-                .setHint(FETCH.name(), genreBooksGraph)
+                .setHint(FETCH.getKey(), genreBooksGraph)
                 .getResultList();
     }
 

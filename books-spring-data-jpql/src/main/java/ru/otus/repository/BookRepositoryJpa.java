@@ -49,7 +49,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         EntityGraph<?> bookGraph = em.getEntityGraph("book-graph");
-        Map<String, Object> properties = Map.of(FETCH.name(), bookGraph);
+        Map<String, Object> properties = Map.of(FETCH.getKey(), bookGraph);
         return Optional.ofNullable(em.find(Book.class, id, properties));
     }
 
@@ -59,7 +59,7 @@ public class BookRepositoryJpa implements BookRepository {
         try {
             Book book = em.createQuery("select b from Book b where lower(b.title) = lower(:title)", Book.class)
                     .setParameter("title", title)
-                    .setHint(FETCH.name(), bookGraph)
+                    .setHint(FETCH.getKey(), bookGraph)
                     .getSingleResult();
             return Optional.of(book);
         } catch (NoResultException e) {
@@ -71,7 +71,7 @@ public class BookRepositoryJpa implements BookRepository {
     public List<Book> findAll() {
         EntityGraph<?> bookGraph = em.getEntityGraph("book-graph");
         return em.createQuery("select b from Book b", Book.class)
-                .setHint(FETCH.name(), bookGraph)
+                .setHint(FETCH.getKey(), bookGraph)
                 .getResultList();
     }
 

@@ -32,7 +32,7 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public Genre update(Genre genre) {
-        return em.merge(genre);
+        return save(genre);
     }
 
     @Override

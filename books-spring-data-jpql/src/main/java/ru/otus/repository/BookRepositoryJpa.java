@@ -36,7 +36,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Book update(Book book) {
-        return em.merge(book);
+        return save(book);
     }
 
     @Override

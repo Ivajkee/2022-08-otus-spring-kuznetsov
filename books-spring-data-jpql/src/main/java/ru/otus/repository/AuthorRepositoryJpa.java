@@ -32,7 +32,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Author update(Author author) {
-        return em.merge(author);
+        return save(author);
     }
 
     @Override

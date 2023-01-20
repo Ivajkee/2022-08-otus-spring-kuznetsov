@@ -32,7 +32,7 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public Comment update(Comment comment) {
-        return em.merge(comment);
+        return save(comment);
     }
 
     @Override

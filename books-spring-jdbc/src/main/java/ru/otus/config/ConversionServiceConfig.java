@@ -10,7 +10,6 @@ import java.util.Set;
 
 @Configuration
 public class ConversionServiceConfig {
-
     @Bean
     public ConfigurableConversionService conversionService(Set<Converter<?, ?>> converters) {
         DefaultConversionService defaultConversionService = new DefaultConversionService();

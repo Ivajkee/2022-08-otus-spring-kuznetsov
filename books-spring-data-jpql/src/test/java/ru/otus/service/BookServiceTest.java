@@ -67,7 +67,7 @@ class BookServiceTest {
         BookDto bookDto = new BookDto(id, "Edited book");
         Book book = new Book(id, bookDto.getTitle());
         BookDto expectedBookDto = new BookDto(id, book.getTitle());
-        when(bookRepository.findByIdWithInfo(id)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.updateBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);

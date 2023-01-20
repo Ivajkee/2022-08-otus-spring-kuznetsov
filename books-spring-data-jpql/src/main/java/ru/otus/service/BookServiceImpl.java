@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookDto updateBook(BookDto bookDto) {
-        BookDto updatedBookDto = bookRepository.findByIdWithInfo(bookDto.getId()).map(book -> {
+        BookDto updatedBookDto = bookRepository.findById(bookDto.getId()).map(book -> {
             book.setTitle(bookDto.getTitle());
             return conversionService.convert(book, BookDto.class);
         }).orElseThrow(() -> new BookNotFoundException(bookDto.getId()));

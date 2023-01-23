@@ -88,7 +88,6 @@ public class BookServiceImpl implements BookService {
         return booksDto;
     }
 
-    @Transactional
     @Override
     public void deleteBookById(long id) {
         bookRepository.deleteById(id);

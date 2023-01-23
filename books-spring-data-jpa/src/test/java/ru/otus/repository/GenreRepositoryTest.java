@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Genre;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(GenreRepositoryJpa.class)
 @DataJpaTest
 class GenreRepositoryTest {
     @Autowired
@@ -37,26 +35,17 @@ class GenreRepositoryTest {
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
-    @DisplayName("Should update genre")
-    @Test
-    void shouldUpdateGenre() {
-        Genre genre = new Genre(3, "Edited genre");
-        Genre expectedGenre = genreRepository.update(genre);
-        Optional<Genre> optionalActualGenre = genreRepository.findById(expectedGenre.getId());
-        assertThat(optionalActualGenre).get().extracting(Genre::getName).isEqualTo(expectedGenre.getName());
-    }
-
     @DisplayName("Should be exist genre")
     @Test
     void shouldBeExistGenre() {
-        boolean actualValue = genreRepository.existsById(1);
+        boolean actualValue = genreRepository.existsById(1L);
         assertThat(actualValue).isTrue();
     }
 
     @DisplayName("Should be not exist genre")
     @Test
     void shouldBeNotExistGenre() {
-        boolean actualValue = genreRepository.existsById(4);
+        boolean actualValue = genreRepository.existsById(4L);
         assertThat(actualValue).isFalse();
     }
 
@@ -64,7 +53,7 @@ class GenreRepositoryTest {
     @Test
     void shouldFindGenreById() {
         Genre expectedGenre = new Genre(1, "Поэма");
-        Optional<Genre> optionalActualGenre = genreRepository.findById(1);
+        Optional<Genre> optionalActualGenre = genreRepository.findById(1L);
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 
@@ -72,7 +61,7 @@ class GenreRepositoryTest {
     @Test
     void shouldFindGenreByName() {
         Genre expectedGenre = new Genre(1, "Поэма");
-        Optional<Genre> optionalActualGenre = genreRepository.findByName("поэма");
+        Optional<Genre> optionalActualGenre = genreRepository.findByNameIgnoreCase("поэма");
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }
 

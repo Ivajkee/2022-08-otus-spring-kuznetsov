@@ -27,7 +27,6 @@ public class AuthorServiceImpl implements AuthorService {
         return count;
     }
 
-    @Transactional
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         Author author = conversionService.convert(authorDto, Author.class);
@@ -55,7 +54,6 @@ public class AuthorServiceImpl implements AuthorService {
         return authorIsExist;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public AuthorDto findAuthorById(long id) {
         Author author = authorRepository.findById(id)
@@ -65,7 +63,6 @@ public class AuthorServiceImpl implements AuthorService {
         return authorDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public AuthorDto findAuthorByFullName(String fullName) {
         Author author = authorRepository.findByFullNameIgnoreCase(fullName)
@@ -75,7 +72,6 @@ public class AuthorServiceImpl implements AuthorService {
         return authorDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<AuthorDto> findAllAuthors() {
         List<Author> authors = authorRepository.findAll();
@@ -86,12 +82,9 @@ public class AuthorServiceImpl implements AuthorService {
         return authorsDto;
     }
 
-    @Transactional
     @Override
     public void deleteAuthorById(long id) {
-        authorRepository.findById(id).ifPresentOrElse(authorRepository::delete, () -> {
-            throw new AuthorNotFoundException(id);
-        });
+        authorRepository.deleteById(id);
         log.debug("Author with id {} deleted", id);
     }
 }

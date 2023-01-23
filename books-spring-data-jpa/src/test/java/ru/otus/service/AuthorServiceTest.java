@@ -153,17 +153,6 @@ class AuthorServiceTest {
     @DisplayName("Should delete author")
     @Test
     void shouldDeleteAuthor() {
-        long id = 1;
-        Author author = new Author(id, "Test author");
-        when(authorRepository.findById(id)).thenReturn(Optional.of(author));
-        assertThatCode(() -> authorService.deleteAuthorById(id)).doesNotThrowAnyException();
-    }
-
-    @DisplayName("Should throw exception when try delete author")
-    @Test
-    void shouldThrowExceptionWhenTryDeleteAuthor() {
-        long id = 1;
-        when(authorRepository.findById(id)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> authorService.deleteAuthorById(id)).isInstanceOf(AuthorNotFoundException.class);
+        assertThatCode(() -> authorService.deleteAuthorById(1)).doesNotThrowAnyException();
     }
 }

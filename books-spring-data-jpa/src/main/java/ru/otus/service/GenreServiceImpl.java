@@ -27,7 +27,6 @@ public class GenreServiceImpl implements GenreService {
         return count;
     }
 
-    @Transactional
     @Override
     public GenreDto saveGenre(GenreDto genreDto) {
         Genre genre = conversionService.convert(genreDto, Genre.class);
@@ -55,7 +54,6 @@ public class GenreServiceImpl implements GenreService {
         return genreIsExist;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public GenreDto findGenreById(long id) {
         Genre genre = genreRepository.findById(id)
@@ -65,17 +63,15 @@ public class GenreServiceImpl implements GenreService {
         return genreDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public GenreDto findGenreByName(String name) {
-        Genre genre = genreRepository.findByName(name)
+        Genre genre = genreRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new GenreNotFoundException(name));
         GenreDto genreDto = conversionService.convert(genre, GenreDto.class);
         log.debug("Found genre: {}", genreDto);
         return genreDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<GenreDto> findAllGenres() {
         List<Genre> genres = genreRepository.findAll();
@@ -86,12 +82,9 @@ public class GenreServiceImpl implements GenreService {
         return genresDto;
     }
 
-    @Transactional
     @Override
     public void deleteGenreById(long id) {
-        genreRepository.findById(id).ifPresentOrElse(genreRepository::delete, () -> {
-            throw new GenreNotFoundException(id);
-        });
+        genreRepository.deleteById(id);
         log.debug("Genre with id {} deleted", id);
     }
 }

@@ -61,7 +61,6 @@ public class BookServiceImpl implements BookService {
         return bookIsExist;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public BookDto findBookById(long id) {
         Book book = bookRepository.findByIdWithInfo(id)
@@ -71,20 +70,18 @@ public class BookServiceImpl implements BookService {
         return bookDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public BookDto findBookByTitle(String title) {
-        Book book = bookRepository.findByTitle(title)
+        Book book = bookRepository.findByTitleIgnoreCase(title)
                 .orElseThrow(() -> new BookNotFoundException(title));
         BookDto bookDto = conversionService.convert(book, BookDto.class);
         log.debug("Found book: {}", bookDto);
         return bookDto;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAllBooks() {
-        List<Book> books = bookRepository.findAll();
+        List<Book> books = bookRepository.findAllWIthInfo();
         List<BookDto> booksDto = books.stream()
                 .map(book -> conversionService.convert(book, BookDto.class))
                 .collect(Collectors.toList());

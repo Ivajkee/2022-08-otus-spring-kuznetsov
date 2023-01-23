@@ -127,7 +127,7 @@ class BookServiceTest {
         String title = "Test book";
         Book book = new Book(id, title);
         BookDto expectedBookDto = new BookDto(id, title);
-        when(bookRepository.findByTitle(title)).thenReturn(Optional.of(book));
+        when(bookRepository.findByTitleIgnoreCase(title)).thenReturn(Optional.of(book));
         when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.findBookByTitle(title);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -137,7 +137,7 @@ class BookServiceTest {
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingBookByTitle() {
         String title = "Test book";
-        when(bookRepository.findByTitle(title)).thenReturn(Optional.empty());
+        when(bookRepository.findByTitleIgnoreCase(title)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.findBookByTitle(title)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -152,7 +152,7 @@ class BookServiceTest {
         BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle());
         List<Book> books = List.of(book1, book2, book3);
         List<BookDto> expectedBookDtoList = List.of(bookDto1, bookDto2, bookDto3);
-        when(bookRepository.findAll()).thenReturn(books);
+        when(bookRepository.findAllWIthInfo()).thenReturn(books);
         when(conversionService.convert(book1, BookDto.class)).thenReturn(bookDto1);
         when(conversionService.convert(book2, BookDto.class)).thenReturn(bookDto2);
         when(conversionService.convert(book3, BookDto.class)).thenReturn(bookDto3);

@@ -13,10 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-graph", attributeNodes = {
-        @NamedAttributeNode("authors"),
-        @NamedAttributeNode("genres")
-})
 public class Book {
     @Id
     @Column(name = "id")

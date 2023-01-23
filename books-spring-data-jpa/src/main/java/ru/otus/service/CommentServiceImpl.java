@@ -23,7 +23,6 @@ public class CommentServiceImpl implements CommentService {
     private final BookRepository bookRepository;
     private final ConversionService conversionService;
 
-    @Transactional
     @Override
     public CommentDto saveComment(long bookId, CommentDto commentDto) {
         CommentDto savedCommentDto = bookRepository.findById(bookId).map(book -> {
@@ -67,7 +66,6 @@ public class CommentServiceImpl implements CommentService {
         return commentsDto;
     }
 
-    @Transactional
     @Override
     public void deleteCommentById(long id) {
         commentRepository.deleteById(id);

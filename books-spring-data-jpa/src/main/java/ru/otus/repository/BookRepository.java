@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-
     @Query("select b from Book b left join fetch b.authors left join fetch b.genres where b.id = :id")
     Optional<Book> findByIdWithInfo(long id);
 

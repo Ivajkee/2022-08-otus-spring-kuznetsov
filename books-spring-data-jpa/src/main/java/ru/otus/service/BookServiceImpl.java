@@ -33,7 +33,6 @@ public class BookServiceImpl implements BookService {
         return count;
     }
 
-    @Transactional
     @Override
     public BookDto saveBook(BookDto bookDto) {
         Book book = conversionService.convert(bookDto, Book.class);

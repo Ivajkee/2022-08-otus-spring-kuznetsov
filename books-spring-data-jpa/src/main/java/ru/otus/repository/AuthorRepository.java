@@ -1,26 +1,11 @@
 package ru.otus.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.domain.model.Author;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface AuthorRepository {
-    long count();
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    Author save(Author author);
-
-    Author update(Author author);
-
-    boolean existsById(long id);
-
-    Optional<Author> findById(long id);
-
-    Optional<Author> findByFullName(String fullName);
-
-    List<Author> findAll();
-
-    void deleteById(long id);
-
-    void delete(Author author);
+    Optional<Author> findByFullNameIgnoreCase(String fullName);
 }

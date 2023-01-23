@@ -68,7 +68,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     @Override
     public AuthorDto findAuthorByFullName(String fullName) {
-        Author author = authorRepository.findByFullName(fullName)
+        Author author = authorRepository.findByFullNameIgnoreCase(fullName)
                 .orElseThrow(() -> new AuthorNotFoundException(fullName));
         AuthorDto authorDto = conversionService.convert(author, AuthorDto.class);
         log.debug("Found author: {}", authorDto);

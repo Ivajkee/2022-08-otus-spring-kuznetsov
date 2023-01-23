@@ -117,7 +117,7 @@ class AuthorServiceTest {
         String fullName = "Test author";
         Author author = new Author(id, fullName);
         AuthorDto expectedAuthorDto = new AuthorDto(id, fullName);
-        when(authorRepository.findByFullName(fullName)).thenReturn(Optional.of(author));
+        when(authorRepository.findByFullNameIgnoreCase(fullName)).thenReturn(Optional.of(author));
         when(conversionService.convert(author, AuthorDto.class)).thenReturn(expectedAuthorDto);
         AuthorDto actualAuthorDto = authorService.findAuthorByFullName(fullName);
         assertThat(actualAuthorDto).isEqualTo(expectedAuthorDto);
@@ -127,7 +127,7 @@ class AuthorServiceTest {
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingAuthorByFullName() {
         String fullName = "Test author";
-        when(authorRepository.findByFullName(fullName)).thenReturn(Optional.empty());
+        when(authorRepository.findByFullNameIgnoreCase(fullName)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.findAuthorByFullName(fullName)).isInstanceOf(AuthorNotFoundException.class);
     }
 

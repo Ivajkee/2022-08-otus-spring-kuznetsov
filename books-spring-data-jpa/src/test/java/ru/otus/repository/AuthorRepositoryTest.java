@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.domain.model.Author;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(AuthorRepositoryJpa.class)
 @DataJpaTest
 class AuthorRepositoryTest {
     @Autowired
@@ -37,26 +35,17 @@ class AuthorRepositoryTest {
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
-    @DisplayName("Should update author")
-    @Test
-    void shouldUpdateAuthor() {
-        Author author = new Author(3, "Edited author");
-        Author expectedAuthor = authorRepository.update(author);
-        Optional<Author> optionalActualAuthor = authorRepository.findById(expectedAuthor.getId());
-        assertThat(optionalActualAuthor).get().extracting(Author::getFullName).isEqualTo(expectedAuthor.getFullName());
-    }
-
     @DisplayName("Should be exist author")
     @Test
     void shouldBeExistAuthor() {
-        boolean actualValue = authorRepository.existsById(1);
+        boolean actualValue = authorRepository.existsById(1L);
         assertThat(actualValue).isTrue();
     }
 
     @DisplayName("Should be not exist author")
     @Test
     void shouldBeNotExistAuthor() {
-        boolean actualValue = authorRepository.existsById(4);
+        boolean actualValue = authorRepository.existsById(4L);
         assertThat(actualValue).isFalse();
     }
 
@@ -64,7 +53,7 @@ class AuthorRepositoryTest {
     @Test
     void shouldFindAuthorById() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Optional<Author> optionalActualAuthor = authorRepository.findById(1);
+        Optional<Author> optionalActualAuthor = authorRepository.findById(1L);
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 
@@ -72,7 +61,7 @@ class AuthorRepositoryTest {
     @Test
     void shouldFindAuthorByFullName() {
         Author expectedAuthor = new Author(1, "Александр Сергеевич Пушкин");
-        Optional<Author> optionalActualAuthor = authorRepository.findByFullName("александр сергеевич пушкин");
+        Optional<Author> optionalActualAuthor = authorRepository.findByFullNameIgnoreCase("александр сергеевич пушкин");
         assertThat(optionalActualAuthor).hasValue(expectedAuthor);
     }
 

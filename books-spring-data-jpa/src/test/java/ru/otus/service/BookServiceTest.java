@@ -78,7 +78,7 @@ class BookServiceTest {
     void shouldThrowExceptionWhenTryUpdateNotExistingBook() {
         long id = 1;
         BookDto bookDto = new BookDto(id, "Edited book");
-        when(bookRepository.findByIdWithInfo(id)).thenReturn(Optional.empty());
+        when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.updateBook(bookDto)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -106,7 +106,7 @@ class BookServiceTest {
         long id = 1;
         Book book = new Book(id, "Test book");
         BookDto expectedBookDto = new BookDto(id, book.getTitle());
-        when(bookRepository.findByIdWithInfo(id)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.findBookById(id);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -116,7 +116,7 @@ class BookServiceTest {
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingBookById() {
         long id = 1;
-        when(bookRepository.findByIdWithInfo(id)).thenReturn(Optional.empty());
+        when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.findBookById(id)).isInstanceOf(BookNotFoundException.class);
     }
 
@@ -152,7 +152,7 @@ class BookServiceTest {
         BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle());
         List<Book> books = List.of(book1, book2, book3);
         List<BookDto> expectedBookDtoList = List.of(bookDto1, bookDto2, bookDto3);
-        when(bookRepository.findAllWIthInfo()).thenReturn(books);
+        when(bookRepository.findAll()).thenReturn(books);
         when(conversionService.convert(book1, BookDto.class)).thenReturn(bookDto1);
         when(conversionService.convert(book2, BookDto.class)).thenReturn(bookDto2);
         when(conversionService.convert(book3, BookDto.class)).thenReturn(bookDto3);
@@ -165,7 +165,7 @@ class BookServiceTest {
     void shouldDeleteBook() {
         long id = 1;
         Book book = new Book(id, "Test book");
-        when(bookRepository.findByIdWithInfo(id)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         assertThatCode(() -> bookService.deleteBookById(1)).doesNotThrowAnyException();
     }
 
@@ -176,7 +176,7 @@ class BookServiceTest {
         long authorId = 1;
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         bookService.addAuthorToBook(authorId, bookId);
         assertThat(book.getAuthors()).contains(author);
@@ -189,7 +189,7 @@ class BookServiceTest {
         long authorId = 1;
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         assertThatThrownBy(() -> bookService.addAuthorToBook(authorId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getAuthors()).doesNotContain(author);
@@ -203,7 +203,7 @@ class BookServiceTest {
         long authorId = 1;
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.addAuthorToBook(authorId, bookId)).isInstanceOf(AuthorNotFoundException.class);
         assertThat(book.getAuthors()).doesNotContain(author);
@@ -218,7 +218,7 @@ class BookServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         bookService.deleteAuthorFromBook(authorId, bookId);
         assertThat(book.getAuthors()).doesNotContain(author);
@@ -233,7 +233,7 @@ class BookServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
         assertThatThrownBy(() -> bookService.deleteAuthorFromBook(authorId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getAuthors()).contains(author);
@@ -248,7 +248,7 @@ class BookServiceTest {
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
         assertThat(book.getAuthors()).contains(author);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(authorRepository.findById(authorId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.deleteAuthorFromBook(authorId, bookId)).isInstanceOf(AuthorNotFoundException.class);
         assertThat(book.getAuthors()).contains(author);
@@ -261,7 +261,7 @@ class BookServiceTest {
         long genreId = 1;
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         bookService.addGenreToBook(genreId, bookId);
         assertThat(book.getGenres()).contains(genre);
@@ -274,7 +274,7 @@ class BookServiceTest {
         long genreId = 1;
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         assertThatThrownBy(() -> bookService.addGenreToBook(genreId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getGenres()).doesNotContain(genre);
@@ -288,7 +288,7 @@ class BookServiceTest {
         long genreId = 1;
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.addGenreToBook(genreId, bookId)).isInstanceOf(GenreNotFoundException.class);
         assertThat(book.getGenres()).doesNotContain(genre);
@@ -303,7 +303,7 @@ class BookServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         bookService.deleteGenreFromBook(genreId, bookId);
         assertThat(book.getGenres()).doesNotContain(genre);
@@ -318,7 +318,7 @@ class BookServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.empty());
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(genreRepository.findById(genreId)).thenReturn(Optional.of(genre));
         assertThatThrownBy(() -> bookService.deleteGenreFromBook(genreId, bookId)).isInstanceOf(BookNotFoundException.class);
         assertThat(book.getGenres()).contains(genre);
@@ -333,7 +333,7 @@ class BookServiceTest {
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
         assertThat(book.getGenres()).contains(genre);
-        when(bookRepository.findByIdWithInfo(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(genreRepository.findById(genreId)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.deleteGenreFromBook(genreId, bookId)).isInstanceOf(GenreNotFoundException.class);
         assertThat(book.getGenres()).contains(genre);

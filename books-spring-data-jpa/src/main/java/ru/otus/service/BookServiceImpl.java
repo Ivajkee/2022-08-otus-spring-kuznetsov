@@ -62,7 +62,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findBookById(long id) {
-        Book book = bookRepository.findByIdWithInfo(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
         BookDto bookDto = conversionService.convert(book, BookDto.class);
         log.debug("Found book: {}", bookDto);
@@ -80,7 +80,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findAllBooks() {
-        List<Book> books = bookRepository.findAllWIthInfo();
+        List<Book> books = bookRepository.findAll();
         List<BookDto> booksDto = books.stream()
                 .map(book -> conversionService.convert(book, BookDto.class))
                 .collect(Collectors.toList());
@@ -97,7 +97,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void addAuthorToBook(long authorId, long bookId) {
-        bookRepository.findByIdWithInfo(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
+        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
                 .ifPresentOrElse(book::addAuthor, () -> {
                     throw new AuthorNotFoundException(authorId);
                 }), () -> {
@@ -109,7 +109,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteAuthorFromBook(long authorId, long bookId) {
-        bookRepository.findByIdWithInfo(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
+        bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
                 .ifPresentOrElse(book::deleteAuthor, () -> {
                     throw new AuthorNotFoundException(authorId);
                 }), () -> {
@@ -121,7 +121,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void addGenreToBook(long genreId, long bookId) {
-        bookRepository.findByIdWithInfo(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
+        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
                 .ifPresentOrElse(book::addGenre, () -> {
                     throw new GenreNotFoundException(genreId);
                 }), () -> {
@@ -133,7 +133,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteGenreFromBook(long genreId, long bookId) {
-        bookRepository.findByIdWithInfo(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
+        bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
                 .ifPresentOrElse(book::deleteGenre, () -> {
                     throw new GenreNotFoundException(genreId);
                 }), () -> {

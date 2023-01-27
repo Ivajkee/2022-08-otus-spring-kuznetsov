@@ -5,16 +5,13 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.AuthorDto;
-import ru.otus.domain.model.Author;
 import ru.otus.service.AuthorService;
 import ru.otus.service.out.OutputService;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class AuthorCommands {
     private final AuthorService authorService;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final OutputService outputService;
 
     @ShellMethod(value = "Show all authors.", key = {"all-a"})
@@ -42,7 +39,7 @@ public class AuthorCommands {
 
     @ShellMethod(value = "Add author.", key = {"add-a"})
     public void addAuthor(@ShellOption(arity = 3) String fullName) {
-        AuthorDto authorDto = new AuthorDto(sequenceGeneratorService.generateSequence(Author.SEQUENCE_NAME), fullName.trim());
+        AuthorDto authorDto = new AuthorDto(fullName.trim());
         AuthorDto addedAuthor = authorService.saveAuthor(authorDto);
         printAuthor(addedAuthor);
     }

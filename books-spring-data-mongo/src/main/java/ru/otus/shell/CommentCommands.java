@@ -5,10 +5,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.CommentDto;
-import ru.otus.domain.model.Comment;
 import ru.otus.service.CommentService;
 import ru.otus.service.out.OutputService;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 
@@ -16,7 +14,6 @@ import java.util.List;
 @ShellComponent
 public class CommentCommands {
     private final CommentService commentService;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final OutputService outputService;
 
     @ShellMethod(value = "Show comment.", key = {"c"})
@@ -33,7 +30,7 @@ public class CommentCommands {
 
     @ShellMethod(value = "Add comment to book.", key = {"add-c"})
     public void addComment(@ShellOption long bookId, @ShellOption(arity = 10) String text) {
-        CommentDto commentDto = new CommentDto(sequenceGeneratorService.generateSequence(Comment.SEQUENCE_NAME), text.trim());
+        CommentDto commentDto = new CommentDto(text.trim());
         CommentDto savedCommentDto = commentService.saveComment(bookId, commentDto);
         printComment(savedCommentDto);
     }

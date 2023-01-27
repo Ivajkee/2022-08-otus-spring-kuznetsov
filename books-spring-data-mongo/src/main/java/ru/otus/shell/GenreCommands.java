@@ -5,16 +5,13 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.GenreDto;
-import ru.otus.domain.model.Genre;
 import ru.otus.service.GenreService;
 import ru.otus.service.out.OutputService;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class GenreCommands {
     private final GenreService genreService;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final OutputService outputService;
 
     @ShellMethod(value = "Show all genres.", key = {"all-g"})
@@ -42,7 +39,7 @@ public class GenreCommands {
 
     @ShellMethod(value = "Add genre.", key = {"add-g"})
     public void addGenre(@ShellOption(arity = 3) String name) {
-        GenreDto genreDto = new GenreDto(sequenceGeneratorService.generateSequence(Genre.SEQUENCE_NAME), name.trim());
+        GenreDto genreDto = new GenreDto(name.trim());
         GenreDto addedGenre = genreService.saveGenre(genreDto);
         printGenre(addedGenre);
     }

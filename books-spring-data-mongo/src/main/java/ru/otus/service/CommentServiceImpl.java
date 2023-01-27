@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.dto.CommentDto;
 import ru.otus.domain.model.Comment;
 import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.CommentNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
+import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +21,14 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BookRepository bookRepository;
+    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
     public CommentDto saveComment(long bookId, CommentDto commentDto) {
         CommentDto savedCommentDto = bookRepository.findById(bookId).map(book -> {
             Comment comment = new Comment(commentDto.getText(), book);
+            comment.setId(sequenceGeneratorService.generateSequence(Comment.SEQUENCE_NAME));
             Comment savedComment = commentRepository.save(comment);
             return conversionService.convert(savedComment, CommentDto.class);
         }).orElseThrow(() -> new BookNotFoundException(bookId));
@@ -34,7 +36,6 @@ public class CommentServiceImpl implements CommentService {
         return savedCommentDto;
     }
 
-    @Transactional
     @Override
     public CommentDto updateComment(CommentDto commentDto) {
         CommentDto updatedCommentDto = commentRepository.findById(commentDto.getId()).map(comment -> {

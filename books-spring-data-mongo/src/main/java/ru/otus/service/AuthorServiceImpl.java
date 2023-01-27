@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
+import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
@@ -30,13 +31,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         Author author = conversionService.convert(authorDto, Author.class);
+        author.setId(sequenceGeneratorService.generateSequence(Author.SEQUENCE_NAME));
         Author savedAuthor = authorRepository.save(author);
         AuthorDto savedAuthorDto = conversionService.convert(savedAuthor, AuthorDto.class);
         log.debug("Saved author: {}", savedAuthorDto);
         return savedAuthorDto;
     }
 
-    @Transactional
     @Override
     public AuthorDto updateAuthor(AuthorDto authorDto) {
         AuthorDto updatedAuthorDto = authorRepository.findById(authorDto.getId()).map(author -> {

@@ -5,16 +5,13 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.domain.dto.BookDto;
-import ru.otus.domain.model.Book;
 import ru.otus.service.BookService;
 import ru.otus.service.out.OutputService;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class BookCommands {
     private final BookService bookService;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final OutputService outputService;
 
     @ShellMethod(value = "Show all books.", key = {"all-b"})
@@ -42,7 +39,7 @@ public class BookCommands {
 
     @ShellMethod(value = "Add book.", key = {"add-b"})
     public void addBook(@ShellOption(arity = 5) String title) {
-        BookDto bookDto = new BookDto(sequenceGeneratorService.generateSequence(Book.SEQUENCE_NAME), title.trim());
+        BookDto bookDto = new BookDto(title.trim());
         BookDto addedBook = bookService.saveBook(bookDto);
         printBook(addedBook);
     }

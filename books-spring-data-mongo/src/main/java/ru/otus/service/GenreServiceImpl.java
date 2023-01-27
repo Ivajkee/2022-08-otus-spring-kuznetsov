@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.GenreRepository;
+import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
+    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
@@ -30,13 +31,13 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto saveGenre(GenreDto genreDto) {
         Genre genre = conversionService.convert(genreDto, Genre.class);
+        genre.setId(sequenceGeneratorService.generateSequence(Genre.SEQUENCE_NAME));
         Genre savedGenre = genreRepository.save(genre);
         GenreDto savedGenreDto = conversionService.convert(savedGenre, GenreDto.class);
         log.debug("Saved genre: {}", savedGenreDto);
         return savedGenreDto;
     }
 
-    @Transactional
     @Override
     public GenreDto updateGenre(GenreDto genreDto) {
         GenreDto updatedGenreDto = genreRepository.findById(genreDto.getId()).map(genre -> {

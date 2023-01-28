@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -26,7 +27,9 @@ public class Book {
     @NotBlank
     @Field("title")
     private String title;
+    @DBRef
     private Set<Author> authors = new HashSet<>();
+    @DBRef
     private Set<Genre> genres = new HashSet<>();
 
     public Book(long id, String title) {

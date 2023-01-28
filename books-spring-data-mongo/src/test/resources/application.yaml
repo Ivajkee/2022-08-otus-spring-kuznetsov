@@ -1,0 +1,16 @@
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  data:
+    mongodb:
+      database: test
+  mongodb:
+    embedded:
+      version: 4.4.0
+  shell:
+    interactive:
+      enabled: false
+logging:
+  level:
+    ru.otus: DEBUG

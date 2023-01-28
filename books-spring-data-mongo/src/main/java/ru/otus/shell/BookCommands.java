@@ -19,6 +19,16 @@ public class BookCommands {
         bookService.findAllBooks().forEach(this::printBook);
     }
 
+    @ShellMethod(value = "Show all books by author id.", key = {"all-b-a"})
+    public void showBooksByAuthor(@ShellOption long authorId) {
+        bookService.findAllBooksByAuthor(authorId).forEach(this::printBook);
+    }
+
+    @ShellMethod(value = "Show all books by genre id.", key = {"all-b-g"})
+    public void showBooksByGenre(@ShellOption long genreId) {
+        bookService.findAllBooksByGenre(genreId).forEach(this::printBook);
+    }
+
     @ShellMethod(value = "Show book by id.", key = {"b"})
     public void showBook(@ShellOption long id) {
         BookDto bookDto = bookService.findBookById(id);

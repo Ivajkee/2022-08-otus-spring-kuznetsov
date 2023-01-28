@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.domain.dto.GenreDto;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
+import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
 import ru.otus.service.sequence.SequenceGeneratorService;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
+    private final BookRepository bookRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
@@ -42,7 +44,8 @@ public class GenreServiceImpl implements GenreService {
     public GenreDto updateGenre(GenreDto genreDto) {
         GenreDto updatedGenreDto = genreRepository.findById(genreDto.getId()).map(genre -> {
             genre.setName(genreDto.getName());
-            return conversionService.convert(genre, GenreDto.class);
+            Genre updatedGenre = genreRepository.save(genre);
+            return conversionService.convert(updatedGenre, GenreDto.class);
         }).orElseThrow(() -> new GenreNotFoundException(genreDto.getId()));
         log.debug("Updated genre: {}", updatedGenreDto);
         return updatedGenreDto;
@@ -85,7 +88,15 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void deleteGenreById(long id) {
-        genreRepository.deleteById(id);
+        genreRepository.findById(id).ifPresentOrElse(genre -> {
+            bookRepository.findAllByGenres(genre).forEach(book -> {
+                book.deleteGenre(genre);
+                bookRepository.save(book);
+            });
+            genreRepository.delete(genre);
+        }, () -> {
+            throw new GenreNotFoundException(id);
+        });
         log.debug("Genre with id {} deleted", id);
     }
 }

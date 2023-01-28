@@ -40,7 +40,8 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComment(CommentDto commentDto) {
         CommentDto updatedCommentDto = commentRepository.findById(commentDto.getId()).map(comment -> {
             comment.setText(commentDto.getText());
-            return conversionService.convert(comment, CommentDto.class);
+            Comment updatedComment = commentRepository.save(comment);
+            return conversionService.convert(updatedComment, CommentDto.class);
         }).orElseThrow(() -> new CommentNotFoundException(commentDto.getId()));
         log.debug("Updated comment: {}", updatedCommentDto);
         return updatedCommentDto;

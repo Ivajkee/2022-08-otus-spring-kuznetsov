@@ -8,6 +8,7 @@ import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
+import ru.otus.repository.BookRepository;
 import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
@@ -42,7 +44,8 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto updateAuthor(AuthorDto authorDto) {
         AuthorDto updatedAuthorDto = authorRepository.findById(authorDto.getId()).map(author -> {
             author.setFullName(authorDto.getFullName());
-            return conversionService.convert(author, AuthorDto.class);
+            Author updatedAuthor = authorRepository.save(author);
+            return conversionService.convert(updatedAuthor, AuthorDto.class);
         }).orElseThrow(() -> new AuthorNotFoundException(authorDto.getId()));
         log.debug("Updated author: {}", updatedAuthorDto);
         return updatedAuthorDto;
@@ -85,7 +88,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthorById(long id) {
-        authorRepository.deleteById(id);
+        authorRepository.findById(id).ifPresentOrElse(author -> {
+            bookRepository.findAllByAuthors(author).forEach(book -> {
+                book.deleteAuthor(author);
+                bookRepository.save(book);
+            });
+            authorRepository.delete(author);
+        }, () -> {
+            throw new AuthorNotFoundException(id);
+        });
         log.debug("Author with id {} deleted", id);
     }
 }

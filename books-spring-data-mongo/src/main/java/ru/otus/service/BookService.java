@@ -19,6 +19,10 @@ public interface BookService {
 
     List<BookDto> findAllBooks();
 
+    List<BookDto> findAllBooksByAuthor(long authorId);
+
+    List<BookDto> findAllBooksByGenre(long genreId);
+
     void deleteBookById(long id);
 
     void addAuthorToBook(long authorId, long bookId);

@@ -6,11 +6,13 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.model.Book;
+import ru.otus.domain.model.Comment;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
 import ru.otus.service.sequence.SequenceGeneratorService;
 
@@ -24,6 +26,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final CommentRepository commentRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
@@ -90,15 +93,48 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDto> findAllBooksByAuthor(long authorId) {
+        List<BookDto> booksDto = authorRepository.findById(authorId).map(author -> {
+            List<Book> books = bookRepository.findAllByAuthors(author);
+            return books.stream()
+                    .map(book -> conversionService.convert(book, BookDto.class))
+                    .collect(Collectors.toList());
+        }).orElseThrow(() -> new AuthorNotFoundException(authorId));
+        log.debug("Found books: {}", booksDto);
+        return booksDto;
+    }
+
+    @Override
+    public List<BookDto> findAllBooksByGenre(long genreId) {
+        List<BookDto> booksDto = genreRepository.findById(genreId).map(genre -> {
+            List<Book> books = bookRepository.findAllByGenres(genre);
+            return books.stream()
+                    .map(book -> conversionService.convert(book, BookDto.class))
+                    .collect(Collectors.toList());
+        }).orElseThrow(() -> new GenreNotFoundException(genreId));
+        log.debug("Found books: {}", booksDto);
+        return booksDto;
+    }
+
+    @Override
     public void deleteBookById(long id) {
-        bookRepository.deleteById(id);
+        bookRepository.findById(id).ifPresentOrElse(book -> {
+            List<Comment> comments = commentRepository.findAllByBook(book);
+            commentRepository.deleteAll(comments);
+            bookRepository.delete(book);
+        }, () -> {
+            throw new BookNotFoundException(id);
+        });
         log.debug("Book with id {} deleted", id);
     }
 
     @Override
     public void addAuthorToBook(long authorId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
-                .ifPresentOrElse(book::addAuthor, () -> {
+                .ifPresentOrElse(author -> {
+                    book.addAuthor(author);
+                    bookRepository.save(book);
+                }, () -> {
                     throw new AuthorNotFoundException(authorId);
                 }), () -> {
             throw new BookNotFoundException(bookId);
@@ -109,7 +145,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteAuthorFromBook(long authorId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
-                .ifPresentOrElse(book::deleteAuthor, () -> {
+                .ifPresentOrElse(author -> {
+                    book.deleteAuthor(author);
+                    bookRepository.save(book);
+                }, () -> {
                     throw new AuthorNotFoundException(authorId);
                 }), () -> {
             throw new BookNotFoundException(bookId);
@@ -120,7 +159,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public void addGenreToBook(long genreId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
-                .ifPresentOrElse(book::addGenre, () -> {
+                .ifPresentOrElse(genre -> {
+                    book.addGenre(genre);
+                    bookRepository.save(book);
+                }, () -> {
                     throw new GenreNotFoundException(genreId);
                 }), () -> {
             throw new BookNotFoundException(bookId);
@@ -131,7 +173,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteGenreFromBook(long genreId, long bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
-                .ifPresentOrElse(book::deleteGenre, () -> {
+                .ifPresentOrElse(genre -> {
+                    book.deleteGenre(genre);
+                    bookRepository.save(book);
+                }, () -> {
                     throw new GenreNotFoundException(genreId);
                 }), () -> {
             throw new BookNotFoundException(bookId);

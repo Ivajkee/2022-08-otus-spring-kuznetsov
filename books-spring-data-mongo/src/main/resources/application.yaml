@@ -4,10 +4,7 @@ spring:
       enabled: ALWAYS
   data:
     mongodb:
-      database: test
-  mongodb:
-    embedded:
-      version: 4.4.0
+      database: prod
 logging:
   level:
     ru.otus: DEBUG

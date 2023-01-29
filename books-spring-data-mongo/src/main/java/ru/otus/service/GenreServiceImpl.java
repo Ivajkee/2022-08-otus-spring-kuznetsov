@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto saveGenre(GenreDto genreDto) {
         Genre genre = conversionService.convert(genreDto, Genre.class);
-        genre.setId(sequenceGeneratorService.generateSequence(Genre.SEQUENCE_NAME));
+        genre.setId(sequenceGeneratorService.generate(Genre.SEQUENCE_NAME));
         Genre savedGenre = genreRepository.save(genre);
         GenreDto savedGenreDto = conversionService.convert(savedGenre, GenreDto.class);
         log.debug("Saved genre: {}", savedGenreDto);

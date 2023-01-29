@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto saveBook(BookDto bookDto) {
         Book book = conversionService.convert(bookDto, Book.class);
-        book.setId(sequenceGeneratorService.generateSequence(Book.SEQUENCE_NAME));
+        book.setId(sequenceGeneratorService.generate(Book.SEQUENCE_NAME));
         Book savedBook = bookRepository.save(book);
         BookDto savedBookDto = conversionService.convert(savedBook, BookDto.class);
         log.debug("Saved book: {}", savedBookDto);

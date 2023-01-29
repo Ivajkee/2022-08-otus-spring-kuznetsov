@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto saveComment(long bookId, CommentDto commentDto) {
         CommentDto savedCommentDto = bookRepository.findById(bookId).map(book -> {
             Comment comment = new Comment(commentDto.getText(), book);
-            comment.setId(sequenceGeneratorService.generateSequence(Comment.SEQUENCE_NAME));
+            comment.setId(sequenceGeneratorService.generate(Comment.SEQUENCE_NAME));
             Comment savedComment = commentRepository.save(comment);
             return conversionService.convert(savedComment, CommentDto.class);
         }).orElseThrow(() -> new BookNotFoundException(bookId));

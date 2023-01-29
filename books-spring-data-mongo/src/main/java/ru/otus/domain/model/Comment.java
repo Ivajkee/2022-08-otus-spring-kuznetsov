@@ -1,6 +1,8 @@
 package ru.otus.domain.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -10,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@ToString(exclude = {"book"})
-@EqualsAndHashCode(exclude = {"book"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("comments")

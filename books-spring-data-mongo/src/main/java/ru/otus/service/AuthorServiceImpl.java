@@ -33,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         Author author = conversionService.convert(authorDto, Author.class);
-        author.setId(sequenceGeneratorService.generateSequence(Author.SEQUENCE_NAME));
+        author.setId(sequenceGeneratorService.generate(Author.SEQUENCE_NAME));
         Author savedAuthor = authorRepository.save(author);
         AuthorDto savedAuthorDto = conversionService.convert(savedAuthor, AuthorDto.class);
         log.debug("Saved author: {}", savedAuthorDto);

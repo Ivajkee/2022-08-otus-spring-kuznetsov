@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class SequenceGeneratorService {
     private final MongoOperations mongoOperations;
 
-    public long generateSequence(String seqName) {
+    public long generate(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(Query.query(Criteria.where("_id").is(seqName)),
                 new Update().inc("sequence", 1), FindAndModifyOptions.options().returnNew(true).upsert(true),
                 DatabaseSequence.class);

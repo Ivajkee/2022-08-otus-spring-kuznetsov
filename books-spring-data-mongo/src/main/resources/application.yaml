@@ -5,6 +5,9 @@ spring:
   data:
     mongodb:
       database: prod
+  mongodb:
+    embedded:
+      version: 4.4.0
 logging:
   level:
-    ru.otus: DEBUG
+    ru.otus: INFO

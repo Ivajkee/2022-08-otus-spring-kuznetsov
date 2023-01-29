@@ -23,7 +23,7 @@ public class Comment {
     @NotBlank
     @Field("text")
     private String text;
-    @DBRef
+    @DBRef(lazy = true)
     private Book book;
 
     public Comment(long id, String text) {

@@ -6,7 +6,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import ru.otus.domain.dto.BookDto;
 import ru.otus.domain.model.Book;
-import ru.otus.domain.model.Comment;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.GenreNotFoundException;
@@ -119,8 +118,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBookById(long id) {
         bookRepository.findById(id).ifPresentOrElse(book -> {
-            List<Comment> comments = commentRepository.findAllByBook(book);
-            commentRepository.deleteAll(comments);
+            commentRepository.deleteAllByBook(book);
             bookRepository.delete(book);
         }, () -> {
             throw new BookNotFoundException(id);

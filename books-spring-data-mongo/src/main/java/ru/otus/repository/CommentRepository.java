@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CommentRepository extends MongoRepository<Comment, Long> {
     List<Comment> findAllByBook(Book book);
+
+    void deleteAllByBook(Book book);
 }

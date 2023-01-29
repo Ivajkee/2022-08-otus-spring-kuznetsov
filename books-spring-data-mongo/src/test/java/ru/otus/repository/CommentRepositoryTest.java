@@ -25,12 +25,19 @@ class CommentRepositoryTest {
     @DisplayName("Should find all comments by book")
     @Test
     void shouldFindAllCommentsByBook() {
-        Book book = new Book("Test book");
-        Book savedBook = bookRepository.save(book);
-        Comment comment = new Comment("Test comment", savedBook);
-        Comment savedComment = commentRepository.save(comment);
-        List<Comment> expectedComments = List.of(savedComment);
-        List<Comment> actualComments = commentRepository.findAllByBook(book);
+        Book expectedBook = new Book(1, "Руслан и Людмила");
+        Comment expectedComment = new Comment(1, "comment 1", expectedBook);
+        List<Comment> expectedComments = List.of(expectedComment);
+        List<Comment> actualComments = commentRepository.findAllByBook(expectedBook);
         assertThat(actualComments).isEqualTo(expectedComments);
+    }
+
+    @DisplayName("Should delete all comments by book")
+    @Test
+    void shouldDeleteAllCommentsByBook() {
+        Book book = new Book(1, "Руслан и Людмила");
+        commentRepository.deleteAllByBook(book);
+        List<Comment> actualComments = commentRepository.findAllByBook(book);
+        assertThat(actualComments).isEmpty();
     }
 }

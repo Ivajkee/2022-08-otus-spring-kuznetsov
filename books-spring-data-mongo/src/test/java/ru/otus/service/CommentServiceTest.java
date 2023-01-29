@@ -148,7 +148,7 @@ class CommentServiceTest {
 
     @DisplayName("Should delete comment")
     @Test
-    void shouldDeleteGenre() {
+    void shouldDeleteComment() {
         long id = 1;
         assertThatCode(() -> commentService.deleteCommentById(id)).doesNotThrowAnyException();
     }

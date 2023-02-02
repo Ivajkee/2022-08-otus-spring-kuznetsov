@@ -10,6 +10,7 @@ import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Comment;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,8 +36,10 @@ class CommentRepositoryTest {
     @Test
     void shouldDeleteAllCommentsByBook() {
         Book book = new Book("1", "Руслан и Людмила");
+        Optional<Comment> optionalComment = commentRepository.findById("1");
+        assertThat(optionalComment).isPresent();
         commentRepository.deleteAllByBook(book);
-        List<Comment> actualComments = commentRepository.findAllByBook(book);
-        assertThat(actualComments).isEmpty();
+        Optional<Comment> optionalDeletedComment = commentRepository.findById("1");
+        assertThat(optionalDeletedComment).isEmpty();
     }
 }

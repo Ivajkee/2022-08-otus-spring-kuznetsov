@@ -10,7 +10,6 @@ import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.CommentNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,14 +20,12 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final BookRepository bookRepository;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
-    public CommentDto saveComment(long bookId, CommentDto commentDto) {
+    public CommentDto saveComment(String bookId, CommentDto commentDto) {
         CommentDto savedCommentDto = bookRepository.findById(bookId).map(book -> {
             Comment comment = new Comment(commentDto.getText(), book);
-            comment.setId(sequenceGeneratorService.generate(Comment.SEQUENCE_NAME));
             Comment savedComment = commentRepository.save(comment);
             return conversionService.convert(savedComment, CommentDto.class);
         }).orElseThrow(() -> new BookNotFoundException(bookId));
@@ -48,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto findCommentById(long id) {
+    public CommentDto findCommentById(String id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException(id));
         CommentDto commentDto = conversionService.convert(comment, CommentDto.class);
@@ -57,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> findCommentsByBookId(long bookId) {
+    public List<CommentDto> findCommentsByBookId(String bookId) {
         List<CommentDto> commentsDto = bookRepository.findById(bookId)
                 .map(book -> commentRepository.findAllByBook(book)
                         .stream()
@@ -69,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteCommentById(long id) {
+    public void deleteCommentById(String id) {
         commentRepository.deleteById(id);
         log.debug("Comment with id {} deleted", id);
     }

@@ -9,7 +9,6 @@ import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
@@ -33,7 +31,6 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDto saveGenre(GenreDto genreDto) {
         Genre genre = conversionService.convert(genreDto, Genre.class);
-        genre.setId(sequenceGeneratorService.generate(Genre.SEQUENCE_NAME));
         Genre savedGenre = genreRepository.save(genre);
         GenreDto savedGenreDto = conversionService.convert(savedGenre, GenreDto.class);
         log.debug("Saved genre: {}", savedGenreDto);
@@ -52,14 +49,14 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public boolean existsGenreById(long id) {
+    public boolean existsGenreById(String id) {
         boolean genreIsExist = genreRepository.existsById(id);
         log.debug("Genre with id {} is exist: {}", id, genreIsExist);
         return genreIsExist;
     }
 
     @Override
-    public GenreDto findGenreById(long id) {
+    public GenreDto findGenreById(String id) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new GenreNotFoundException(id));
         GenreDto genreDto = conversionService.convert(genre, GenreDto.class);
@@ -87,7 +84,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void deleteGenreById(long id) {
+    public void deleteGenreById(String id) {
         genreRepository.findById(id).ifPresentOrElse(genre -> {
             bookRepository.findAllByGenres(genre).forEach(book -> {
                 book.deleteGenre(genre);

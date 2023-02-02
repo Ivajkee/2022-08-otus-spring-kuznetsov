@@ -17,37 +17,37 @@ public class CommentCommands {
     private final OutputService outputService;
 
     @ShellMethod(value = "Show comment.", key = {"c"})
-    public void showComment(@ShellOption long id) {
+    public void showComment(@ShellOption String id) {
         CommentDto commentDto = commentService.findCommentById(id);
         printComment(commentDto);
     }
 
     @ShellMethod(value = "Show comments for book.", key = {"c-b"})
-    public void showComments(@ShellOption long bookId) {
+    public void showComments(@ShellOption String bookId) {
         List<CommentDto> commentsDto = commentService.findCommentsByBookId(bookId);
         commentsDto.forEach(this::printComment);
     }
 
     @ShellMethod(value = "Add comment to book.", key = {"add-c"})
-    public void addComment(@ShellOption long bookId, @ShellOption(arity = 10) String text) {
+    public void addComment(@ShellOption String bookId, @ShellOption(arity = 10) String text) {
         CommentDto commentDto = new CommentDto(text.trim());
         CommentDto savedCommentDto = commentService.saveComment(bookId, commentDto);
         printComment(savedCommentDto);
     }
 
     @ShellMethod(value = "Edit comment.", key = {"edit-c"})
-    public void editComment(@ShellOption long id, @ShellOption(arity = 10) String text) {
+    public void editComment(@ShellOption String id, @ShellOption(arity = 10) String text) {
         CommentDto commentDto = new CommentDto(id, text.trim());
         CommentDto updatedCommentDto = commentService.updateComment(commentDto);
         printComment(updatedCommentDto);
     }
 
     @ShellMethod(value = "Delete comment.", key = {"del-c"})
-    public void deleteComment(@ShellOption long id) {
+    public void deleteComment(@ShellOption String id) {
         commentService.deleteCommentById(id);
     }
 
     private void printComment(CommentDto commentDto) {
-        outputService.output(String.format("%d: %s", commentDto.getId(), commentDto.getText()));
+        outputService.output(String.format("%s: %s", commentDto.getId(), commentDto.getText()));
     }
 }

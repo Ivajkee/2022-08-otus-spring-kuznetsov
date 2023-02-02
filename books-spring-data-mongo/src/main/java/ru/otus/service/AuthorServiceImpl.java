@@ -9,7 +9,6 @@ import ru.otus.domain.model.Author;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
@@ -33,7 +31,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         Author author = conversionService.convert(authorDto, Author.class);
-        author.setId(sequenceGeneratorService.generate(Author.SEQUENCE_NAME));
         Author savedAuthor = authorRepository.save(author);
         AuthorDto savedAuthorDto = conversionService.convert(savedAuthor, AuthorDto.class);
         log.debug("Saved author: {}", savedAuthorDto);
@@ -52,14 +49,14 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public boolean existsAuthorById(long id) {
+    public boolean existsAuthorById(String id) {
         boolean authorIsExist = authorRepository.existsById(id);
         log.debug("Author with id {} is exist: {}", id, authorIsExist);
         return authorIsExist;
     }
 
     @Override
-    public AuthorDto findAuthorById(long id) {
+    public AuthorDto findAuthorById(String id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(id));
         AuthorDto authorDto = conversionService.convert(author, AuthorDto.class);
@@ -87,7 +84,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void deleteAuthorById(long id) {
+    public void deleteAuthorById(String id) {
         authorRepository.findById(id).ifPresentOrElse(author -> {
             bookRepository.findAllByAuthors(author).forEach(book -> {
                 book.deleteAuthor(author);

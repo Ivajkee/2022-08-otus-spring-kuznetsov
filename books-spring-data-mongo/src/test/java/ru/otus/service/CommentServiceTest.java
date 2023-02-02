@@ -13,7 +13,6 @@ import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.CommentNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,18 +29,16 @@ class CommentServiceTest {
     @MockBean
     private BookRepository bookRepository;
     @MockBean
-    private SequenceGeneratorService sequenceGeneratorService;
-    @MockBean
     private ConversionService conversionService;
 
     @DisplayName("Should add comment to book")
     @Test
     void shouldAddCommentToBook() {
-        long bookId = 1;
+        String bookId = "1";
         CommentDto commentDto = new CommentDto("Test comment");
         Book book = new Book(bookId, "Test book");
         Comment comment = new Comment(commentDto.getText(), book);
-        Comment savedComment = new Comment(1, commentDto.getText(), book);
+        Comment savedComment = new Comment("1", commentDto.getText(), book);
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(commentRepository.save(comment)).thenReturn(savedComment);
@@ -53,11 +50,11 @@ class CommentServiceTest {
     @DisplayName("Should throw exception when try add comment to not existing book")
     @Test
     void shouldThrowExceptionWhenTryAddCommentToNotExistingBook() {
-        long bookId = 1;
+        String bookId = "1";
         CommentDto commentDto = new CommentDto("Test comment");
         Book book = new Book(bookId, "Test book");
         Comment comment = new Comment(commentDto.getText(), book);
-        Comment savedComment = new Comment(1, commentDto.getText(), book);
+        Comment savedComment = new Comment("1", commentDto.getText(), book);
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         when(commentRepository.save(comment)).thenReturn(savedComment);
@@ -68,7 +65,7 @@ class CommentServiceTest {
     @DisplayName("Should update comment")
     @Test
     void shouldUpdateComment() {
-        long id = 1;
+        String id = "1";
         CommentDto commentDto = new CommentDto(id, "Test comment");
         Comment comment = new Comment(id, commentDto.getText());
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
@@ -82,7 +79,7 @@ class CommentServiceTest {
     @DisplayName("Should throw exception when try update not existing comment")
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingComment() {
-        long id = 1;
+        String id = "1";
         CommentDto commentDto = new CommentDto(id, "Test comment");
         Comment comment = new Comment(id, commentDto.getText());
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
@@ -94,7 +91,7 @@ class CommentServiceTest {
     @DisplayName("Should find comment by id")
     @Test
     void shouldFindCommentById() {
-        long id = 1;
+        String id = "1";
         Comment comment = new Comment(id, "Test comment");
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
         when(commentRepository.findById(id)).thenReturn(Optional.of(comment));
@@ -106,7 +103,7 @@ class CommentServiceTest {
     @DisplayName("Should throw exception when try find not existing comment by id")
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingCommentById() {
-        long id = 1;
+        String id = "1";
         Comment comment = new Comment(id, "Test comment");
         CommentDto expectedCommentDto = new CommentDto(comment.getId(), comment.getText());
         when(commentRepository.findById(id)).thenReturn(Optional.empty());
@@ -117,9 +114,9 @@ class CommentServiceTest {
     @DisplayName("Should find comments by book id")
     @Test
     void shouldFindCommentsByBookId() {
-        long bookId = 1;
+        String bookId = "1";
         Book book = new Book(bookId, "Test book");
-        Comment comment = new Comment(1, "Test comment");
+        Comment comment = new Comment("1", "Test comment");
         CommentDto commentDto = new CommentDto(comment.getId(), comment.getText());
         List<Comment> expectedComments = List.of(comment);
         List<CommentDto> expectedCommentsDto = List.of(commentDto);
@@ -133,9 +130,9 @@ class CommentServiceTest {
     @DisplayName("Should throw exception when try find comments by not existing book")
     @Test
     void shouldThrowExceptionWhenTryFindCommentsByNotExistingBook() {
-        long bookId = 1;
+        String bookId = "1";
         Book book = new Book(bookId, "Test book");
-        Comment comment = new Comment(1, "Test comment");
+        Comment comment = new Comment("1", "Test comment");
         CommentDto commentDto = new CommentDto(comment.getId(), comment.getText());
         List<Comment> expectedComments = List.of(comment);
         List<CommentDto> expectedCommentsDto = List.of(commentDto);
@@ -149,7 +146,7 @@ class CommentServiceTest {
     @DisplayName("Should delete comment")
     @Test
     void shouldDeleteComment() {
-        long id = 1;
+        String id = "1";
         assertThatCode(() -> commentService.deleteCommentById(id)).doesNotThrowAnyException();
     }
 }

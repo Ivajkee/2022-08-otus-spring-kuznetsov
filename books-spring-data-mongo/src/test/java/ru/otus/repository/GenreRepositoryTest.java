@@ -5,15 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.config.MongoDataInitializer;
+import ru.otus.config.MongoDataInitializerTest;
 import ru.otus.domain.model.Genre;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import({MongoDataInitializer.class, SequenceGeneratorService.class})
+@Import({MongoDataInitializerTest.class})
 @DataMongoTest
 class GenreRepositoryTest {
     @Autowired
@@ -22,7 +21,7 @@ class GenreRepositoryTest {
     @DisplayName("Should find genre by name")
     @Test
     void shouldFindGenreByName() {
-        Genre expectedGenre = new Genre(1, "Поэма");
+        Genre expectedGenre = new Genre("1", "Поэма");
         Optional<Genre> optionalActualGenre = genreRepository.findByNameIgnoreCase("поэма");
         assertThat(optionalActualGenre).hasValue(expectedGenre);
     }

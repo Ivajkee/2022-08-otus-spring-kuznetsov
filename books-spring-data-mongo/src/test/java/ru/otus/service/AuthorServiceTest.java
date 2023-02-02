@@ -12,7 +12,6 @@ import ru.otus.domain.model.Book;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +29,6 @@ class AuthorServiceTest {
     @MockBean
     private BookRepository bookRepository;
     @MockBean
-    private SequenceGeneratorService sequenceGeneratorService;
-    @MockBean
     private ConversionService conversionService;
 
     @DisplayName("Should return expected authors count")
@@ -46,7 +43,7 @@ class AuthorServiceTest {
     @DisplayName("Should save author")
     @Test
     void shouldSaveAuthor() {
-        long id = 1;
+        String id = "1";
         AuthorDto authorDto = new AuthorDto("New author");
         Author author = new Author(authorDto.getFullName());
         Author savedAuthor = new Author(id, author.getFullName());
@@ -61,7 +58,7 @@ class AuthorServiceTest {
     @DisplayName("Should update author")
     @Test
     void shouldUpdateAuthor() {
-        long id = 1;
+        String id = "1";
         AuthorDto authorDto = new AuthorDto(id, "Edited author");
         Author author = new Author(id, authorDto.getFullName());
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
@@ -75,7 +72,7 @@ class AuthorServiceTest {
     @DisplayName("Should throw exception when try update not existing author")
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingAuthor() {
-        long id = 1;
+        String id = "1";
         AuthorDto authorDto = new AuthorDto(id, "Edited author");
         when(authorRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.updateAuthor(authorDto)).isInstanceOf(AuthorNotFoundException.class);
@@ -84,7 +81,7 @@ class AuthorServiceTest {
     @DisplayName("Should be exist author")
     @Test
     void shouldBeExistAuthor() {
-        long id = 1;
+        String id = "1";
         when(authorRepository.existsById(id)).thenReturn(true);
         boolean authorIsExist = authorService.existsAuthorById(id);
         assertThat(authorIsExist).isTrue();
@@ -93,7 +90,7 @@ class AuthorServiceTest {
     @DisplayName("Should be not exist author")
     @Test
     void shouldBeNotExistAuthor() {
-        long id = 1;
+        String id = "1";
         when(authorRepository.existsById(id)).thenReturn(false);
         boolean authorIsExist = authorService.existsAuthorById(id);
         assertThat(authorIsExist).isFalse();
@@ -102,7 +99,7 @@ class AuthorServiceTest {
     @DisplayName("Should find author by id")
     @Test
     void shouldFindAuthorById() {
-        long id = 1;
+        String id = "1";
         Author author = new Author(id, "Test author");
         AuthorDto expectedAuthorDto = new AuthorDto(id, author.getFullName());
         when(authorRepository.findById(id)).thenReturn(Optional.of(author));
@@ -114,7 +111,7 @@ class AuthorServiceTest {
     @DisplayName("Should throw exception when try find not existing author by id")
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingAuthorById() {
-        long id = 1;
+        String id = "1";
         when(authorRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> authorService.findAuthorById(id)).isInstanceOf(AuthorNotFoundException.class);
     }
@@ -122,7 +119,7 @@ class AuthorServiceTest {
     @DisplayName("Should find author by full name")
     @Test
     void shouldFindAuthorByFullName() {
-        long id = 1;
+        String id = "1";
         String fullName = "Test author";
         Author author = new Author(id, fullName);
         AuthorDto expectedAuthorDto = new AuthorDto(id, fullName);
@@ -143,9 +140,9 @@ class AuthorServiceTest {
     @DisplayName("Should find all authors")
     @Test
     void shouldFindAllAuthors() {
-        Author author1 = new Author(1, "Test author 1");
-        Author author2 = new Author(2, "Test author 2");
-        Author author3 = new Author(3, "Test author 3");
+        Author author1 = new Author("1", "Test author 1");
+        Author author2 = new Author("2", "Test author 2");
+        Author author3 = new Author("3", "Test author 3");
         AuthorDto authorDto1 = new AuthorDto(author1.getId(), author1.getFullName());
         AuthorDto authorDto2 = new AuthorDto(author2.getId(), author2.getFullName());
         AuthorDto authorDto3 = new AuthorDto(author3.getId(), author3.getFullName());
@@ -162,7 +159,7 @@ class AuthorServiceTest {
     @DisplayName("Should delete author")
     @Test
     void shouldDeleteAuthor() {
-        long id = 1;
+        String id = "1";
         Author author = new Author(id, "Test author");
         Book book = new Book(id, "Test book");
         book.addAuthor(author);

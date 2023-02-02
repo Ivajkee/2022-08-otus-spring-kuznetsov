@@ -12,7 +12,6 @@ import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +29,6 @@ class GenreServiceTest {
     @MockBean
     private BookRepository bookRepository;
     @MockBean
-    private SequenceGeneratorService sequenceGeneratorService;
-    @MockBean
     private ConversionService conversionService;
 
     @DisplayName("Should return expected genres count")
@@ -46,7 +43,7 @@ class GenreServiceTest {
     @DisplayName("Should save genre")
     @Test
     void shouldSaveGenre() {
-        long id = 1;
+        String id = "1";
         GenreDto genreDto = new GenreDto("New genre");
         Genre genre = new Genre(genreDto.getName());
         Genre savedGenre = new Genre(id, genre.getName());
@@ -61,7 +58,7 @@ class GenreServiceTest {
     @DisplayName("Should update genre")
     @Test
     void shouldUpdateGenre() {
-        long id = 1;
+        String id = "1";
         GenreDto genreDto = new GenreDto(id, "Edited genre");
         Genre genre = new Genre(id, genreDto.getName());
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
@@ -75,7 +72,7 @@ class GenreServiceTest {
     @DisplayName("Should throw exception when try update not existing genre")
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingGenre() {
-        long id = 1;
+        String id = "1";
         GenreDto genreDto = new GenreDto(id, "Edited genre");
         when(genreRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> genreService.updateGenre(genreDto)).isInstanceOf(GenreNotFoundException.class);
@@ -84,7 +81,7 @@ class GenreServiceTest {
     @DisplayName("Should be exist genre")
     @Test
     void shouldBeExistGenre() {
-        long id = 1;
+        String id = "1";
         when(genreRepository.existsById(id)).thenReturn(true);
         boolean genreIsExist = genreService.existsGenreById(id);
         assertThat(genreIsExist).isTrue();
@@ -93,7 +90,7 @@ class GenreServiceTest {
     @DisplayName("Should be not exist genre")
     @Test
     void shouldBeNotExistGenre() {
-        long id = 1;
+        String id = "1";
         when(genreRepository.existsById(id)).thenReturn(false);
         boolean genreIsExist = genreService.existsGenreById(id);
         assertThat(genreIsExist).isFalse();
@@ -102,7 +99,7 @@ class GenreServiceTest {
     @DisplayName("Should find genre by id")
     @Test
     void shouldFindGenreById() {
-        long id = 1;
+        String id = "1";
         Genre genre = new Genre(id, "Test genre");
         GenreDto expectedGenreDto = new GenreDto(id, genre.getName());
         when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
@@ -114,7 +111,7 @@ class GenreServiceTest {
     @DisplayName("Should throw exception when try find not existing genre by id")
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingGenreById() {
-        long id = 1;
+        String id = "1";
         when(genreRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> genreService.findGenreById(id)).isInstanceOf(GenreNotFoundException.class);
     }
@@ -122,7 +119,7 @@ class GenreServiceTest {
     @DisplayName("Should find genre by name")
     @Test
     void shouldFindGenreByName() {
-        long id = 1;
+        String id = "1";
         String name = "Test genre";
         Genre genre = new Genre(id, name);
         GenreDto expectedGenreDto = new GenreDto(id, name);
@@ -143,9 +140,9 @@ class GenreServiceTest {
     @DisplayName("Should find all genres")
     @Test
     void shouldFindAllGenres() {
-        Genre genre1 = new Genre(1, "Test genre 1");
-        Genre genre2 = new Genre(2, "Test genre 2");
-        Genre genre3 = new Genre(3, "Test genre 3");
+        Genre genre1 = new Genre("1", "Test genre 1");
+        Genre genre2 = new Genre("2", "Test genre 2");
+        Genre genre3 = new Genre("3", "Test genre 3");
         GenreDto genreDto1 = new GenreDto(genre1.getId(), genre1.getName());
         GenreDto genreDto2 = new GenreDto(genre2.getId(), genre2.getName());
         GenreDto genreDto3 = new GenreDto(genre3.getId(), genre3.getName());
@@ -162,7 +159,7 @@ class GenreServiceTest {
     @DisplayName("Should delete genre")
     @Test
     void shouldDeleteGenre() {
-        long id = 1;
+        String id = "1";
         Genre genre = new Genre(id, "Test genre");
         Book book = new Book(id, "Test book");
         book.addGenre(genre);

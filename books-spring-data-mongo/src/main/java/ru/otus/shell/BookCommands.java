@@ -20,23 +20,23 @@ public class BookCommands {
     }
 
     @ShellMethod(value = "Show all books by author id.", key = {"all-b-a"})
-    public void showBooksByAuthor(@ShellOption long authorId) {
+    public void showBooksByAuthor(@ShellOption String authorId) {
         bookService.findAllBooksByAuthor(authorId).forEach(this::printBook);
     }
 
     @ShellMethod(value = "Show all books by genre id.", key = {"all-b-g"})
-    public void showBooksByGenre(@ShellOption long genreId) {
+    public void showBooksByGenre(@ShellOption String genreId) {
         bookService.findAllBooksByGenre(genreId).forEach(this::printBook);
     }
 
     @ShellMethod(value = "Show book by id.", key = {"b"})
-    public void showBook(@ShellOption long id) {
+    public void showBookById(@ShellOption String id) {
         BookDto bookDto = bookService.findBookById(id);
         printBook(bookDto);
     }
 
     @ShellMethod(value = "Show book by title.", key = {"b-title"})
-    public void showBook(@ShellOption String title) {
+    public void showBookByTitle(@ShellOption String title) {
         BookDto bookDto = bookService.findBookByTitle(title.trim());
         printBook(bookDto);
     }
@@ -55,40 +55,40 @@ public class BookCommands {
     }
 
     @ShellMethod(value = "Edit book.", key = {"edit-b"})
-    public void editBook(@ShellOption long id, @ShellOption(arity = 5) String title) {
+    public void editBook(@ShellOption String id, @ShellOption(arity = 5) String title) {
         BookDto bookDto = new BookDto(id, title.trim());
         BookDto updatedBook = bookService.updateBook(bookDto);
         printBook(updatedBook);
     }
 
     @ShellMethod(value = "Delete book.", key = {"del-b"})
-    public void deleteBook(@ShellOption long id) {
+    public void deleteBook(@ShellOption String id) {
         bookService.deleteBookById(id);
     }
 
     @ShellMethod(value = "Add author to book.", key = {"add-a-to-b"})
-    public void addAuthorToBook(@ShellOption long authorId, @ShellOption long bookId) {
+    public void addAuthorToBook(@ShellOption String authorId, @ShellOption String bookId) {
         bookService.addAuthorToBook(authorId, bookId);
     }
 
     @ShellMethod(value = "Delete author from book.", key = {"del-a-from-b"})
-    public void deleteAuthorFromBook(@ShellOption long authorId, @ShellOption long bookId) {
+    public void deleteAuthorFromBook(@ShellOption String authorId, @ShellOption String bookId) {
         bookService.deleteAuthorFromBook(authorId, bookId);
     }
 
     @ShellMethod(value = "Add genre to book.", key = {"add-g-to-b"})
-    public void addGenreToBook(@ShellOption long genreId, @ShellOption long bookId) {
+    public void addGenreToBook(@ShellOption String genreId, @ShellOption String bookId) {
         bookService.addGenreToBook(genreId, bookId);
     }
 
     @ShellMethod(value = "Delete genre from book.", key = {"del-g-from-b"})
-    public void deleteGenreFromBook(@ShellOption long genreId, @ShellOption long bookId) {
+    public void deleteGenreFromBook(@ShellOption String genreId, @ShellOption String bookId) {
         bookService.deleteGenreFromBook(genreId, bookId);
     }
 
     private void printBook(BookDto bookDto) {
-        outputService.output(String.format("%d: %s (Авторы: %s, Жанры: %s)", bookDto.getId(), bookDto.getTitle(),
-                bookDto.getAuthors().stream().map(authorDto -> String.format("%d: %s", authorDto.getId(), authorDto.getFullName())).toList(),
-                bookDto.getGenres().stream().map(genreDto -> String.format("%d: %s", genreDto.getId(), genreDto.getName())).toList()));
+        outputService.output(String.format("%s: %s (Авторы: %s, Жанры: %s)", bookDto.getId(), bookDto.getTitle(),
+                bookDto.getAuthors().stream().map(authorDto -> String.format("%s: %s", authorDto.getId(), authorDto.getFullName())).toList(),
+                bookDto.getGenres().stream().map(genreDto -> String.format("%s: %s", genreDto.getId(), genreDto.getName())).toList()));
     }
 }

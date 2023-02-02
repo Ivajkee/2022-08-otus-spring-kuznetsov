@@ -11,13 +11,13 @@ public interface AuthorService {
 
     AuthorDto updateAuthor(AuthorDto authorDto);
 
-    boolean existsAuthorById(long id);
+    boolean existsAuthorById(String id);
 
-    AuthorDto findAuthorById(long id);
+    AuthorDto findAuthorById(String id);
 
     AuthorDto findAuthorByFullName(String fullName);
 
     List<AuthorDto> findAllAuthors();
 
-    void deleteAuthorById(long id);
+    void deleteAuthorById(String id);
 }

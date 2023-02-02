@@ -11,13 +11,13 @@ public interface GenreService {
 
     GenreDto updateGenre(GenreDto genreDto);
 
-    boolean existsGenreById(long id);
+    boolean existsGenreById(String id);
 
-    GenreDto findGenreById(long id);
+    GenreDto findGenreById(String id);
 
     GenreDto findGenreByName(String name);
 
     List<GenreDto> findAllGenres();
 
-    void deleteGenreById(long id);
+    void deleteGenreById(String id);
 }

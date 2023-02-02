@@ -17,7 +17,6 @@ import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +37,6 @@ class BookServiceTest {
     @MockBean
     private CommentRepository commentRepository;
     @MockBean
-    private SequenceGeneratorService sequenceGeneratorService;
-    @MockBean
     private ConversionService conversionService;
 
     @DisplayName("Should return expected books count")
@@ -54,7 +51,7 @@ class BookServiceTest {
     @DisplayName("Should save book")
     @Test
     void shouldSaveBook() {
-        long id = 1;
+        String id = "1";
         BookDto bookDto = new BookDto("New book");
         Book book = new Book(bookDto.getTitle());
         Book savedBook = new Book(id, book.getTitle());
@@ -69,12 +66,14 @@ class BookServiceTest {
     @DisplayName("Should update book")
     @Test
     void shouldUpdateBook() {
-        long id = 1;
+        String id = "1";
         BookDto bookDto = new BookDto(id, "Edited book");
         Book book = new Book(id, bookDto.getTitle());
-        BookDto expectedBookDto = new BookDto(id, book.getTitle());
+        Book savedBook = new Book(id, book.getTitle());
+        BookDto expectedBookDto = new BookDto(id, savedBook.getTitle());
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(conversionService.convert(book, BookDto.class)).thenReturn(expectedBookDto);
+        when(bookRepository.save(book)).thenReturn(savedBook);
+        when(conversionService.convert(savedBook, BookDto.class)).thenReturn(expectedBookDto);
         BookDto actualBookDto = bookService.updateBook(bookDto);
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
     }
@@ -82,7 +81,7 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try update not existing book")
     @Test
     void shouldThrowExceptionWhenTryUpdateNotExistingBook() {
-        long id = 1;
+        String id = "1";
         BookDto bookDto = new BookDto(id, "Edited book");
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.updateBook(bookDto)).isInstanceOf(BookNotFoundException.class);
@@ -91,7 +90,7 @@ class BookServiceTest {
     @DisplayName("Should be exist book")
     @Test
     void shouldBeExistBook() {
-        long id = 1;
+        String id = "1";
         when(bookRepository.existsById(id)).thenReturn(true);
         boolean bookIsExist = bookService.existsBookById(id);
         assertThat(bookIsExist).isTrue();
@@ -100,7 +99,7 @@ class BookServiceTest {
     @DisplayName("Should be not exist book")
     @Test
     void shouldBeNotExistBook() {
-        long id = 1;
+        String id = "1";
         when(bookRepository.existsById(id)).thenReturn(false);
         boolean bookIsExist = bookService.existsBookById(id);
         assertThat(bookIsExist).isFalse();
@@ -109,7 +108,7 @@ class BookServiceTest {
     @DisplayName("Should find book by id")
     @Test
     void shouldFindBookById() {
-        long id = 1;
+        String id = "1";
         Book book = new Book(id, "Test book");
         BookDto expectedBookDto = new BookDto(id, book.getTitle());
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
@@ -121,7 +120,7 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try find not existing book by id")
     @Test
     void shouldThrowExceptionWhenTryFindNotExistingBookById() {
-        long id = 1;
+        String id = "1";
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.findBookById(id)).isInstanceOf(BookNotFoundException.class);
     }
@@ -129,7 +128,7 @@ class BookServiceTest {
     @DisplayName("Should find book by title")
     @Test
     void shouldFindBookByTitle() {
-        long id = 1;
+        String id = "1";
         String title = "Test book";
         Book book = new Book(id, title);
         BookDto expectedBookDto = new BookDto(id, title);
@@ -150,9 +149,9 @@ class BookServiceTest {
     @DisplayName("Should find all books")
     @Test
     void shouldFindAllBooks() {
-        Book book1 = new Book(1, "Test book 1");
-        Book book2 = new Book(2, "Test book 2");
-        Book book3 = new Book(3, "Test book 3");
+        Book book1 = new Book("1", "Test book 1");
+        Book book2 = new Book("2", "Test book 2");
+        Book book3 = new Book("3", "Test book 3");
         BookDto bookDto1 = new BookDto(book1.getId(), book1.getTitle());
         BookDto bookDto2 = new BookDto(book2.getId(), book2.getTitle());
         BookDto bookDto3 = new BookDto(book3.getId(), book3.getTitle());
@@ -169,17 +168,17 @@ class BookServiceTest {
     @DisplayName("Should delete book")
     @Test
     void shouldDeleteBook() {
-        long id = 1;
+        String id = "1";
         Book book = new Book(id, "Test book");
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        assertThatCode(() -> bookService.deleteBookById(1)).doesNotThrowAnyException();
+        assertThatCode(() -> bookService.deleteBookById("1")).doesNotThrowAnyException();
     }
 
     @DisplayName("Should add author to book")
     @Test
     void shouldAddAuthorToBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
@@ -191,8 +190,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try add author to not existing book")
     @Test
     void shouldThrowExceptionWhenTryAddAuthorToNotExistingBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
@@ -205,8 +204,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try add not existing author to book")
     @Test
     void shouldThrowExceptionWhenTryAddNotExistingAuthorToBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
@@ -218,8 +217,8 @@ class BookServiceTest {
     @DisplayName("Should delete author from book")
     @Test
     void shouldDeleteAuthorFromBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
@@ -233,8 +232,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try delete author from not existing book")
     @Test
     void shouldThrowExceptionWhenTryDeleteAuthorFromNotExistingBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
@@ -248,8 +247,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try delete not existing author from book")
     @Test
     void shouldThrowExceptionWhenTryDeleteNotExistingAuthorFromBook() {
-        long bookId = 1;
-        long authorId = 1;
+        String bookId = "1";
+        String authorId = "1";
         Book book = new Book(bookId, "Test book");
         Author author = new Author(authorId, "Test author");
         book.addAuthor(author);
@@ -263,8 +262,8 @@ class BookServiceTest {
     @DisplayName("Should add genre to book")
     @Test
     void shouldAddGenreToBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
@@ -276,8 +275,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try add genre to not existing book")
     @Test
     void shouldThrowExceptionWhenTryAddGenreToNotExistingBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
@@ -290,8 +289,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try add not existing genre to book")
     @Test
     void shouldThrowExceptionWhenTryAddNotExistingGenreToBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
@@ -303,8 +302,8 @@ class BookServiceTest {
     @DisplayName("Should delete genre from book")
     @Test
     void shouldDeleteGenreFromBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
@@ -318,8 +317,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try delete genre from not existing book")
     @Test
     void shouldThrowExceptionWhenTryDeleteGenreFromNotExistingBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);
@@ -333,8 +332,8 @@ class BookServiceTest {
     @DisplayName("Should throw exception when try delete not existing genre from book")
     @Test
     void shouldThrowExceptionWhenTryDeleteNotExistingGenreFromBook() {
-        long bookId = 1;
-        long genreId = 1;
+        String bookId = "1";
+        String genreId = "1";
         Book book = new Book(bookId, "Test book");
         Genre genre = new Genre(genreId, "Test genre");
         book.addGenre(genre);

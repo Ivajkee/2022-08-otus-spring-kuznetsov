@@ -13,7 +13,6 @@ import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
-import ru.otus.service.sequence.SequenceGeneratorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +25,6 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final CommentRepository commentRepository;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final ConversionService conversionService;
 
     @Override
@@ -39,7 +37,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto saveBook(BookDto bookDto) {
         Book book = conversionService.convert(bookDto, Book.class);
-        book.setId(sequenceGeneratorService.generate(Book.SEQUENCE_NAME));
         Book savedBook = bookRepository.save(book);
         BookDto savedBookDto = conversionService.convert(savedBook, BookDto.class);
         log.debug("Saved book: {}", savedBookDto);
@@ -50,21 +47,22 @@ public class BookServiceImpl implements BookService {
     public BookDto updateBook(BookDto bookDto) {
         BookDto updatedBookDto = bookRepository.findById(bookDto.getId()).map(book -> {
             book.setTitle(bookDto.getTitle());
-            return conversionService.convert(book, BookDto.class);
+            Book savedBook = bookRepository.save(book);
+            return conversionService.convert(savedBook, BookDto.class);
         }).orElseThrow(() -> new BookNotFoundException(bookDto.getId()));
         log.debug("Updated book: {}", updatedBookDto);
         return updatedBookDto;
     }
 
     @Override
-    public boolean existsBookById(long id) {
+    public boolean existsBookById(String id) {
         boolean bookIsExist = bookRepository.existsById(id);
         log.debug("Book with id {} is exist: {}", id, bookIsExist);
         return bookIsExist;
     }
 
     @Override
-    public BookDto findBookById(long id) {
+    public BookDto findBookById(String id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
         BookDto bookDto = conversionService.convert(book, BookDto.class);
@@ -92,7 +90,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAllBooksByAuthor(long authorId) {
+    public List<BookDto> findAllBooksByAuthor(String authorId) {
         List<BookDto> booksDto = authorRepository.findById(authorId).map(author -> {
             List<Book> books = bookRepository.findAllByAuthors(author);
             return books.stream()
@@ -104,7 +102,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAllBooksByGenre(long genreId) {
+    public List<BookDto> findAllBooksByGenre(String genreId) {
         List<BookDto> booksDto = genreRepository.findById(genreId).map(genre -> {
             List<Book> books = bookRepository.findAllByGenres(genre);
             return books.stream()
@@ -116,7 +114,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookById(long id) {
+    public void deleteBookById(String id) {
         bookRepository.findById(id).ifPresentOrElse(book -> {
             commentRepository.deleteAllByBook(book);
             bookRepository.delete(book);
@@ -127,7 +125,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addAuthorToBook(long authorId, long bookId) {
+    public void addAuthorToBook(String authorId, String bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
                 .ifPresentOrElse(author -> {
                     book.addAuthor(author);
@@ -141,7 +139,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteAuthorFromBook(long authorId, long bookId) {
+    public void deleteAuthorFromBook(String authorId, String bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> authorRepository.findById(authorId)
                 .ifPresentOrElse(author -> {
                     book.deleteAuthor(author);
@@ -155,7 +153,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addGenreToBook(long genreId, long bookId) {
+    public void addGenreToBook(String genreId, String bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
                 .ifPresentOrElse(genre -> {
                     book.addGenre(genre);
@@ -169,7 +167,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteGenreFromBook(long genreId, long bookId) {
+    public void deleteGenreFromBook(String genreId, String bookId) {
         bookRepository.findById(bookId).ifPresentOrElse(book -> genreRepository.findById(genreId)
                 .ifPresentOrElse(genre -> {
                     book.deleteGenre(genre);

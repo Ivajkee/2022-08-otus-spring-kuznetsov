@@ -11,25 +11,25 @@ public interface BookService {
 
     BookDto updateBook(BookDto bookDto);
 
-    boolean existsBookById(long id);
+    boolean existsBookById(String id);
 
-    BookDto findBookById(long id);
+    BookDto findBookById(String id);
 
     BookDto findBookByTitle(String title);
 
     List<BookDto> findAllBooks();
 
-    List<BookDto> findAllBooksByAuthor(long authorId);
+    List<BookDto> findAllBooksByAuthor(String authorId);
 
-    List<BookDto> findAllBooksByGenre(long genreId);
+    List<BookDto> findAllBooksByGenre(String genreId);
 
-    void deleteBookById(long id);
+    void deleteBookById(String id);
 
-    void addAuthorToBook(long authorId, long bookId);
+    void addAuthorToBook(String authorId, String bookId);
 
-    void deleteAuthorFromBook(long authorId, long bookId);
+    void deleteAuthorFromBook(String authorId, String bookId);
 
-    void addGenreToBook(long genreId, long bookId);
+    void addGenreToBook(String genreId, String bookId);
 
-    void deleteGenreFromBook(long genreId, long bookId);
+    void deleteGenreFromBook(String genreId, String bookId);
 }

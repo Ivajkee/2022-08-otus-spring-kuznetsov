@@ -20,13 +20,13 @@ public class AuthorCommands {
     }
 
     @ShellMethod(value = "Show author by id.", key = {"a"})
-    public void showAuthor(@ShellOption long id) {
+    public void showAuthorById(@ShellOption String id) {
         AuthorDto authorDto = authorService.findAuthorById(id);
         printAuthor(authorDto);
     }
 
     @ShellMethod(value = "Show author by name.", key = {"a-name"})
-    public void showAuthor(@ShellOption String fullName) {
+    public void showAuthorByFullName(@ShellOption String fullName) {
         AuthorDto authorDto = authorService.findAuthorByFullName(fullName.trim());
         printAuthor(authorDto);
     }
@@ -45,18 +45,18 @@ public class AuthorCommands {
     }
 
     @ShellMethod(value = "Edit author.", key = {"edit-a"})
-    public void editAuthor(@ShellOption long id, @ShellOption(arity = 3) String fullName) {
+    public void editAuthor(@ShellOption String id, @ShellOption(arity = 3) String fullName) {
         AuthorDto authorDto = new AuthorDto(id, fullName.trim());
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto);
         printAuthor(updatedAuthor);
     }
 
     @ShellMethod(value = "Delete author.", key = {"del-a"})
-    public void deleteAuthor(@ShellOption long id) {
+    public void deleteAuthor(@ShellOption String id) {
         authorService.deleteAuthorById(id);
     }
 
     private void printAuthor(AuthorDto authorDto) {
-        outputService.output(String.format("%d: %s", authorDto.getId(), authorDto.getFullName()));
+        outputService.output(String.format("%s: %s", authorDto.getId(), authorDto.getFullName()));
     }
 }

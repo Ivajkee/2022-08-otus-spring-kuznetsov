@@ -10,12 +10,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookDto {
-    private long id;
+    private String id;
     private String title;
     private Set<AuthorDto> authors;
     private Set<GenreDto> genres;
 
-    public BookDto(long id, String title) {
+    public BookDto(String id, String title) {
         this.id = id;
         this.title = title;
     }

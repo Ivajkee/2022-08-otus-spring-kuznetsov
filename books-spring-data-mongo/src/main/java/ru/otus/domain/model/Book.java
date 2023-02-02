@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,10 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Document("books")
 public class Book {
-    @Transient
-    public static final String SEQUENCE_NAME = "book_sequence";
     @Id
-    private long id;
+    private String id;
     @Indexed
     @NotBlank
     @Field("title")
@@ -32,7 +29,13 @@ public class Book {
     @DBRef
     private Set<Genre> genres = new HashSet<>();
 
-    public Book(long id, String title) {
+    public Book(String title, Set<Author> authors, Set<Genre> genres) {
+        this.title = title;
+        this.authors = authors;
+        this.genres = genres;
+    }
+
+    public Book(String id, String title) {
         this.id = id;
         this.title = title;
     }

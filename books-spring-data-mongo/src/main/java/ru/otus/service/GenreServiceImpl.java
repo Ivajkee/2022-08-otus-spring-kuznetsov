@@ -2,12 +2,17 @@ package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import ru.otus.domain.dto.GenreDto;
+import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
-import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
@@ -18,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
-    private final BookRepository bookRepository;
+    private final MongoTemplate mongoTemplate;
     private final ConversionService conversionService;
 
     @Override
@@ -85,15 +90,10 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void deleteGenreById(String id) {
-        genreRepository.findById(id).ifPresentOrElse(genre -> {
-            bookRepository.findAllByGenres(genre).forEach(book -> {
-                book.deleteGenre(genre);
-                bookRepository.save(book);
-            });
-            genreRepository.delete(genre);
-        }, () -> {
-            throw new GenreNotFoundException(id);
-        });
+        Query query = Query.query(Criteria.where("$id").is(new ObjectId(id)));
+        Update update = new Update().pull("genres", query);
+        mongoTemplate.updateMulti(new Query(), update, Book.class);
+        genreRepository.deleteById(id);
         log.debug("Genre with id {} deleted", id);
     }
 }

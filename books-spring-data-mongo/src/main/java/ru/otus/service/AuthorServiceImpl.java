@@ -2,13 +2,18 @@ package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
+import ru.otus.domain.model.Book;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
-import ru.otus.repository.BookRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
-    private final BookRepository bookRepository;
+    private final MongoTemplate mongoTemplate;
     private final ConversionService conversionService;
 
     @Override
@@ -85,15 +90,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthorById(String id) {
-        authorRepository.findById(id).ifPresentOrElse(author -> {
-            bookRepository.findAllByAuthors(author).forEach(book -> {
-                book.deleteAuthor(author);
-                bookRepository.save(book);
-            });
-            authorRepository.delete(author);
-        }, () -> {
-            throw new AuthorNotFoundException(id);
-        });
+        Query query = Query.query(Criteria.where("$id").is(new ObjectId(id)));
+        Update update = new Update().pull("authors", query);
+        mongoTemplate.updateMulti(new Query(), update, Book.class);
+        authorRepository.deleteById(id);
         log.debug("Author with id {} deleted", id);
     }
 }

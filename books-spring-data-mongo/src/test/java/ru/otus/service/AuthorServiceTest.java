@@ -6,18 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.domain.dto.AuthorDto;
 import ru.otus.domain.model.Author;
-import ru.otus.domain.model.Book;
 import ru.otus.exception.AuthorNotFoundException;
 import ru.otus.repository.AuthorRepository;
-import ru.otus.repository.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = AuthorServiceImpl.class)
@@ -27,7 +27,7 @@ class AuthorServiceTest {
     @MockBean
     private AuthorRepository authorRepository;
     @MockBean
-    private BookRepository bookRepository;
+    private MongoTemplate mongoTemplate;
     @MockBean
     private ConversionService conversionService;
 
@@ -159,13 +159,8 @@ class AuthorServiceTest {
     @DisplayName("Should delete author")
     @Test
     void shouldDeleteAuthor() {
-        String id = "1";
-        Author author = new Author(id, "Test author");
-        Book book = new Book(id, "Test book");
-        book.addAuthor(author);
-        when(authorRepository.findById(id)).thenReturn(Optional.of(author));
-        when(bookRepository.findAllByAuthors(author)).thenReturn(List.of(book));
+        String id = "63de89ad5d80675a7e52ac72";
         authorService.deleteAuthorById(id);
-        assertThat(book.getAuthors()).doesNotContain(author);
+        verify(authorRepository).deleteById(id);
     }
 }

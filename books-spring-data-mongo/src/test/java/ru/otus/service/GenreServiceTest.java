@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.domain.dto.GenreDto;
-import ru.otus.domain.model.Book;
 import ru.otus.domain.model.Genre;
 import ru.otus.exception.GenreNotFoundException;
-import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
@@ -18,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = GenreServiceImpl.class)
@@ -27,7 +27,7 @@ class GenreServiceTest {
     @MockBean
     private GenreRepository genreRepository;
     @MockBean
-    private BookRepository bookRepository;
+    private MongoTemplate mongoTemplate;
     @MockBean
     private ConversionService conversionService;
 
@@ -159,13 +159,8 @@ class GenreServiceTest {
     @DisplayName("Should delete genre")
     @Test
     void shouldDeleteGenre() {
-        String id = "1";
-        Genre genre = new Genre(id, "Test genre");
-        Book book = new Book(id, "Test book");
-        book.addGenre(genre);
-        when(genreRepository.findById(id)).thenReturn(Optional.of(genre));
-        when(bookRepository.findAllByGenres(genre)).thenReturn(List.of(book));
+        String id = "63de89ad5d80675a7e52ac75";
         genreService.deleteGenreById(id);
-        assertThat(book.getGenres()).doesNotContain(genre);
+        verify(genreRepository).deleteById(id);
     }
 }

@@ -1,0 +1,57 @@
+a {
+    color: #003153;
+    text-decoration: none;
+}
+a:visited {
+    color: #003153;
+}
+a:hover {
+    color: #002F55;
+    text-decoration: underline;
+}
+h2 {
+    color: #003153;
+}
+.book {
+    padding: 0px;
+    margin-bottom: 10px
+}
+.menu ul li{
+  padding: 10px;
+}
+.menu ul > li:hover{
+  background-color: #f96;
+}
+.menu ul ul > li:hover{
+  background-color: #69e;
+}
+.menu ul li, .menu ul{
+  display: inline-block;
+}
+.menu ul{
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: #f63;
+}
+.menu ul ul{
+  display: none;
+  position: absolute;
+  background-color: #369;
+  margin-top: 10px;
+  margin-left: -10px;
+}
+.menu ul a{
+  color: #fff;
+  text-decoration: none;
+}
+.menu ul ul a{
+  color: #fff;
+  text-decoration: none;
+}
+.menu li:hover ul{
+  display: block;
+}
+.menu li:hover li{
+  display: block;
+}

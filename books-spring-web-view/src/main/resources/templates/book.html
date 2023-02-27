@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <title th:text="${book.title}"></title>
+</head>
+<body>
+    <div class="book">
+        <div><b><h2 th:text="${book.title}"></h2></b></div>
+        <div><span>Авторы:</span><span th:each="author : ${book.authors}" style="padding: 0px 5px;"><a
+                th:href="@{/authors/__${author.id}__}" href="author.html" th:text="${author.fullName}"></a></span></div>
+        <div><span>Жанры:</span><span th:each="genre : ${book.genres}" style="padding: 0px 5px;"><a
+                th:href="@{/genres/__${genre.id}__}" href="genre.html" th:text="${genre.name}"></a></span></div>
+    </div>
+    <form>
+        <button type="submit" formmethod="get" th:formaction="@{/books/__${book.id}__/edit/}">Редактировать</button>
+        <button type="submit" formmethod="post" th:formaction="@{/books/__${book.id}__/delete}">Удалить</button>
+    </form>
+</body>
+</html>

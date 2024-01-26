@@ -15,6 +15,7 @@ import ru.otus.exception.BookNotFoundException;
 import ru.otus.exception.GenreNotFoundException;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
@@ -33,6 +34,8 @@ class BookServiceTest {
     private AuthorRepository authorRepository;
     @MockBean
     private GenreRepository genreRepository;
+    @MockBean
+    private CommentRepository commentRepository;
     @MockBean
     private ConversionService conversionService;
 

@@ -1,5 +1,6 @@
 package ru.otus.config;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.domain.model.Author;
@@ -11,7 +12,6 @@ import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentRepository;
 import ru.otus.repository.GenreRepository;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Set;
 
